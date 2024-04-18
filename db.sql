@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS sidebar;
 DROP TABLE IF EXISTS message;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS chat;
@@ -29,6 +30,8 @@ CREATE TABLE users (
     id UUID PRIMARY KEY,
     mail VARCHAR(320) NOT NULL,
     password VARCHAR(64) NOT NULL,
+    avatar VARCHAR(255),
+    description TEXT,
     register_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_connection_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -261,4 +264,12 @@ CREATE TABLE message (
     chat_id  UUID NOT NULL,
     FOREIGN KEY (user_id ) REFERENCES users(id),
     FOREIGN KEY (chat_id ) REFERENCES chat(id)
+);
+
+CREATE TABLE sidebar (
+    id UUID PRIMARY KEY,
+    permission INT,
+    icon VARCHAR(255),
+    hover VARCHAR(128),
+    href VARCHAR(255)
 );
