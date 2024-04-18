@@ -1,3 +1,4 @@
+// Initialise l'ensemble de l'API
 package main
 
 import (
@@ -6,13 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Initialise l'API
 func main() {
 	utils.LoadConfig()
 	router := gin.Default()
 
 	api := router.Group("/api")
 
-	controller.User(api)
+	controller.Users(api)
 
 	err := router.Run(":" + utils.PortApp)
 	if err != nil {

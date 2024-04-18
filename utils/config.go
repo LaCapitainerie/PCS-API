@@ -1,3 +1,4 @@
+// Package utils spécifie toutes les fonctions utilitaire à l'API
 package utils
 
 import (
@@ -9,9 +10,12 @@ import (
 	"os"
 )
 
-var DB *gorm.DB
-var PortApp string
+var DB *gorm.DB    // Contient toutes les données pour l'interaction avec la base de données
+var PortApp string // Contient le port utilisé par l'API
 
+// LoadConfig
+// Charge toutes les données nécessaire à l'API
+// Les variables d'environnement et la connexion avec la bdd
 func LoadConfig() {
 	err := godotenv.Load("config.env")
 	if err != nil {

@@ -1,3 +1,4 @@
+// Package service spécifie le code "métier" de l'API
 package service
 
 import (
@@ -8,6 +9,7 @@ import (
 	"net/http"
 )
 
+// CreateUser Traite la création d'un utilisateur
 func CreateUser(c *gin.Context) {
 	var user models.Users
 	if err := c.BindJSON(&user); err != nil {
