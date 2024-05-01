@@ -19,7 +19,7 @@ var PortApp string // Contient le port utilisé par l'API
 func LoadConfig() {
 	err := godotenv.Load("config.env")
 	if err != nil {
-		log.Fatal("The \"config.env\" file is invalid (please rename 'config.example.env' to 'config.env'")
+		log.Fatal("The \"config.env\" file is invalid (please rename 'config.example.env' to 'config.env'\nIf you want to use docker, please insert '--env-file config.env' in docker command")
 	}
 
 	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s"
