@@ -1,4 +1,4 @@
-./config.env
+config.env
 ./.gitignore
 ./config.example.env
 ./db.sql
