@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/pcs</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="gvxrgthv@surus.db.elephantsql.com" uuid="7e7d387c-c9b8-49a0-95be-420e37815580">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://surus.db.elephantsql.com:5432/gvxrgthv</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

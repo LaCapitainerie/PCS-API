@@ -1,0 +1,6 @@
+./config.env
+./.gitignore
+./config.example.env
+./db.sql
+./README.md
+./spec-api.yaml
