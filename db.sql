@@ -273,3 +273,14 @@ CREATE TABLE sidebar (
     hover VARCHAR(128),
     href VARCHAR(255)
 );
+
+INSERT INTO sidebar (id, permission, icon, gover, gref)
+VALUES
+    (uuid_generate_v4(), 1, 'Home', 'Biens', '/Bailleur/Biens'),
+    (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Bailleur/Messages'),
+    (uuid_generate_v4(), 2, 'Gauge', 'Dashboard', '/Bailleur/Dashboard'),
+    (uuid_generate_v4(), 1, 'Home', 'Biens', '/Prestataire/Biens'),
+    (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Prestataire/Messages'),
+    (uuid_generate_v4(), 2, 'Gauge', 'Dashboard', '/Admin/Dashboard'),
+    (uuid_generate_v4(), 1, 'Home', 'Biens', '/Locataire/Biens'),
+    (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Locataire/Messages');

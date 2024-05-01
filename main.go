@@ -15,6 +15,7 @@ func main() {
 	api := router.Group("/api")
 
 	controller.Users(api)
+	controller.Sidebar(api)
 
 	err := router.Run(":" + utils.PortApp)
 	if err != nil {

@@ -11,7 +11,7 @@ import (
 // Crée un "users" dans la table et renvoie l'user mis à jour
 func CreateUser(user models.Users) models.Users {
 	if err := utils.DB.Create(&user).Error; err != nil {
-		panic("Impossible d'insérer l'utilisateur")
+		panic("Unable to insert user" + err.Error())
 	}
 	return user
 }
