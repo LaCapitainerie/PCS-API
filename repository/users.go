@@ -9,9 +9,7 @@ import (
 
 // CreateUser reçoit en argument un user
 // Crée un "users" dans la table et renvoie l'user mis à jour
-func CreateUser(user models.Users) models.Users {
-	if err := utils.DB.Create(&user).Error; err != nil {
-		panic("Unable to insert user" + err.Error())
-	}
-	return user
+func CreateUser(user models.Users) (models.Users, error) {
+	err := utils.DB.Create(&user)
+	return user, err.Error
 }

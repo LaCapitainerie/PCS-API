@@ -12,12 +12,17 @@ import (
 // CreateUser Traite la création d'un utilisateur
 func CreateUser(c *gin.Context) {
 	var user models.Users
-	if err := c.BindJSON(&user); err != nil {
+	var err error
+	if err = c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	user.ID = uuid.New()
-	user = repository.CreateUser(user)
+	user, err = repository.CreateUser(user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	user.Password = ""
 	c.JSON(http.StatusOK, gin.H{"users": user})
 }
