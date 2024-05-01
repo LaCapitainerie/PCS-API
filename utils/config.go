@@ -20,6 +20,7 @@ func LoadConfig() {
 	err := godotenv.Load("config.env")
 	if err != nil {
 		log.Fatal("The \"config.env\" file is invalid (please rename 'config.example.env' to 'config.env'\nIf you want to use docker, please insert '--env-file config.env' in docker command")
+		os.Exit(1)
 	}
 
 	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s"
@@ -27,6 +28,10 @@ func LoadConfig() {
 		os.Getenv("DB_NAME"), os.Getenv("DB_PORT"), os.Getenv("DB_SSLMODE"), os.Getenv("DB_TIMEZONE"))
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("Database connection error, please recheck the information in the config.env")
+		os.Exit(2)
+	}
 
 	PortApp = os.Getenv("PORT_APP")
 }
