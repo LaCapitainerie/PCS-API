@@ -3,6 +3,7 @@ package main
 
 import (
 	"PCS-API/controller"
+	"PCS-API/middleware"
 	"PCS-API/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +12,8 @@ import (
 func main() {
 	utils.LoadConfig()
 	router := gin.Default()
+
+	middleware.CORS(router)
 
 	api := router.Group("/api")
 
