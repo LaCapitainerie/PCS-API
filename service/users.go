@@ -9,8 +9,9 @@ import (
 	"net/http"
 )
 
-// CreateUser Traite la création d'un utilisateur
-func CreateUser(c *gin.Context) {
+// CreateUser Crée un utilisateur, cette fonction ne peut être appelé par un contrôleur, elle est forcément
+// appelé par une autre fonction service (CreateLessor,
+func createUser(c *gin.Context) {
 	var user models.Users
 	var err error
 	if err = c.BindJSON(&user); err != nil {

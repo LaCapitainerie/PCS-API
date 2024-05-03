@@ -1,0 +1,53 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/sidebar": {
+            "get": {
+                "description": "Récupère tous les Sidebar",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "administration"
+                ],
+                "summary": "Sidebar",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Sidebar"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Sidebar": {
+            "type": "object",
+            "properties": {
+                "Hover": {
+                    "type": "string"
+                },
+                "Href": {
+                    "type": "string"
+                },
+                "Icon": {
+                    "type": "string"
+                },
+                "Id_tab": {
+                    "type": "string"
+                },
+                "Permission": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

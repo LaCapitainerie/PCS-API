@@ -1,0 +1,33 @@
+definitions:
+  models.Sidebar:
+    properties:
+      Hover:
+        type: string
+      Href:
+        type: string
+      Icon:
+        type: string
+      Id_tab:
+        type: string
+      Permission:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /api/sidebar:
+    get:
+      description: Récupère tous les Sidebar
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Sidebar'
+            type: array
+      summary: Sidebar
+      tags:
+      - administration
+swagger: "2.0"

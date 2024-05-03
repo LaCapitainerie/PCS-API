@@ -3,14 +3,11 @@
 package controller
 
 import (
-	"PCS-API/service"
 	"github.com/gin-gonic/gin"
 )
 
-// Users # Controller
-//
 // Users réceptionne toutes les requêtes ayant pour endpoint '/users'
-// Il les envoie aux fonctions services liés
+// Il les envoie aux fonctions services liées
 func Users(api *gin.RouterGroup) {
-	api.POST("/users", service.CreateUser)
+
 }
