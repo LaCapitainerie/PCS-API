@@ -90,13 +90,18 @@ CREATE TABLE subscribe_traveler (
 
 CREATE TABLE property (
     id  UUID PRIMARY KEY,
+    name VARCHAR(64) NOT NULL,
+    type VARCHAR(64) NOT NULL,
+    price NUMERIC(10, 2) NOT NULL,
+    surface INTEGER NOT NULL,
+    room INTEGER NOT NULL,
+    bathroom INTEGER NOT NULL,
+    garage BOOLEAN DEFAULT FALSE,
+    description TEXT,
     address VARCHAR(64) NOT NULL,
     city VARCHAR(64) NOT NULL,
     zip_code VARCHAR(6) NOT NULL,
     country VARCHAR(64) NOT NULL,
-    room INTEGER NOT NULL,
-    bathroom INTEGER NOT NULL,
-    description TEXT,
     administrator_validation BOOLEAN DEFAULT FALSE,
     lessor_id  UUID NOT NULL,
     FOREIGN KEY (lessor_id ) REFERENCES lessor(id)
@@ -284,3 +289,17 @@ VALUES
     (uuid_generate_v4(), 2, 'Gauge', 'Dashboard', '/Admin/Dashboard'),
     (uuid_generate_v4(), 1, 'Home', 'Biens', '/Locataire/Biens'),
     (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Locataire/Messages');
+
+
+INSERT INTO property (id, name, type, price, surface, room, bathroom, garage, description, address, city, zip_code, country, administrator_validation, lessor_id) 
+VALUES 
+    ('1', 'Belle Maison en Centre-Ville', 'Maison', 250000.00, 180, 5, 3, TRUE, 'Belle maison située en plein centre-ville, proche des commerces et écoles.', '12 Rue de la Liberté', 'Paris', '75001', 'France', TRUE, '123e4567-e89b-12d3-a456-426614174000'),
+    ('2', 'Appartement Moderne avec Vue sur Mer', 'Appartement', 150000.00, 90, 3, 2, FALSE, 'Appartement récemment rénové offrant une vue imprenable sur la mer.', '8 Rue des Palmiers', 'Nice', '06000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
+    ('3', 'Villa de Luxe avec Piscine', 'Villa', 750000.00, 300, 7, 5, TRUE, 'Villa de luxe avec piscine privée, jardin et vue panoramique sur la ville.', '25 Avenue des Roses', 'Cannes', '06400', 'France', TRUE, '98765432-12d3-e456-b426-426614174000'),
+    ('4', 'Maison Traditionnelle avec Jardin', 'Maison', 180000.00, 150, 4, 2, TRUE, 'Charmante maison traditionnelle avec un grand jardin arboré.', '4 Rue des Chênes', 'Bordeaux', '33000', 'France', FALSE, '98765432-12d3-e456-b426-426614174000'),
+    ('5', 'Appartement Cosy en Centre Historique', 'Appartement', 120000.00, 75, 2, 1, FALSE, 'Appartement cosy situé au cœur du centre historique, à proximité des monuments.', '6 Place du Marché', 'Strasbourg', '67000', 'France', TRUE, '123e4567-e89b-12d3-a456-426614174000'),
+    ('6', 'Villa Familiale avec Vue sur les Montagnes', 'Villa', 400000.00, 250, 6, 4, TRUE, 'Superbe villa familiale offrant une vue panoramique sur les montagnes environnantes.', '10 Chemin des Cimes', 'Grenoble', '38000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000'),
+    ('7', 'Maison de Campagne avec Grand Terrain', 'Maison', 220000.00, 200, 5, 3, TRUE, 'Maison de campagne avec un grand terrain, idéale pour les amoureux de la nature.', '2 Route des Champs', 'Lyon', '69000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
+    ('8', 'Appartement Lumineux avec Balcon', 'Appartement', 95000.00, 60, 2, 1, TRUE, 'Appartement lumineux avec un balcon offrant une vue dégagée.', '15 Avenue du Soleil', 'Marseille', '13000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000'),
+    ('9', 'Villa Moderne avec Piscine et Spa', 'Villa', 680000.00, 320, 8, 5, TRUE, "Villa moderne équipée d'une piscine, d'un spa et d'un grand jardin.", '18 Boulevard des Palmiers', 'Nice', '06000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
+    ('10', 'Maison de Ville avec Cour Intérieure', 'Maison', 195000.00, 120, 4, 2, FALSE, 'Maison de ville avec une charmante cour intérieure, proche des commodités.', '3 Rue des Moulins', 'Lille', '59000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000');

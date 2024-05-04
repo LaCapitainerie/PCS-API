@@ -5,6 +5,7 @@ import (
 	"PCS-API/controller"
 	"PCS-API/middleware"
 	"PCS-API/utils"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +20,7 @@ func main() {
 
 	controller.Users(api)
 	controller.Sidebar(api)
+	controller.Property(api)
 
 	err := router.Run(":" + utils.PortApp)
 	if err != nil {
