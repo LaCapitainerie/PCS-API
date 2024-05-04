@@ -22,6 +22,7 @@ func main() {
 	controller.Sidebar(api)
 	controller.Property(api)
 	controller.Admin(api)
+	controller.Traveler(api)
 
 	err := router.Run(":" + utils.PortApp)
 	if err != nil {
