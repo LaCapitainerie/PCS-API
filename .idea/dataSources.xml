@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="gvxrgthv@surus.db.elephantsql.com" uuid="2c3a0f05-8002-4663-bc0b-15e7d8df99d7">
+    <data-source source="LOCAL" name="pcs@77.237.246.8" uuid="2c3a0f05-8002-4663-bc0b-15e7d8df99d7">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://surus.db.elephantsql.com:5432/gvxrgthv</jdbc-url>
+      <jdbc-url>jdbc:postgresql://77.237.246.8:5432/pcs</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

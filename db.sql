@@ -290,6 +290,17 @@ VALUES
     (uuid_generate_v4(), 1, 'Home', 'Biens', '/Locataire/Biens'),
     (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Locataire/Messages');
 
+INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date) VALUES
+    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'user1@example.com', 'password123', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'user2@example.com', 'password123', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'user3@example.com', 'password123', 'https://example.com/avatar3.jpg', 'Description de user3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO lessor (id, first_name, last_name, phone_number, user_id) VALUES
+    ('98765432-12d3-e456-b426-426614174000', 'John', 'Doe', '0123456789', 'a0e12f8a-4776-4ed3-91d5-673fcef79d5c'),
+    ('123e4567-e89b-12d3-a456-426614174000', 'Jane', 'Smith', '9876543210', 'b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e'),
+    ('647d216d-d534-4c7e-b1f1-0c2d815bd3f4', 'Emily', 'Brown', '1234567890', 'c3c99ccc-4844-4f78-9b27-8daabbc7f8f8');
+
+
 INSERT INTO property (id, name, type, price, surface, room, bathroom, garage, description, address, city, zip_code, country, administrator_validation, lessor_id) 
 VALUES 
     ('f47ac10b-58cc-4372-a567-0e02b2c3d479', 'Belle Maison en Centre-Ville', 'Maison', 250000.00, 180, 5, 3, 1, 'Belle maison située en plein centre-ville, proche des commerces et écoles.', '12 Rue de la Liberté', 'Paris', '75001', 'France', TRUE, '123e4567-e89b-12d3-a456-426614174000'),
