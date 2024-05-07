@@ -62,7 +62,7 @@ CREATE TABLE provider (
     phone_number VARCHAR(15) NOT NULL,
     nickname VARCHAR(64) NOT NULL,
     user_id  UUID NOT NULL,
-    FOREIGN KEY (user_id ) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE lessor (
