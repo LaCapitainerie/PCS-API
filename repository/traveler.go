@@ -14,3 +14,10 @@ func GetAllTraveler() []models.Traveler {
 	}
 	return Travelers
 }
+
+// CreateTraveler reçoit en argument un traveler
+// Crée un "traveler" dans la table et renvoie le voyageur mis à jour
+func CreateTraveler(traveler models.Traveler) (models.Traveler, error) {
+	err := utils.DB.Create(&traveler)
+	return traveler, err.Error
+}

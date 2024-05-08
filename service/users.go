@@ -3,6 +3,7 @@ package service
 
 import (
 	"PCS-API/models"
+	"PCS-API/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -37,6 +38,11 @@ func CreateUser(c *gin.Context) {
 	}
 
 	user.ID = uuid.New()
+	user.Password, err = utils.HashPassword(user.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	if user.TypeUser == models.TravelerType {
 		createTraveler(c, user)
@@ -60,7 +66,7 @@ func convertUserDTOtoUser(userDTO models.UsersDTO) models.Users {
 	}
 }
 
-// createUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateurr et d'un bailleur
+// createUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateur et d'un bailleur
 func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) models.UsersDTO {
 	return models.UsersDTO{
 		ID:                 lessor.ID,
@@ -72,6 +78,21 @@ func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) mo
 		FirstName:          lessor.FirstName,
 		LastName:           lessor.LastName,
 		PhoneNumber:        lessor.PhoneNumber,
+	}
+}
+
+// createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un voyageur
+func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Traveler) models.UsersDTO {
+	return models.UsersDTO{
+		ID:                 traveler.ID,
+		TypeUser:           models.TravelerType,
+		Mail:               users.Mail,
+		Password:           users.Password,
+		RegisterDate:       users.RegisterDate,
+		LastConnectionDate: users.LastConnectionDate,
+		FirstName:          traveler.FirstName,
+		LastName:           traveler.LastName,
+		PhoneNumber:        traveler.PhoneNumber,
 	}
 }
 
