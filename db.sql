@@ -269,8 +269,8 @@ CREATE TABLE message (
     type VARCHAR(5), -- "text" ou "image"
     user_id  UUID NOT NULL,
     chat_id  UUID NOT NULL,
-    FOREIGN KEY (user_id ) REFERENCES users(id),
-    FOREIGN KEY (chat_id ) REFERENCES chat(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (chat_id) REFERENCES chat(id)
 );
 
 CREATE TABLE sidebar (

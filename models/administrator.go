@@ -6,10 +6,10 @@ import (
 
 // Admin est la structure spécifiant les données de la Admin utilisé par le front web de l'application
 type Admin struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey" json:"ID"`
-	Site     string    `gorm:"type:varchar(64)" json:"Site"`
+	ID       uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	Site     string    `gorm:"type:varchar(64)" json:"site"`
 	Nickname string    `gorm:"type:varchar(64);notnull" json:"nickname"`
-	UserId   uuid.UUID `gorm:"type:uuid;notnull" json:"user_id"`
+	UserId   uuid.UUID `gorm:"type:uuid;notnull" json:"userId"`
 }
 
 // TableName Admin Spécifie à gorm le nom de la table
