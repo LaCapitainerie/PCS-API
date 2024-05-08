@@ -9,6 +9,7 @@ Here are the various error codes that may occur in the event of an error in the 
 | 1           | The password must be greater than 8 and less than 128 characters long, at least have an uppercase letter, a lowercase letter, a number and a special character |
 | 2           | Invalid email                                                                                                                                                  |
 | 3           | Bad typeUser                                                                                                                                                   |
+| 4           | Missing content userDTO                                                                                                                                        |
 
 
 ### Application error code

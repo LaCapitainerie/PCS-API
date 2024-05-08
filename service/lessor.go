@@ -18,7 +18,7 @@ func createLessor(c *gin.Context, userDTO models.UsersDTO) {
 	if len(lessor.FirstName) < 1 &&
 		len(lessor.LastName) < 1 &&
 		(len(lessor.PhoneNumber) < 6 && len(lessor.PhoneNumber) > 15) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "1"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "4"})
 		return
 	}
 

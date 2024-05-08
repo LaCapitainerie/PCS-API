@@ -96,6 +96,22 @@ func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Travel
 	}
 }
 
+// createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un prestataire
+func createUserDTOwithUserAndProvider(users models.Users, provider models.Provider) models.UsersDTO {
+	return models.UsersDTO{
+		ID:                 provider.ID,
+		TypeUser:           models.ProviderType,
+		Mail:               users.Mail,
+		Password:           users.Password,
+		RegisterDate:       users.RegisterDate,
+		LastConnectionDate: users.LastConnectionDate,
+		Nickname:           provider.Nickname,
+		FirstName:          provider.FirstName,
+		LastName:           provider.LastName,
+		PhoneNumber:        provider.PhoneNumber,
+	}
+}
+
 // validityPassword Vérifie la validité d'un mot de passe
 func validityPassword(password string) bool {
 	var check [4]bool
