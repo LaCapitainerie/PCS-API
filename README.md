@@ -10,6 +10,7 @@ Here are the various error codes that may occur in the event of an error in the 
 | 2           | Invalid email                                                                                                                                                  |
 | 3           | Bad typeUser                                                                                                                                                   |
 | 4           | Missing content userDTO                                                                                                                                        |
+| 5           | Email or phone already exists                                                                                                                                  |
 
 
 ### Application error code

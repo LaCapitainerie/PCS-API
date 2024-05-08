@@ -22,6 +22,8 @@ type UsersDTO struct {
 	Password           string    `json:"password"`
 	RegisterDate       time.Time `json:"registerDate"`
 	LastConnectionDate time.Time `json:"lastConnectionDate"`
+	Avatar             string    `json:"avatar"`
+	Description        string    `json:"description"`
 	FirstName          string    `json:"firstName"`
 	LastName           string    `json:"lastName"`
 	PhoneNumber        string    `json:"phoneNumber"`

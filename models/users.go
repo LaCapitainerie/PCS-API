@@ -13,9 +13,16 @@ type Users struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
 	Mail               string    `json:"mail"`
 	Password           string    `json:"password"`
+	Avatar             string    `json:"avatar"`
+	Description        string    `json:"description"`
 	RegisterDate       time.Time `gorm:"type:timestamp with time zone;not null;default:CURRENT_TIMESTAMP" json:"register_date"`
 	LastConnectionDate time.Time `gorm:"type:timestamp with time zone;default:CURRENT_TIMESTAMP" json:"last_connection_date"`
 }
+
+/*
+   avatar VARCHAR(255),
+   description TEXT,
+*/
 
 // TableName Users Spécifie à gorm le nom de la base de donnée
 func (Users) TableName() string {

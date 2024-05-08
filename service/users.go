@@ -3,6 +3,7 @@ package service
 
 import (
 	"PCS-API/models"
+	"PCS-API/repository"
 	"PCS-API/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -27,13 +28,18 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	if validityPassword(user.Password) {
+	if !validityPassword(user.Password) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "1"})
 		return
 	}
 
-	if validityEmail(user.Mail) {
+	if !validityEmail(user.Mail) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "2"})
+		return
+	}
+
+	if repository.VerifyUserEmailAndPassword(user.Mail, user.PhoneNumber) {
+		c.JSON(http.StatusConflict, gin.H{"error": "5"})
 		return
 	}
 

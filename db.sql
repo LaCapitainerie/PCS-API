@@ -303,8 +303,8 @@ INSERT INTO lessor (id, first_name, last_name, phone_number, user_id) VALUES
     ('647d216d-d534-4c7e-b1f1-0c2d815bd3f4', 'Emily', 'Brown', '1234567890', 'c3c99ccc-4844-4f78-9b27-8daabbc7f8f8');
 
 
-INSERT INTO property (id, name, type, price, surface, room, bathroom, garage, description, address, city, zip_code, country, administrator_validation, lessor_id) 
-VALUES 
+INSERT INTO property (id, name, type, price, surface, room, bathroom, garage, description, address, city, zip_code, country, administrator_validation, lessor_id)
+VALUES
     ('f47ac10b-58cc-4372-a567-0e02b2c3d479', 'Belle Maison en Centre-Ville', 'Maison', 250000.00, 180, 5, 3, 1, 'Belle maison située en plein centre-ville, proche des commerces et écoles.', '12 Rue de la Liberté', 'Paris', '75001', 'France', TRUE, '123e4567-e89b-12d3-a456-426614174000'),
     ('1ed3b7b1-f37b-4b5f-8e6b-382fae57640a', 'Appartement Moderne avec Vue sur Mer', 'Appartement', 150000.00, 90, 3, 2, 0, 'Appartement récemment rénové offrant une vue imprenable sur la mer.', '8 Rue des Palmiers', 'Nice', '06000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
     ('ab9d50e8-3b15-4a43-95aa-41745c87ff5e', 'Villa de Luxe avec Piscine', 'Villa', 750000.00, 300, 7, 5, 1, 'Villa de luxe avec piscine privée, jardin et vue panoramique sur la ville.', '25 Avenue des Roses', 'Cannes', '06400', 'France', TRUE, '98765432-12d3-e456-b426-426614174000'),
