@@ -43,9 +43,35 @@ func CreateUser(c *gin.Context) {
 	} else if user.TypeUser == models.ProviderType {
 		createProvider(c, user)
 	} else if user.TypeUser == models.LessorType {
-
+		createLessor(c, user)
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "3"})
+	}
+}
+
+// convertUserDTOtoUser Crée un utilisateur à partir d'un UserDTO
+func convertUserDTOtoUser(userDTO models.UsersDTO) models.Users {
+	return models.Users{
+		ID:                 userDTO.ID,
+		Mail:               userDTO.Mail,
+		Password:           userDTO.Password,
+		RegisterDate:       userDTO.RegisterDate,
+		LastConnectionDate: userDTO.LastConnectionDate,
+	}
+}
+
+// createUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateurr et d'un bailleur
+func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) models.UsersDTO {
+	return models.UsersDTO{
+		ID:                 lessor.ID,
+		TypeUser:           models.LessorType,
+		Mail:               users.Mail,
+		Password:           users.Password,
+		RegisterDate:       users.RegisterDate,
+		LastConnectionDate: users.LastConnectionDate,
+		FirstName:          lessor.FirstName,
+		LastName:           lessor.LastName,
+		PhoneNumber:        lessor.PhoneNumber,
 	}
 }
 
