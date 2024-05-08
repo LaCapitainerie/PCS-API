@@ -11,5 +11,5 @@ import (
 // Property_image réceptionne toutes les requêtes ayant pour endpoint '/Property_image'
 // Il les envoie aux fonctions services liés
 func Property_image(api *gin.RouterGroup) {
-	api.GET("/property_image", service.GetAllProperty_image)
+	api.GET("/property_image", service.GetAllPropertyImage)
 }
