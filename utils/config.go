@@ -8,10 +8,14 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"os"
+	"strconv"
+	"time"
 )
 
-var DB *gorm.DB    // Contient toutes les données pour l'interaction avec la base de données
-var PortApp string // Contient le port utilisé par l'API
+var DB *gorm.DB                       // Contient toutes les données pour l'interaction avec la base de données
+var PortApp string                    // Contient le port utilisé par l'API
+var TokenExpirationTime time.Duration // Temps d'expiration d'un token généré en heure
+var TokenKey []byte
 
 // LoadConfig
 // Charge toutes les données nécessaire à l'API
@@ -35,4 +39,18 @@ func LoadConfig() {
 	}
 
 	PortApp = os.Getenv("PORT_APP")
+
+	expirationTime, err := strconv.Atoi(os.Getenv("TOKEN_EXPIRATION"))
+	if err != nil {
+		log.Fatal("token expiration time error, please recheck the information in the config.env")
+		os.Exit(3)
+	}
+	TokenExpirationTime *= time.Hour * time.Duration(expirationTime)
+
+	key := os.Getenv("TOKEN_KEY")
+	if key == "" {
+		log.Fatal("token key error, please recheck the information in the config.env")
+		os.Exit(4)
+	}
+	TokenKey = []byte(key)
 }

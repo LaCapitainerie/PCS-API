@@ -2,7 +2,7 @@
 
 ### API error code
 
-Here are the various error codes that may occur in the event of an error in the program
+Here are the different error codes that the API can return
 
 | Code erreur | Description                                                                                                                                                    |
 |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -12,13 +12,16 @@ Here are the various error codes that may occur in the event of an error in the 
 | 4           | Missing content userDTO                                                                                                                                        |
 | 5           | Email already exists                                                                                                                                           |
 | 6           | Phone already exists                                                                                                                                           |
+| 7           | Wrong login or password                                                                                                                                        |
 
 
 ### Application error code
 
 Here are the various error codes that may occur in the event of an error in the program
 
-| Code erreur | Description                                   |
-|-------------|-----------------------------------------------|
-| 1           | Error opening config.env file                 |
-| 2           | Error when trying to connect to the database  |
+| Code erreur | Description                                  |
+|-------------|----------------------------------------------|
+| 1           | Error opening config.env file                |
+| 2           | Error when trying to connect to the database |
+| 3           | Error convert str to int (env)               |
+| 5           | invalid token key                            |

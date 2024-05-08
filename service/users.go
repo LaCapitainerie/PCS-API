@@ -5,10 +5,12 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
 	"regexp"
+	"time"
 	"unicode"
 )
 
@@ -18,8 +20,11 @@ import (
 // @Description Crée un nouvel utilisateur
 // @Tags Création
 // @Produce json
-// @Success 200 {object} model.UsersDTO
-// @Router /api/user [post]
+// @Param user body models.UsersDTO true "User to create"
+// @Success 200 {object} models.UsersDTO "Retourne l'utilisateur crée"
+// @Failure 400 {string} error "Requête incorrecte - données invalides"
+// @Failure 409 {string} error "Conflit - L'email ou le mot de passe existe déjà"
+// @Router /api/user/register [post]
 func CreateUser(c *gin.Context) {
 	var user models.UsersDTO
 	var err error
@@ -38,12 +43,12 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	if repository.VerifyUserEmail(user.Mail) {
+	if repository.UsersVerifyEmail(user.Mail) {
 		c.JSON(http.StatusConflict, gin.H{"error": "5"})
 		return
 	}
 
-	if user.TypeUser != models.AdminType && repository.VerifyPhone(user.PhoneNumber) {
+	if user.TypeUser != models.AdminType && repository.UsersVerifyPhone(user.PhoneNumber) {
 		c.JSON(http.StatusConflict, gin.H{"error": "6"})
 		return
 	}
@@ -64,6 +69,53 @@ func CreateUser(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "3"})
 	}
+}
+
+// LoginUser Se connecte à un utilisateur
+// @Summary User
+// @Schemes
+// @Description Se connecte à un utilisateur
+// @Tags Connexion
+// @Produce json
+// @Param mail body string true "Mail de l'utilisateur"
+// @Param password body string true "Mot de passe de l'utilisateur"
+// @Success 200 {string} token "Retourne un token de connexion"
+// @Failure 400 {string} error "Requête incorrecte - données invalides"
+// @Failure 401 {string} error "L'email ou le mot de passe est invalide"
+// @Router /api/user/login [post]
+func LoginUser(c *gin.Context) {
+	var userJson models.UsersDTO
+	var err error
+	if err = c.BindJSON(&userJson); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userJson.Password, err = utils.HashPassword(userJson.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	user := repository.UsersLoginVerify(userJson.Mail, userJson.Password)
+	if user.ID.String() == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "7"})
+		return
+	}
+
+	expirationTime := time.Now().Add(utils.TokenExpirationTime)
+	claims := &models.Claims{
+		IdUser: user.ID.String(),
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
+	tokenString, err := token.SignedString(utils.TokenKey)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
 // convertUserDTOtoUser Crée un utilisateur à partir d'un UserDTO

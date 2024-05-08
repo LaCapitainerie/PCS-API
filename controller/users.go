@@ -10,5 +10,6 @@ import (
 // Users réceptionne toutes les requêtes ayant pour endpoint '/users'
 // Il les envoie aux fonctions services liées
 func Users(api *gin.RouterGroup) {
-	api.POST("/user", service.CreateUser)
+	api.POST("/user/register", service.CreateUser)
+	api.POST("/user/login", service.LoginUser)
 }
