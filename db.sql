@@ -33,6 +33,7 @@ CREATE TABLE users (
     mail VARCHAR(320) NOT NULL,
     password VARCHAR(64) NOT NULL,
     avatar VARCHAR(255),
+    phone_number VARCHAR(15),
     description TEXT,
     register_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_connection_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -50,16 +51,14 @@ CREATE TABLE traveler (
     id  UUID PRIMARY KEY,
     first_name VARCHAR(64) NOT NULL,
     last_name VARCHAR(64) NOT NULL,
-    phone_number VARCHAR(15) NOT NULL,
     user_id  UUID NOT NULL,
-    FOREIGN KEY (user_id ) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE provider (
     id  UUID PRIMARY KEY,
     first_name VARCHAR(64) NOT NULL,
     last_name VARCHAR(64) NOT NULL,
-    phone_number VARCHAR(15) NOT NULL,
     nickname VARCHAR(64) NOT NULL,
     user_id  UUID NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
@@ -68,10 +67,9 @@ CREATE TABLE provider (
 CREATE TABLE lessor (
     id  UUID PRIMARY KEY,
     first_name VARCHAR(64) NOT NULL,
-    last_name VARCHAR(64) NOT NULL,
-    phone_number VARCHAR(15) NOT NULL,
+    last_name VARCHAR(64) NOT NULL,,
     user_id  UUID NOT NULL,
-    FOREIGN KEY (user_id ) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE subscribe (
@@ -86,8 +84,8 @@ CREATE TABLE subscribe_traveler (
     end_date TIMESTAMP WITH TIME ZONE NOT NULL,
     traveler_id  UUID NOT NULL,
     subscribe_id  UUID NOT NULL,
-    FOREIGN KEY (traveler_id ) REFERENCES traveler(id),
-    FOREIGN KEY (subscribe_id ) REFERENCES subscribe(id)
+    FOREIGN KEY (traveler_id) REFERENCES traveler(id),
+    FOREIGN KEY (subscribe_id) REFERENCES subscribe(id)
 );
 
 CREATE TABLE property (
@@ -106,7 +104,7 @@ CREATE TABLE property (
     country VARCHAR(64) NOT NULL,
     administrator_validation BOOLEAN DEFAULT FALSE,
     lessor_id  UUID NOT NULL,
-    FOREIGN KEY (lessor_id ) REFERENCES lessor(id)
+    FOREIGN KEY (lessor_id) REFERENCES lessor(id)
 );
 
 CREATE TABLE property_unavailability (
@@ -114,14 +112,14 @@ CREATE TABLE property_unavailability (
     begin_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
     property_id  UUID NOT NULL,
-    FOREIGN KEY (property_id ) REFERENCES property(id)
+    FOREIGN KEY (property_id) REFERENCES property(id)
 );
 
 CREATE TABLE property_image (
     id  UUID PRIMARY KEY,
     path VARCHAR(255) NOT NULL,
     property_id  UUID NOT NULL,
-    FOREIGN KEY (property_id ) REFERENCES property(id)
+    FOREIGN KEY (property_id) REFERENCES property(id)
 );
 
 CREATE TABLE service(
@@ -135,7 +133,7 @@ CREATE TABLE service(
     range_action INTEGER, -- null = infinie
     description TEXT,
     provider_id  UUID NOT NULL,
-    FOREIGN KEY (provider_id ) REFERENCES provider(id)
+    FOREIGN KEY (provider_id) REFERENCES provider(id)
 );
 
 CREATE TABLE service_unavailability(
@@ -143,7 +141,7 @@ CREATE TABLE service_unavailability(
     begin_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
     service_id  UUID NOT NULL,
-    FOREIGN KEY (service_id ) REFERENCES service(id)
+    FOREIGN KEY (service_id) REFERENCES service(id)
 );
 
 CREATE TABLE type_of_service(
@@ -158,7 +156,7 @@ CREATE TABLE service_type
     type_of_service_id  UUID NOT NULL,
     FOREIGN KEY (service_id ) REFERENCES service (id),
     FOREIGN KEY (type_of_service_id ) REFERENCES type_of_service (id),
-    PRIMARY KEY (service_id , type_of_service_id )
+    PRIMARY KEY (service_id, type_of_service_id)
 );
 
 CREATE TABLE provider_licence(
@@ -168,7 +166,7 @@ CREATE TABLE provider_licence(
     validation BOOLEAN DEFAULT FALSE,
     path_proof VARCHAR(255) NOT NULL,
     provider_id  UUID NOT NULL,
-    FOREIGN KEY (provider_id ) REFERENCES provider(id)
+    FOREIGN KEY (provider_id) REFERENCES provider(id)
 );
 
 CREATE TABLE bill(
@@ -187,7 +185,7 @@ CREATE TABLE property_service(
     FOREIGN KEY (bill_id ) REFERENCES bill(id),
     FOREIGN KEY (property_id ) REFERENCES property(id),
     FOREIGN KEY (service_id ) REFERENCES service(id),
-    PRIMARY KEY (property_id , service_id )
+    PRIMARY KEY (property_id, service_id)
 );
 
 CREATE TABLE reservation(
@@ -196,8 +194,8 @@ CREATE TABLE reservation(
     property_id  UUID NOT NULL,
     begin_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
-    FOREIGN KEY (traveler_id ) REFERENCES traveler(id),
-    FOREIGN KEY (property_id ) REFERENCES property(id)
+    FOREIGN KEY (traveler_id) REFERENCES traveler(id),
+    FOREIGN KEY (property_id) REFERENCES property(id)
 );
 
 CREATE TABLE reservation_bill(

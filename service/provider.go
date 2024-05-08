@@ -17,7 +17,7 @@ func createProvider(c *gin.Context, userDTO models.UsersDTO) {
 
 	if len(provider.FirstName) < 1 &&
 		len(provider.LastName) < 1 &&
-		(len(provider.PhoneNumber) < 6 && len(provider.PhoneNumber) > 15) &&
+		(len(user.PhoneNumber) < 6 && len(user.PhoneNumber) > 15) &&
 		len(provider.Nickname) < 1 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "4"})
 		return
@@ -41,11 +41,10 @@ func createProvider(c *gin.Context, userDTO models.UsersDTO) {
 // createProviderWithUserDTO Crée un prestataire à partir d'un UserDTO
 func createProviderWithUserDTO(dto models.UsersDTO) models.Provider {
 	return models.Provider{
-		ID:          uuid.New(),
-		FirstName:   dto.FirstName,
-		LastName:    dto.LastName,
-		PhoneNumber: dto.PhoneNumber,
-		Nickname:    dto.Nickname,
-		UserId:      dto.ID,
+		ID:        uuid.New(),
+		FirstName: dto.FirstName,
+		LastName:  dto.LastName,
+		Nickname:  dto.Nickname,
+		UserId:    dto.ID,
 	}
 }

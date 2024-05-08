@@ -6,11 +6,10 @@ import (
 
 // Lessor est la structure spécifiant les données des bailleurs utilisé par le front web de l'application
 type Lessor struct {
-	ID          uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	FirstName   string    `gorm:"type:varchar(64);notnull" json:"firstName"`
-	LastName    string    `gorm:"type:varchar(64);notnull" json:"lastName"`
-	PhoneNumber string    `gorm:"type:varchar(15);notnull" json:"phoneNumber"`
-	UserId      uuid.UUID `gorm:"type:uuid" json:"userId"`
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	FirstName string    `gorm:"type:varchar(64);notnull" json:"firstName"`
+	LastName  string    `gorm:"type:varchar(64);notnull" json:"lastName"`
+	UserId    uuid.UUID `gorm:"type:uuid" json:"userId"`
 }
 
 // TableName Lessor Spécifie à gorm le nom de la table

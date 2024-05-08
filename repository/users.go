@@ -14,8 +14,16 @@ func CreateUser(users models.Users) (models.Users, error) {
 	return users, err.Error
 }
 
-func VerifyUserEmailAndPassword(mail string, phoneNumber string) bool {
+// VerifyUserEmail reçoit en argument un string
+// Vérifie dans la base de donnée si le mail dans user existe déjà
+func VerifyUserEmail(mail string) bool {
 	var count int64
-	utils.DB.Model(&models.Users{}).Where("mail = ? OR phone_number ?", mail, phoneNumber).Count(&count)
+	utils.DB.Model(&models.Users{}).Where("mail = ?", mail).Count(&count)
+	return count > 0
+}
+
+func VerifyPhone(phoneNumber string) bool {
+	var count int64
+	utils.DB.Model(&models.Users{}).Where("phone_number = ?", phoneNumber).Count(&count)
 	return count > 0
 }

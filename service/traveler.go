@@ -33,7 +33,7 @@ func createTraveler(c *gin.Context, userDTO models.UsersDTO) {
 
 	if len(traveler.FirstName) < 1 &&
 		len(traveler.LastName) < 1 &&
-		(len(traveler.PhoneNumber) < 6 && len(traveler.PhoneNumber) > 15) {
+		(len(user.PhoneNumber) < 6 && len(user.PhoneNumber) > 15) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "4"})
 		return
 	}
@@ -56,10 +56,9 @@ func createTraveler(c *gin.Context, userDTO models.UsersDTO) {
 // createTravelerWithUserDTO Crée un voyageur à partir d'un UserDTO
 func createTravelerWithUserDTO(dto models.UsersDTO) models.Traveler {
 	return models.Traveler{
-		ID:          uuid.New(),
-		FirstName:   dto.FirstName,
-		LastName:    dto.LastName,
-		PhoneNumber: dto.PhoneNumber,
-		UserId:      dto.ID,
+		ID:        uuid.New(),
+		FirstName: dto.FirstName,
+		LastName:  dto.LastName,
+		UserId:    dto.ID,
 	}
 }

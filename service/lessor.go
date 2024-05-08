@@ -17,7 +17,7 @@ func createLessor(c *gin.Context, userDTO models.UsersDTO) {
 
 	if len(lessor.FirstName) < 1 &&
 		len(lessor.LastName) < 1 &&
-		(len(lessor.PhoneNumber) < 6 && len(lessor.PhoneNumber) > 15) {
+		(len(user.PhoneNumber) < 6 && len(user.PhoneNumber) > 15) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "4"})
 		return
 	}
@@ -40,10 +40,9 @@ func createLessor(c *gin.Context, userDTO models.UsersDTO) {
 // createLessorWithUserDTO Crée un bailleur à partir d'un UserDTO
 func createLessorWithUserDTO(dto models.UsersDTO) models.Lessor {
 	return models.Lessor{
-		ID:          uuid.New(),
-		FirstName:   dto.FirstName,
-		LastName:    dto.LastName,
-		PhoneNumber: dto.PhoneNumber,
-		UserId:      dto.ID,
+		ID:        uuid.New(),
+		FirstName: dto.FirstName,
+		LastName:  dto.LastName,
+		UserId:    dto.ID,
 	}
 }

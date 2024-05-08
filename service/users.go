@@ -38,8 +38,13 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	if repository.VerifyUserEmailAndPassword(user.Mail, user.PhoneNumber) {
+	if repository.VerifyUserEmail(user.Mail) {
 		c.JSON(http.StatusConflict, gin.H{"error": "5"})
+		return
+	}
+
+	if user.TypeUser != models.AdminType && repository.VerifyPhone(user.PhoneNumber) {
+		c.JSON(http.StatusConflict, gin.H{"error": "6"})
 		return
 	}
 
@@ -69,6 +74,7 @@ func convertUserDTOtoUser(userDTO models.UsersDTO) models.Users {
 		Password:           userDTO.Password,
 		RegisterDate:       userDTO.RegisterDate,
 		LastConnectionDate: userDTO.LastConnectionDate,
+		PhoneNumber:        userDTO.PhoneNumber,
 	}
 }
 
@@ -83,7 +89,7 @@ func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) mo
 		LastConnectionDate: users.LastConnectionDate,
 		FirstName:          lessor.FirstName,
 		LastName:           lessor.LastName,
-		PhoneNumber:        lessor.PhoneNumber,
+		PhoneNumber:        users.PhoneNumber,
 	}
 }
 
@@ -98,7 +104,7 @@ func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Travel
 		LastConnectionDate: users.LastConnectionDate,
 		FirstName:          traveler.FirstName,
 		LastName:           traveler.LastName,
-		PhoneNumber:        traveler.PhoneNumber,
+		PhoneNumber:        users.PhoneNumber,
 	}
 }
 
@@ -114,7 +120,7 @@ func createUserDTOwithUserAndProvider(users models.Users, provider models.Provid
 		Nickname:           provider.Nickname,
 		FirstName:          provider.FirstName,
 		LastName:           provider.LastName,
-		PhoneNumber:        provider.PhoneNumber,
+		PhoneNumber:        users.PhoneNumber,
 	}
 }
 
