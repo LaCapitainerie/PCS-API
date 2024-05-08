@@ -3,27 +3,80 @@ package service
 
 import (
 	"PCS-API/models"
-	"PCS-API/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
+	"regexp"
+	"unicode"
 )
 
-// CreateUser Crée un utilisateur, cette fonction ne peut être appelé par un contrôleur, elle est forcément
-// appelé par une autre fonction service (CreateLessor,
-func createUser(c *gin.Context) {
-	var user models.Users
+// CreateUser Crée un utilisateur
+// @Summary User
+// @Schemes
+// @Description Crée un nouvel utilisateur
+// @Tags Création
+// @Produce json
+// @Success 200 {object} model.UsersDTO
+// @Router /api/user [post]
+func CreateUser(c *gin.Context) {
+	var user models.UsersDTO
 	var err error
 	if err = c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user.ID = uuid.New()
-	user, err = repository.CreateUser(user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	if validityPassword(user.Password) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "1"})
 		return
 	}
-	user.Password = ""
-	c.JSON(http.StatusOK, gin.H{"users": user})
+
+	if validityEmail(user.Mail) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "2"})
+		return
+	}
+
+	user.ID = uuid.New()
+
+	if user.TypeUser == models.TravelerType {
+		createTraveler(c, user)
+	} else if user.TypeUser == models.ProviderType {
+		createProvider(c, user)
+	} else if user.TypeUser == models.LessorType {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "3"})
+	}
+}
+
+// validityPassword Vérifie la validité d'un mot de passe
+func validityPassword(password string) bool {
+	var check [4]bool
+	if len(password) < 8 || len(password) > 128 {
+		return false
+	}
+	for _, char := range password {
+		if unicode.IsUpper(char) {
+			check[0] = true
+		} else if unicode.IsLower(char) {
+			check[1] = true
+		} else if !unicode.IsLetter(char) && !unicode.IsDigit(char) {
+			check[2] = true
+		} else if unicode.IsDigit(char) {
+			check[3] = true
+		}
+
+		if check[0] == true &&
+			check[1] == true &&
+			check[2] == true &&
+			check[3] == true {
+			return true
+		}
+	}
+	return false
+}
+
+func validityEmail(email string) bool {
+	regex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+	return regex.MatchString(email)
 }

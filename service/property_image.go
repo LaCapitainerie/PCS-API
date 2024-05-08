@@ -13,7 +13,7 @@ import (
 // @Summary Property_image
 // @Schemes
 // @Description Récupère tous les Property_image
-// @Tags Property_imageistration
+// @Tags Property_image
 // @Produce json
 // @Success 200 {array} models.Property_image
 // @Router /api/Property_image [get]
