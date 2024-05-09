@@ -3,6 +3,7 @@ package service
 import (
 	"PCS-API/models"
 	"PCS-API/repository"
+	"PCS-API/utils"
 	"github.com/google/uuid"
 	"net/http"
 
@@ -48,9 +49,12 @@ func createTraveler(c *gin.Context, userDTO models.UsersDTO) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	userDTO = createUserDTOwithUserAndTraveler(user, traveler)
-	userDTO.Password = ""
-	c.JSON(http.StatusOK, gin.H{"users": userDTO})
+	tokenString, err := utils.CreateToken(user.ID.String())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
 // createTravelerWithUserDTO Crée un voyageur à partir d'un UserDTO

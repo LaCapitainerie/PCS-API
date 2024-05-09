@@ -5,12 +5,10 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
 	"regexp"
-	"time"
 	"unicode"
 )
 
@@ -102,15 +100,7 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	expirationTime := time.Now().Add(utils.TokenExpirationTime)
-	claims := &models.Claims{
-		IdUser: user.ID.String(),
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	tokenString, err := token.SignedString(utils.TokenKey)
+	tokenString, err := utils.CreateToken(user.ID.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return

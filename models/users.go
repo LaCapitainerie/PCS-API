@@ -20,11 +20,6 @@ type Users struct {
 	LastConnectionDate time.Time `gorm:"type:timestamp with time zone;default:CURRENT_TIMESTAMP" json:"last_connection_date"`
 }
 
-/*
-   avatar VARCHAR(255),
-   description TEXT,
-*/
-
 // TableName Users Spécifie à gorm le nom de la base de donnée
 func (Users) TableName() string {
 	return "users"
