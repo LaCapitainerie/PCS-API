@@ -1,0 +1,18 @@
+package controller
+
+import (
+	"PCS-API/middleware"
+	"github.com/gin-gonic/gin"
+)
+
+// Chat # Controller
+//
+// Chat réceptionne toutes les requêtes ayant pour endpoint '/chat' demande en header un token
+// Il les envoie aux fonctions services liés
+func Chat(api *gin.RouterGroup) {
+	chat := api.Group("/chat")
+	chat.Use(middleware.AuthMiddleware())
+	{
+		chat.POST("/create")
+	}
+}
