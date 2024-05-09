@@ -34,3 +34,13 @@ func CheckPassword(hash, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
+
+// IsInArrayString vérifie si un chaine ne se trouve pas dans un tableau de chaine
+func IsInArrayString(chaine string, tab []string) bool {
+	for _, str := range tab {
+		if str == chaine {
+			return true
+		}
+	}
+	return false
+}

@@ -38,7 +38,11 @@ func createLessor(c *gin.Context, userDTO models.UsersDTO) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	userDTO = createUserDTOwithUserAndLessor(user, lessor)
+	userDTO.Token = tokenString
+	userDTO.Password = ""
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }
 
 // createLessorWithUserDTO Crée un bailleur à partir d'un UserDTO

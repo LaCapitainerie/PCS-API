@@ -39,7 +39,11 @@ func createProvider(c *gin.Context, userDTO models.UsersDTO) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	userDTO = createUserDTOwithUserAndProvider(user, provider)
+	userDTO.Token = tokenString
+	userDTO.Password = ""
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }
 
 // createProviderWithUserDTO Crée un prestataire à partir d'un UserDTO

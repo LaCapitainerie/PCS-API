@@ -13,6 +13,12 @@ Here are the different error codes that the API can return
 | 5           | Email already exists                                                                                                                                           |
 | 6           | Phone already exists                                                                                                                                           |
 | 7           | Wrong login or password                                                                                                                                        |
+| 8           | invalid token                                                                                                                                                  |
+| 9           | Unauthorized chat access                                                                                                                                       |
+| 10          | userID uuids in chatDTO are invalid                                                                                                                            |
+| 11          | Invalid chat creation                                                                                                                                          |
+| 12          | Invalid message in chatDTO                                                                                                                                     |
+| 13          | Invalid message creation                                                                                                                                       |
 
 
 ### Application error code

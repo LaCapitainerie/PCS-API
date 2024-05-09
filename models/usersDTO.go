@@ -28,4 +28,5 @@ type UsersDTO struct {
 	LastName           string    `json:"lastName"`
 	PhoneNumber        string    `json:"phoneNumber"`
 	Nickname           string    `json:"nickname"`
+	Token              string    `json:"token"`
 }

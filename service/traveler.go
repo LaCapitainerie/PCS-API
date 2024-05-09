@@ -54,7 +54,12 @@ func createTraveler(c *gin.Context, userDTO models.UsersDTO) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+
+	userDTO = createUserDTOwithUserAndTraveler(user, traveler)
+	userDTO.Token = tokenString
+	userDTO.Password = ""
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }
 
 // createTravelerWithUserDTO Crée un voyageur à partir d'un UserDTO
