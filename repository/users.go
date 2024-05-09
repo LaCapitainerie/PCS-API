@@ -30,10 +30,10 @@ func UsersVerifyPhone(phoneNumber string) bool {
 	return count > 0
 }
 
-// UsersLoginVerify reçoit en argument deux string
+// UsersLoginVerify reçoit en argument un email
 // Vérifie les informations de connexion, renvoie l'utilisateur en question
-func UsersLoginVerify(mail string, password string) models.Users {
+func UsersLoginVerify(mail string) models.Users {
 	var user models.Users
-	utils.DB.Where("mail = ? AND password = ?", mail, password).First(&user)
+	utils.DB.Where("mail = ?", mail).First(&user)
 	return user
 }

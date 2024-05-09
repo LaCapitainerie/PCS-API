@@ -19,6 +19,7 @@ func main() {
 	api := router.Group("/api")
 
 	controller.Users(api)
+	controller.Chat(api)
 	controller.Sidebar(api)
 	controller.Property(api)
 	controller.Admin(api)

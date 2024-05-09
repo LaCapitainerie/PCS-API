@@ -45,7 +45,10 @@ func LoadConfig() {
 		log.Fatal("token expiration time error, please recheck the information in the config.env")
 		os.Exit(3)
 	}
-	TokenExpirationTime *= time.Hour * time.Duration(expirationTime)
+	TokenExpirationTime = time.Hour * time.Duration(expirationTime)
+	test := time.Now().Add(TokenExpirationTime)
+	a := test
+	test = a
 
 	key := os.Getenv("TOKEN_KEY")
 	if key == "" {

@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS sidebar;
 DROP TABLE IF EXISTS message;
 DROP TABLE IF EXISTS ticket;
+DROP TABLE IF EXISTS chat_user;
 DROP TABLE IF EXISTS chat;
 DROP TABLE IF EXISTS review_lessor_to_service;
 DROP TABLE IF EXISTS review_traveler_to_service;
@@ -67,7 +68,7 @@ CREATE TABLE provider (
 CREATE TABLE lessor (
     id  UUID PRIMARY KEY,
     first_name VARCHAR(64) NOT NULL,
-    last_name VARCHAR(64) NOT NULL,,
+    last_name VARCHAR(64) NOT NULL,
     user_id  UUID NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -240,9 +241,9 @@ CREATE TABLE review_lessor_to_service (
     service_id  UUID NOT NULL,
     note numeric(10, 1) NOT NULL,
     comment TEXT,
-    FOREIGN KEY (lessor_id ) REFERENCES lessor(id),
-    FOREIGN KEY (service_id ) REFERENCES service(id),
-    PRIMARY KEY (lessor_id , service_id )
+    FOREIGN KEY (lessor_id) REFERENCES lessor(id),
+    FOREIGN KEY (service_id) REFERENCES service(id),
+    PRIMARY KEY (lessor_id, service_id)
 );
 
 CREATE TABLE chat (
@@ -250,6 +251,13 @@ CREATE TABLE chat (
     view BOOLEAN DEFAULT FALSE
 );
 
+CREATE TABLE chat_user (
+    user_id UUID,
+    chat_id UUID,
+    PRIMARY KEY (user_id, chat_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (chat_id) REFERENCES chat(id)
+);
 CREATE TABLE ticket
 (
     id         UUID PRIMARY KEY,
@@ -290,15 +298,15 @@ VALUES
     (uuid_generate_v4(), 1, 'Home', 'Biens', '/Locataire/Biens'),
     (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Locataire/Messages');
 
-INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date) VALUES
-    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'user1@example.com', 'password123', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'user2@example.com', 'password123', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'user3@example.com', 'password123', 'https://example.com/avatar3.jpg', 'Description de user3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date, phone_number) VALUES
+    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'user1@example.com', 'password123', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123456789'),
+    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'user2@example.com', 'password123', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '9876543210'),
+    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'user3@example.com', 'password123', 'https://example.com/avatar3.jpg', 'Description de user3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1234567890');
 
-INSERT INTO lessor (id, first_name, last_name, phone_number, user_id) VALUES
-    ('98765432-12d3-e456-b426-426614174000', 'John', 'Doe', '0123456789', 'a0e12f8a-4776-4ed3-91d5-673fcef79d5c'),
-    ('123e4567-e89b-12d3-a456-426614174000', 'Jane', 'Smith', '9876543210', 'b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e'),
-    ('647d216d-d534-4c7e-b1f1-0c2d815bd3f4', 'Emily', 'Brown', '1234567890', 'c3c99ccc-4844-4f78-9b27-8daabbc7f8f8');
+INSERT INTO lessor (id, first_name, last_name, user_id) VALUES
+    ('98765432-12d3-e456-b426-426614174000', 'John', 'Doe', 'a0e12f8a-4776-4ed3-91d5-673fcef79d5c'),
+    ('123e4567-e89b-12d3-a456-426614174000', 'Jane', 'Smith', 'b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e'),
+    ('647d216d-d534-4c7e-b1f1-0c2d815bd3f4', 'Emily', 'Brown', 'c3c99ccc-4844-4f78-9b27-8daabbc7f8f8');
 
 
 INSERT INTO property (id, name, type, price, surface, room, bathroom, garage, description, address, city, zip_code, country, administrator_validation, lessor_id)
@@ -313,3 +321,8 @@ VALUES
     ('c18dfc9f-4d96-4d14-af5a-2e0332876e5d', 'Appartement Lumineux avec Balcon', 'Appartement', 95000.00, 60, 2, 1, 0, 'Appartement lumineux avec un balcon offrant une vue dégagée.', '15 Avenue du Soleil', 'Marseille', '13000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000'),
     ('d43e501e-77c3-42c4-a9a2-42f013e1a5b1', 'Villa Moderne avec Piscine et Spa', 'Villa', 680000.00, 320, 8, 5, 1, 'Villa moderne équipée d une piscine, d un spa et d un grand jardin.', '18 Boulevard des Palmiers', 'Nice', '06000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
     ('7fc56270-a7a7-4ec5-9ec1-57c5860b0026', 'Maison de Ville avec Cour Intérieure', 'Maison', 195000.00, 120, 4, 2, 1, 'Maison de ville avec une charmante cour intérieure, proche des commodités.', '3 Rue des Moulins', 'Lille', '59000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000');
+
+SELECT * FROM users;
+SELECT * FROM provider;
+DELETE FROM provider WHERE first_name = 'Thomas';
+DELETE FROM users WHERE mail = 'thomas.poupard@outlook.com'

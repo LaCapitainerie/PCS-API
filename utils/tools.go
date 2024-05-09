@@ -28,3 +28,9 @@ func CreateToken(id string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	return token.SignedString(TokenKey)
 }
+
+// CheckPassword vérifie si le hash et le mot de passe correspondent bien
+func CheckPassword(hash, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}

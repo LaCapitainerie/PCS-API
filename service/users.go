@@ -89,13 +89,12 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	userJson.Password, err = utils.HashPassword(userJson.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user := repository.UsersLoginVerify(userJson.Mail, userJson.Password)
-	if user.ID.String() == "" {
+	user := repository.UsersLoginVerify(userJson.Mail)
+	if user.Mail == "" || !utils.CheckPassword(user.Password, userJson.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "7"})
 		return
 	}

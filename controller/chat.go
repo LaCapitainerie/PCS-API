@@ -2,6 +2,7 @@ package controller
 
 import (
 	"PCS-API/middleware"
+	"PCS-API/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +14,6 @@ func Chat(api *gin.RouterGroup) {
 	chat := api.Group("/chat")
 	chat.Use(middleware.AuthMiddleware())
 	{
-		chat.POST("/create")
+		chat.POST("", service.ChatPostMessage)
 	}
 }
