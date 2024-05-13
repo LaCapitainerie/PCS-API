@@ -266,7 +266,7 @@ CREATE TABLE ticket
     state       VARCHAR(16) NOT NULL,
     description TEXT        NOT NULL,
     chat_id   UUID        NOT NULL,
-    FOREIGN KEY (chat_id ) REFERENCES chat (id)
+    FOREIGN KEY (chat_id) REFERENCES chat (id)
 );
 
 CREATE TABLE message (
@@ -322,3 +322,4 @@ VALUES
     ('c18dfc9f-4d96-4d14-af5a-2e0332876e5d', 'Appartement Lumineux avec Balcon', 'Appartement', 95000.00, 60, 2, 1, 0, 'Appartement lumineux avec un balcon offrant une vue dégagée.', '15 Avenue du Soleil', 'Marseille', '13000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000'),
     ('d43e501e-77c3-42c4-a9a2-42f013e1a5b1', 'Villa Moderne avec Piscine et Spa', 'Villa', 680000.00, 320, 8, 5, 1, 'Villa moderne équipée d une piscine, d un spa et d un grand jardin.', '18 Boulevard des Palmiers', 'Nice', '06000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
     ('7fc56270-a7a7-4ec5-9ec1-57c5860b0026', 'Maison de Ville avec Cour Intérieure', 'Maison', 195000.00, 120, 4, 2, 1, 'Maison de ville avec une charmante cour intérieure, proche des commodités.', '3 Rue des Moulins', 'Lille', '59000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000');
+

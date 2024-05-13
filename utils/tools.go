@@ -44,3 +44,7 @@ func IsInArrayString(chaine string, tab []string) bool {
 	}
 	return false
 }
+
+func GetIdString() {
+
+}

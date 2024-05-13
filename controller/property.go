@@ -12,4 +12,5 @@ import (
 // Il les envoie aux fonctions services liés
 func Property(api *gin.RouterGroup) {
 	api.GET("/property", service.GetAllProperty)
+	api.POST("/property", service.PostAProperty)
 }
