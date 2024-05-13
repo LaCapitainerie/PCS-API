@@ -151,3 +151,30 @@ func GetAllChatByUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"chat": chats})
 }
+
+func GetChatConnect(c *gin.Context) {
+	/*	idBrut, exist := c.Get("idUser")
+		id := idBrut.(string)
+
+		if exist == false {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+			return
+		}
+
+		upgrader := websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		}
+
+		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		defer conn.Close()
+
+		for {
+
+		}
+	*/
+}
