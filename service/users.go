@@ -5,11 +5,12 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"regexp"
 	"unicode"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // CreateUser Crée un utilisateur
@@ -89,10 +90,6 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 	user := repository.UsersLoginVerify(userJson.Mail)
 	if user.Mail == "" || !utils.CheckPassword(user.Password, userJson.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "7"})
@@ -182,10 +179,10 @@ func validityPassword(password string) bool {
 			check[3] = true
 		}
 
-		if check[0] == true &&
-			check[1] == true &&
-			check[2] == true &&
-			check[3] == true {
+		if check[0] &&
+			check[1] &&
+			check[2] &&
+			check[3] {
 			return true
 		}
 	}

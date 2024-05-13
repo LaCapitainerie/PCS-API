@@ -4,9 +4,10 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 func ChatPostMessage(c *gin.Context) {
@@ -18,7 +19,7 @@ func ChatPostMessage(c *gin.Context) {
 	idC, exist := c.Get("idUser")
 	id := idC.(string)
 
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -54,7 +55,7 @@ func ChatPostMessage(c *gin.Context) {
 		chat.ID = uuid.New()
 		chatUser := make([]models.ChatUser, len(chatDTO.UserId))
 
-		for i, _ := range chatUser {
+		for i := range chatUser {
 			uuidUser, err := uuid.Parse(chatDTO.UserId[i])
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
@@ -109,7 +110,7 @@ func ChatGetAllMessages(c *gin.Context) {
 	IDUSER, exist := c.Get("idUser")
 	idUser := IDUSER.(string)
 	idChat := c.Param("id")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -137,14 +138,14 @@ func GetAllChatByUser(c *gin.Context) {
 	idBrut, exist := c.Get("idUser")
 	id := idBrut.(string)
 
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
 
 	chatsId := repository.GetAllChatByUser(id)
 	chats := make([]models.ChatDTO, len(chatsId))
-	for i, _ := range chats {
+	for i := range chats {
 		users := repository.GetAllChatUserOfAChat(chatsId[i].ChatID.String())
 		chats[i].ID = chatsId[i].ChatID
 		chats[i].UserId = users
@@ -156,7 +157,7 @@ func GetChatConnect(c *gin.Context) {
 	/*	idBrut, exist := c.Get("idUser")
 		id := idBrut.(string)
 
-		if exist == false {
+		if !exist {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 			return
 		}
