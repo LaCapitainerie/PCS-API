@@ -28,14 +28,15 @@ func GetAllProperty(c *gin.Context) {
 }
 
 func PostAProperty(c *gin.Context) {
-	err := c.Request.ParseMultipartForm(15 << 20)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No json"})
-		return
-	}
+	var err error
+	/*	err := c.Request.ParseMultipartForm(15 << 20)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "No json"})
+			return
+		}*/
 
 	var propertyDTO models.PropertyDTO
-	var err error
 	if err = c.BindJSON(&propertyDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -115,7 +116,7 @@ func PostAProperty(c *gin.Context) {
 
 	propertyDTO.Images = nil
 	var propertyImages []models.PropertyImage
-	for i, fileHeader := range files {
+	for _, fileHeader := range files {
 		file, err := fileHeader.Open()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "16"})
@@ -137,16 +138,17 @@ func PostAProperty(c *gin.Context) {
 			return
 		}
 
-		if err = c.SaveUploadedFile(fileHeader, propertyImage.Path); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
 		var propertyImage models.PropertyImage
 		propertyImage.ID = uuid.New()
 		propertyImage.PropertyId = property.ID
 		propertyImage.Path = "public/images/" + utils.GenerateUniqueFileName(fileHeader.Filename)
 		repository.PropertyImageCreate(propertyImage)
 		propertyImages = append(propertyImages, propertyImage)
+
+		if err = c.SaveUploadedFile(fileHeader, propertyImage.Path); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	// DTO Création - Rendue1

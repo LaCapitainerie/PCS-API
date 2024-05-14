@@ -17,6 +17,6 @@ func Chat(api *gin.RouterGroup) {
 		chat.POST("", service.ChatPostMessage)
 		chat.GET("/:id", service.ChatGetAllMessages)
 		chat.GET("/allchatbyuser", service.GetAllChatByUser)
-		chat.GET("/connect", service.GetChatConnect)
+		/*		chat.GET("/connect", service.GetChatConnect)*/
 	}
 }

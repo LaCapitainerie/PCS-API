@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"PCS-API/middleware"
 	"PCS-API/service"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,10 @@ import (
 // Property réceptionne toutes les requêtes ayant pour endpoint '/property'
 // Il les envoie aux fonctions services liés
 func Property(api *gin.RouterGroup) {
-	api.GET("/property", service.GetAllProperty)
-	api.POST("/property", service.PostAProperty)
+	property := api.Group("/property")
+	property.Use(middleware.AuthMiddleware())
+	{
+		property.GET("", service.GetAllProperty)
+		property.POST("", service.PostAProperty)
+	}
 }
