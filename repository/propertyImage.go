@@ -14,3 +14,8 @@ func GetAllPropertyImage() []models.PropertyImage {
 	}
 	return PropertyImages
 }
+
+func PropertyImageCreate(image models.PropertyImage) models.PropertyImage {
+	utils.DB.Create(&image)
+	return image
+}

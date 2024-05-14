@@ -113,6 +113,7 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
+	propertyDTO.Images = nil
 	for _, fileHeader := range files {
 		file, err := fileHeader.Open()
 		if err != nil {
@@ -135,7 +136,18 @@ func PostAProperty(c *gin.Context) {
 			return
 		}
 
+		if err = c.SaveUploadedFile(fileHeader, propertyImage.Path); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		var propertyImage models.PropertyImage
+		propertyImage.ID = uuid.New()
+		propertyImage.PropertyId = property.ID
+		propertyImage.Path = "public/images/" + utils.GenerateUniqueFileName(fileHeader.Filename)
+		repository.PropertyImageCreate(propertyImage)
+		propertyDTO.Images = append(propertyDTO.Images, propertyImage.Path)
 	}
 
 	// DTO Création - Rendue
+
 }
