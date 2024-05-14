@@ -114,7 +114,8 @@ func PostAProperty(c *gin.Context) {
 	}
 
 	propertyDTO.Images = nil
-	for _, fileHeader := range files {
+	var propertyImages []models.PropertyImage
+	for i, fileHeader := range files {
 		file, err := fileHeader.Open()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "16"})
@@ -145,9 +146,37 @@ func PostAProperty(c *gin.Context) {
 		propertyImage.PropertyId = property.ID
 		propertyImage.Path = "public/images/" + utils.GenerateUniqueFileName(fileHeader.Filename)
 		repository.PropertyImageCreate(propertyImage)
-		propertyDTO.Images = append(propertyDTO.Images, propertyImage.Path)
+		propertyImages = append(propertyImages, propertyImage)
 	}
 
-	// DTO Création - Rendue
+	// DTO Création - Rendue1
 
+	propertyDTO = createPropertyDTOwithProperty(property, propertyImages, idUser)
+	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
+}
+
+func createPropertyDTOwithProperty(property models.Property, images []models.PropertyImage, idUser uuid.UUID) models.PropertyDTO {
+	imagesPath := make([]string, len(images))
+	for i, v := range images {
+		imagesPath[i] = v.Path
+	}
+
+	return models.PropertyDTO{
+		ID:                      property.ID,
+		Type:                    property.Type,
+		Price:                   property.Price,
+		Surface:                 property.Surface,
+		Room:                    property.Room,
+		Bathroom:                property.Bathroom,
+		Garage:                  property.Garage,
+		Description:             property.Description,
+		Address:                 property.Address,
+		City:                    property.City,
+		ZipCode:                 property.ZipCode,
+		Position:                property.Position,
+		Images:                  imagesPath,
+		Country:                 property.Country,
+		AdministratorValidation: property.AdministratorValidation,
+		UserId:                  idUser,
+	}
 }
