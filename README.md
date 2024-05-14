@@ -21,6 +21,7 @@ Here are the different error codes that the API can return
 | 13          | Invalid message creation                                                                                                                                       |
 | 14          | User is not the right type, invalid action                                                                                                                     |
 | 15          | PropertyDTO invalid attribute                                                                                                                                  |
+| 16          | Invalid number of files                                                                                                                                        |
 
 
 ### Application error code

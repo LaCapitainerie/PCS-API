@@ -2,8 +2,14 @@ package utils
 
 import (
 	"PCS-API/models"
+	"encoding/json"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
+	"math/rand"
+	"net/http"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -45,6 +51,39 @@ func IsInArrayString(chaine string, tab []string) bool {
 	return false
 }
 
-func GetIdString() {
+func GenerateUniqueFileName(name string) string {
+	timestamp := time.Now().UnixNano()
+	randomPart := rand.Intn(1000)
+	ext := filepath.Ext(name)
+	return fmt.Sprintf("%d-%d%s", timestamp, randomPart, ext)
+}
 
+func LocateWithAddress(address string, city string, zipcode string, country string) (models.Point, error) {
+	params := strings.Join([]string{address, city, zipcode, country}, ",")
+	url := fmt.Sprintf("https://nominatim.openstreetmap.org/search?format=json&q=%s", params)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return models.Point{}, err
+	}
+	defer resp.Body.Close()
+
+	var locateJson []struct {
+		Lat float64 `json:"lat"`
+		Lon float64 `json:"lon"`
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&locateJson)
+	if err != nil {
+		return models.Point{}, err
+	}
+
+	if len(locateJson) == 0 {
+		return models.Point{}, fmt.Errorf("aucune coords trouvé")
+	}
+
+	return models.Point{
+		Latitude:  locateJson[0].Lat,
+		Longitude: locateJson[0].Lon,
+	}, nil
 }

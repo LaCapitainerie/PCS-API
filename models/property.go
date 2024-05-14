@@ -2,7 +2,14 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
+
+type Point struct {
+	gorm.Model
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+}
 
 // Property est la structure spécifiant les données de la property utilisé par le front web de l'application
 type Property struct {
@@ -19,6 +26,7 @@ type Property struct {
 	City                    string    `gorm:"type:varchar(64);notnull" json:"city"`
 	ZipCode                 string    `gorm:"type:varchar(6);notnull" json:"zipCode"`
 	Country                 string    `gorm:"type:varchar(64);notnull" json:"country"`
+	Position                Point     `gorm:"type:geometry(Point,4326)" json:"position"`
 	AdministratorValidation bool      `gorm:"type:boolean" json:"administrationValidation"`
 	LessorId                uuid.UUID `gorm:"type:uuid" json:"lessorId"`
 }

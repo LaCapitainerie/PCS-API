@@ -18,3 +18,9 @@ func IsALessor(id uuid.UUID) bool {
 	utils.DB.Model(&models.Lessor{}).Where("user_id = ?", id).Count(&count)
 	return count > 0
 }
+
+func GetLessorIdByUserId(id uuid.UUID) uuid.UUID {
+	var lessor models.Lessor
+	utils.DB.Where("user_id + ?", id).Find(&lessor)
+	return lessor.ID
+}

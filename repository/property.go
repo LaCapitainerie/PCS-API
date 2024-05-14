@@ -14,3 +14,8 @@ func GetAllProperty() []models.Property {
 	}
 	return Propertys
 }
+
+func PropertyCreate(property models.Property) (models.Property, error) {
+	err := utils.DB.Create(&property)
+	return property, err.Error
+}
