@@ -223,7 +223,7 @@ CREATE TABLE review_traveler_to_property(
     comment TEXT,
     FOREIGN KEY (traveler_id ) REFERENCES traveler(id),
     FOREIGN KEY (property_id ) REFERENCES property(id),
-    PRIMARY KEY (traveler_id , property_id )
+    PRIMARY KEY (traveler_id, property_id)
 );
 
 CREATE TABLE review_traveler_to_service(
@@ -233,7 +233,7 @@ CREATE TABLE review_traveler_to_service(
     comment TEXT,
     FOREIGN KEY (traveler_id ) REFERENCES traveler(id),
     FOREIGN KEY (service_id ) REFERENCES service(id),
-    PRIMARY KEY (traveler_id , service_id )
+    PRIMARY KEY (traveler_id, service_id)
 );
 
 CREATE TABLE review_lessor_to_service (

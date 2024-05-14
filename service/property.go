@@ -25,9 +25,9 @@ func GetAllProperty(c *gin.Context) {
 }
 
 func PostAProperty(c *gin.Context) {
-	var property models.Property
+	var propertyDTO models.PropertyDTO
 	var err error
-	if err = c.BindJSON(&property); err != nil {
+	if err = c.BindJSON(&propertyDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -45,7 +45,21 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	if len(property.Name) > 1 {
+	if err = c.BindJSON(&propertyDTO); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
+	if len(propertyDTO.Name) < 1 &&
+		len(propertyDTO.Type) < 1 &&
+		propertyDTO.Price < 1 &&
+		propertyDTO.Surface < 8 &&
+		propertyDTO.Room < 1 &&
+		len(propertyDTO.ZipCode) < 5 &&
+		len(propertyDTO.Address) < 1 &&
+		len(propertyDTO.City) < 1 &&
+		len(propertyDTO.Country) < 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "15"})
+		return
 	}
 }
