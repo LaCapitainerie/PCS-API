@@ -3,7 +3,6 @@ package service
 import (
 	"PCS-API/models"
 	"PCS-API/repository"
-	"PCS-API/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -33,10 +32,10 @@ func ChatPostMessage(c *gin.Context) {
 	}
 	message = chatDTO.Message[0]
 
-	if !utils.IsInArrayString(id, chatDTO.UserId) {
+	/*	if !utils.IsInArrayString(id, chatDTO.UserId) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "9"})
 		return
-	}
+	}*/
 
 	if (message.Type != "text" && message.Type != "image") || message.Content == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "12"})
