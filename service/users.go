@@ -134,7 +134,7 @@ func convertUserDTOtoUser(userDTO models.UsersDTO, typeUser string) models.Users
 // createUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateur et d'un bailleur
 func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) models.UsersDTO {
 	return models.UsersDTO{
-		ID:                 lessor.ID,
+		ID:                 users.ID,
 		TypeUser:           models.LessorType,
 		Mail:               users.Mail,
 		Password:           users.Password,
@@ -149,7 +149,7 @@ func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) mo
 // createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un voyageur
 func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Traveler) models.UsersDTO {
 	return models.UsersDTO{
-		ID:                 traveler.ID,
+		ID:                 users.ID,
 		TypeUser:           models.TravelerType,
 		Mail:               users.Mail,
 		Password:           users.Password,
@@ -164,7 +164,7 @@ func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Travel
 // createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un prestataire
 func createUserDTOwithUserAndProvider(users models.Users, provider models.Provider) models.UsersDTO {
 	return models.UsersDTO{
-		ID:                 provider.ID,
+		ID:                 users.ID,
 		TypeUser:           models.ProviderType,
 		Mail:               users.Mail,
 		Password:           users.Password,

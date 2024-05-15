@@ -15,7 +15,8 @@ type PropertyDTO struct {
 	Address                 string    `json:"address"`
 	City                    string    `json:"city"`
 	ZipCode                 string    `json:"zipCode"`
-	Position                Point     `json:"position"`
+	Lon                     float64   `json:"lon"`
+	Lat                     float64   `json:"lat"`
 	Images                  []string  `json:"images"`
 	Country                 string    `json:"country"`
 	AdministratorValidation bool      `json:"administrationValidation"`

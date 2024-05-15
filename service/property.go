@@ -37,16 +37,10 @@ func PostAProperty(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
-
 	idUser, _ := uuid.Parse(idBrut.(string))
 
 	if !repository.IsALessor(idUser) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "14"})
-		return
-	}
-
-	if err := c.BindJSON(&propertyDTO); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -80,7 +74,7 @@ func PostAProperty(c *gin.Context) {
 	property.ZipCode = propertyDTO.ZipCode
 	property.Country = propertyDTO.Country
 	property.LessorId = repository.GetLessorIdByUserId(idUser)
-	property.Position, err = utils.LocateWithAddress(
+	property.Lat, property.Lon, err = utils.LocateWithAddress(
 		property.Address,
 		property.City,
 		property.ZipCode,
@@ -96,12 +90,17 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	// Images
+	// image
 
-	/*	var images []models.PropertyImage
-		for _, value := range propertyDTO.Images {
-
-		}*/
+	var images []models.PropertyImage
+	for _, value := range propertyDTO.Images {
+		var image models.PropertyImage
+		image.ID = uuid.New()
+		image.Path = value
+		image.PropertyId = property.ID
+		image = repository.PropertyImageCreate(image)
+		images = append(images, image)
+	}
 
 	// DTO Création - Rendue1
 	propertyDTO = createPropertyDTOwithProperty(property, []models.PropertyImage{}, idUser)
@@ -126,12 +125,26 @@ func createPropertyDTOwithProperty(property models.Property, images []models.Pro
 		Address:                 property.Address,
 		City:                    property.City,
 		ZipCode:                 property.ZipCode,
-		Position:                property.Position,
+		Lon:                     property.Lon,
+		Lat:                     property.Lat,
 		Images:                  imagesPath,
 		Country:                 property.Country,
 		AdministratorValidation: property.AdministratorValidation,
 		UserId:                  idUser,
 	}
+}
+
+func PropertyDeleteById(c *gin.Context) {
+	/*	IDUSER, exist := c.Get("idUser")
+		idUser, _ := uuid.Parse(IDUSER.(string))
+		idProperty := c.Param("id")
+		if exist == false {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+			return
+		}
+
+		lessor := repository.LessorGetByUserId(idUser)
+		supp := repository.PropertyDeleteWithIdUserAndPropertyId(idUser, lessor.ID)*/
 }
 
 /*

@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -58,32 +59,37 @@ func GenerateUniqueFileName(name string) string {
 	return fmt.Sprintf("%d-%d%s", timestamp, randomPart, ext)
 }
 
-func LocateWithAddress(address string, city string, zipcode string, country string) (models.Point, error) {
+func LocateWithAddress(address string, city string, zipcode string, country string) (float64, float64, error) {
 	params := strings.Join([]string{address, city, zipcode, country}, ",")
-	url := fmt.Sprintf("https://nominatim.openstreetmap.org/search?format=json&q=%s", params)
+	url := strings.ReplaceAll(fmt.Sprintf("https://nominatim.openstreetmap.org/search?format=json&q=%s", params), " ", "%20")
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return models.Point{}, err
+		return 0, 0, err
 	}
 	defer resp.Body.Close()
 
 	var locateJson []struct {
-		Lat float64 `json:"lat"`
-		Lon float64 `json:"lon"`
+		Lat string `json:"lat"`
+		Lon string `json:"lon"`
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&locateJson)
 	if err != nil {
-		return models.Point{}, err
+		return 0, 0, err
 	}
 
 	if len(locateJson) == 0 {
-		return models.Point{}, fmt.Errorf("aucune coords trouvé")
+		return 0, 0, fmt.Errorf("aucune coords trouvé")
 	}
 
-	return models.Point{
-		Latitude:  locateJson[0].Lat,
-		Longitude: locateJson[0].Lon,
-	}, nil
+	lat, err := strconv.ParseFloat(locateJson[0].Lat, 64)
+	if err != nil {
+		return 0, 0, err
+	}
+	lon, err := strconv.ParseFloat(locateJson[0].Lon, 64)
+	if err != nil {
+		return 0, 0, err
+	}
+	return lat, lon, nil
 }
