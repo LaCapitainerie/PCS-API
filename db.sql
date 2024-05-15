@@ -293,14 +293,14 @@ CREATE TABLE sidebar (
 
 INSERT INTO sidebar (id, permission, icon, hover, href)
 VALUES
-    (uuid_generate_v4(), 1, 'Home', 'Biens', '/Bailleur/Biens'),
-    (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Bailleur/Messages'),
-    (uuid_generate_v4(), 2, 'Gauge', 'Dashboard', '/Bailleur/Dashboard'),
-    (uuid_generate_v4(), 1, 'Home', 'Biens', '/Prestataire/Biens'),
-    (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Prestataire/Messages'),
-    (uuid_generate_v4(), 2, 'Gauge', 'Dashboard', '/Admin/Dashboard'),
-    (uuid_generate_v4(), 1, 'Home', 'Biens', '/Locataire/Biens'),
-    (uuid_generate_v4(), 1, 'Msg', 'Messages', '/Locataire/Messages');
+    (uuid_generate_v4(), 1, 'Home', 'property', '/traveler/property'),
+    (uuid_generate_v4(), 1, 'Msg', 'messages', '/traveler/messages'),
+    (uuid_generate_v4(), 2, 'Home', 'property', '/provider/property'),
+    (uuid_generate_v4(), 2, 'Msg', 'messages', '/provider/messages'),
+    (uuid_generate_v4(), 3, 'Home', 'property', '/lessor/property'),
+    (uuid_generate_v4(), 3, 'Msg', 'messages', '/lessor/messages'),
+    (uuid_generate_v4(), 3, 'Gauge', 'dashboard', '/lessor/dashboard'),
+    (uuid_generate_v4(), 4, 'Gauge', 'dashboard', '/admin/dashboard');
 
 INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date, phone_number) VALUES
     ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'user1@example.com', 'password123', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123456789'),
