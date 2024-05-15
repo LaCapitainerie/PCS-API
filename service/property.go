@@ -4,12 +4,9 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"github.com/google/uuid"
-	"image"
-	"net/http"
-	"path/filepath"
-
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"net/http"
 )
 
 // @BasePath /api/v1
@@ -29,13 +26,6 @@ func GetAllProperty(c *gin.Context) {
 
 func PostAProperty(c *gin.Context) {
 	var err error
-	/*	err := c.Request.ParseMultipartForm(15 << 20)
-
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "No json"})
-			return
-		}*/
-
 	var propertyDTO models.PropertyDTO
 	if err = c.BindJSON(&propertyDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -55,7 +45,7 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	if err = c.BindJSON(&propertyDTO); err != nil {
+	if err := c.BindJSON(&propertyDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -106,7 +96,39 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	// Fichiers
+	// DTO Création - Rendue1
+	propertyDTO = createPropertyDTOwithProperty(property, []models.PropertyImage{}, idUser)
+	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
+}
+
+func createPropertyDTOwithProperty(property models.Property, images []models.PropertyImage, idUser uuid.UUID) models.PropertyDTO {
+	imagesPath := make([]string, len(images))
+	for i, v := range images {
+		imagesPath[i] = v.Path
+	}
+
+	return models.PropertyDTO{
+		ID:                      property.ID,
+		Type:                    property.Type,
+		Price:                   property.Price,
+		Surface:                 property.Surface,
+		Room:                    property.Room,
+		Bathroom:                property.Bathroom,
+		Garage:                  property.Garage,
+		Description:             property.Description,
+		Address:                 property.Address,
+		City:                    property.City,
+		ZipCode:                 property.ZipCode,
+		Position:                property.Position,
+		Images:                  imagesPath,
+		Country:                 property.Country,
+		AdministratorValidation: property.AdministratorValidation,
+		UserId:                  idUser,
+	}
+}
+
+/*
+// Fichiers
 
 	files := c.Request.MultipartForm.File["files"]
 	if len(files) == 0 || len(files) > 5 {
@@ -150,35 +172,4 @@ func PostAProperty(c *gin.Context) {
 			return
 		}
 	}
-
-	// DTO Création - Rendue1
-
-	propertyDTO = createPropertyDTOwithProperty(property, propertyImages, idUser)
-	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
-}
-
-func createPropertyDTOwithProperty(property models.Property, images []models.PropertyImage, idUser uuid.UUID) models.PropertyDTO {
-	imagesPath := make([]string, len(images))
-	for i, v := range images {
-		imagesPath[i] = v.Path
-	}
-
-	return models.PropertyDTO{
-		ID:                      property.ID,
-		Type:                    property.Type,
-		Price:                   property.Price,
-		Surface:                 property.Surface,
-		Room:                    property.Room,
-		Bathroom:                property.Bathroom,
-		Garage:                  property.Garage,
-		Description:             property.Description,
-		Address:                 property.Address,
-		City:                    property.City,
-		ZipCode:                 property.ZipCode,
-		Position:                property.Position,
-		Images:                  imagesPath,
-		Country:                 property.Country,
-		AdministratorValidation: property.AdministratorValidation,
-		UserId:                  idUser,
-	}
-}
+*/
