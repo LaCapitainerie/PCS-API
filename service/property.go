@@ -135,16 +135,21 @@ func createPropertyDTOwithProperty(property models.Property, images []models.Pro
 }
 
 func PropertyDeleteById(c *gin.Context) {
-	/*	IDUSER, exist := c.Get("idUser")
-		idUser, _ := uuid.Parse(IDUSER.(string))
-		idProperty := c.Param("id")
-		if exist == false {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
-			return
-		}
+	IDUSER, exist := c.Get("idUser")
+	idUser, _ := uuid.Parse(IDUSER.(string))
+	idProperty, _ := uuid.Parse(c.Param("id"))
+	if exist == false {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
 
-		lessor := repository.LessorGetByUserId(idUser)
-		supp := repository.PropertyDeleteWithIdUserAndPropertyId(idUser, lessor.ID)*/
+	lessor := repository.LessorGetByUserId(idUser)
+	supp := repository.PropertyDeleteWithIdUserAndPropertyId(idProperty, lessor.ID)
+	if supp != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": supp.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
 }
 
 /*

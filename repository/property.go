@@ -3,6 +3,8 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+	"errors"
+	"github.com/google/uuid"
 )
 
 // GetAllProperty
@@ -20,11 +22,18 @@ func PropertyCreate(property models.Property) (models.Property, error) {
 	return property, err.Error
 }
 
-/*func PropertyDeleteWithIdUserAndPropertyId(propertyId uuid.UUID, userId uuid.UUID) bool {
-	utils.DB.Where("property_id = ?", userId, propertyId)
-	return false
+func PropertyDeleteWithIdUserAndPropertyId(propertyId uuid.UUID, lessorId uuid.UUID) error {
+	if !propertyVerifOwnerById(propertyId, lessorId) {
+		return errors.New("17")
+	}
+
+	utils.DB.Where("property_id = ?", propertyId).Delete(&models.PropertyImage{})
+	utils.DB.Where("id = ?", propertyId).Delete(&models.Property{})
+	return nil
 }
 
-func propertyVerifExistenceById(lessorId uuid.UUID) bool {
-
-}*/
+func propertyVerifOwnerById(propertyId uuid.UUID, lessorId uuid.UUID) bool {
+	var count int64
+	utils.DB.Model(models.Property{}).Where("lessor_id = ? AND id = ?", lessorId, propertyId).Count(&count)
+	return count > 0
+}

@@ -22,6 +22,7 @@ Here are the different error codes that the API can return
 | 14          | User is not the right type, invalid action                                                                                                                     |
 | 15          | PropertyDTO invalid attribute                                                                                                                                  |
 | 16          | Invalid number of files                                                                                                                                        |
+| 17          | Property deletion not allowed                                                                                                                                  |
 
 
 ### Application error code
