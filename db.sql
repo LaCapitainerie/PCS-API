@@ -36,6 +36,7 @@ CREATE TABLE users (
     password VARCHAR(64) NOT NULL,
     avatar VARCHAR(255),
     phone_number VARCHAR(15),
+    type         VARCHAR(15),
     description TEXT,
     register_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_connection_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

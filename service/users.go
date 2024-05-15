@@ -104,15 +104,27 @@ func LoginUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+
+	var userDTO models.UsersDTO
+	if user.Type == models.ProviderType {
+		userDTO = createUserDTOwithUserAndProvider(user, repository.ProviderGetByUserId(user.ID))
+	} else if user.Type == models.LessorType {
+		userDTO = createUserDTOwithUserAndLessor(user, repository.LessorGetByUserId(user.ID))
+	} else if user.Type == models.TravelerType {
+		userDTO = createUserDTOwithUserAndTraveler(user, repository.TravelerGetById(user.ID))
+	}
+	userDTO.Token = tokenString
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }
 
 // convertUserDTOtoUser Crée un utilisateur à partir d'un UserDTO
-func convertUserDTOtoUser(userDTO models.UsersDTO) models.Users {
+func convertUserDTOtoUser(userDTO models.UsersDTO, typeUser string) models.Users {
 	return models.Users{
 		ID:                 userDTO.ID,
 		Mail:               userDTO.Mail,
 		Password:           userDTO.Password,
+		Type:               typeUser,
 		RegisterDate:       userDTO.RegisterDate,
 		LastConnectionDate: userDTO.LastConnectionDate,
 		PhoneNumber:        userDTO.PhoneNumber,

@@ -12,7 +12,7 @@ import (
 // createLessor crée un nouveau bailleur
 // la fonction ne peut être appelé hors du package
 func createLessor(c *gin.Context, userDTO models.UsersDTO) {
-	user := convertUserDTOtoUser(userDTO)
+	user := convertUserDTOtoUser(userDTO, models.LessorType)
 	lessor := createLessorWithUserDTO(userDTO)
 	var err error
 

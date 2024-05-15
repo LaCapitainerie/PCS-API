@@ -24,3 +24,9 @@ func GetLessorIdByUserId(id uuid.UUID) uuid.UUID {
 	utils.DB.Where("user_id + ?", id).Find(&lessor)
 	return lessor.ID
 }
+
+func LessorGetByUserId(id uuid.UUID) models.Lessor {
+	var lessor models.Lessor
+	utils.DB.Where("user_id = ?", id).Find(&lessor)
+	return lessor
+}

@@ -58,7 +58,7 @@ func PostAProperty(c *gin.Context) {
 		len(propertyDTO.ZipCode) < 5 &&
 		len(propertyDTO.Address) < 1 &&
 		len(propertyDTO.City) < 1 &&
-		len(propertyDTO.Country) < 1 && {
+		len(propertyDTO.Country) < 1 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "15"})
 		return
 	}
@@ -98,7 +98,10 @@ func PostAProperty(c *gin.Context) {
 
 	// Images
 
+	/*	var images []models.PropertyImage
+		for _, value := range propertyDTO.Images {
 
+		}*/
 
 	// DTO Création - Rendue1
 	propertyDTO = createPropertyDTOwithProperty(property, []models.PropertyImage{}, idUser)
