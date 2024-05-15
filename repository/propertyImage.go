@@ -3,6 +3,7 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+	"github.com/google/uuid"
 )
 
 // GetAllPropertyImage
@@ -18,4 +19,14 @@ func GetAllPropertyImage() []models.PropertyImage {
 func PropertyImageCreate(image models.PropertyImage) models.PropertyImage {
 	utils.DB.Create(&image)
 	return image
+}
+
+func propertyImageDeleteAllByIdProperty(propertyId uuid.UUID) {
+	utils.DB.Where("id = ?", propertyId).Delete(&models.Property{})
+}
+
+func PropertyImageGetAllByIdProperty(propertyId uuid.UUID) []models.PropertyImage {
+	var images []models.PropertyImage
+	utils.DB.Where("property_id = ?", propertyId).Find(&images)
+	return images
 }

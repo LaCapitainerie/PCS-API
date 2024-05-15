@@ -30,3 +30,9 @@ func LessorGetByUserId(id uuid.UUID) models.Lessor {
 	utils.DB.Where("user_id = ?", id).Find(&lessor)
 	return lessor
 }
+
+func LessorGetById(id uuid.UUID) models.Lessor {
+	var lessor models.Lessor
+	utils.DB.First(&lessor, id)
+	return lessor
+}

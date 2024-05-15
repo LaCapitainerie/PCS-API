@@ -28,7 +28,7 @@ func PropertyDeleteWithIdUserAndPropertyId(propertyId uuid.UUID, lessorId uuid.U
 	}
 
 	utils.DB.Where("property_id = ?", propertyId).Delete(&models.PropertyImage{})
-	utils.DB.Where("id = ?", propertyId).Delete(&models.Property{})
+	propertyImageDeleteAllByIdProperty(propertyId)
 	return nil
 }
 
@@ -36,4 +36,13 @@ func propertyVerifOwnerById(propertyId uuid.UUID, lessorId uuid.UUID) bool {
 	var count int64
 	utils.DB.Model(models.Property{}).Where("lessor_id = ? AND id = ?", lessorId, propertyId).Count(&count)
 	return count > 0
+}
+
+func PropertyGetById(propertyId uuid.UUID) (models.Property, error) {
+	var property models.Property
+	err := utils.DB.First(&property, propertyId).Error
+	if err != nil {
+		return property, err
+	}
+	return property, nil
 }

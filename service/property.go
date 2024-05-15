@@ -152,6 +152,22 @@ func PropertyDeleteById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+func GetPropertyById(c *gin.Context) {
+	idProperty, _ := uuid.Parse(c.Param("id"))
+	property, err := repository.PropertyGetById(idProperty)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+		return
+	}
+
+	propertyImages := repository.PropertyImageGetAllByIdProperty(idProperty)
+	userId := repository.LessorGetById(property.LessorId).UserId
+
+	propertyDTO := createPropertyDTOwithProperty(property, propertyImages, userId)
+	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
+}
+
+// TODO: Faire un truc de ça
 /*
 // Fichiers
 
