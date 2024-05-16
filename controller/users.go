@@ -12,4 +12,5 @@ import (
 func Users(api *gin.RouterGroup) {
 	api.POST("/user/register", service.CreateUser)
 	api.POST("/user/login", service.LoginUser)
+	api.GET("/user/id/:id", service.UserGetById)
 }
