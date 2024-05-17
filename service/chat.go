@@ -3,11 +3,9 @@ package service
 import (
 	"PCS-API/models"
 	"PCS-API/repository"
-	"PCS-API/utils"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"net/http"
 )
 
 func ChatPostMessage(c *gin.Context) {
