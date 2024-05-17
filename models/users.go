@@ -14,6 +14,7 @@ type Users struct {
 	Mail               string    `json:"mail"`
 	Password           string    `json:"password"`
 	Avatar             string    `json:"avatar"`
+	Type               string    `json:"type"`
 	Description        string    `json:"description"`
 	PhoneNumber        string    `gorm:"type:varchar(15)" json:"phoneNumber"`
 	RegisterDate       time.Time `gorm:"type:timestamp with time zone;not null;default:CURRENT_TIMESTAMP" json:"register_date"`

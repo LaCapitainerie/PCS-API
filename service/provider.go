@@ -12,7 +12,7 @@ import (
 // createProvider crée un nouveau prestataire
 // la fonction ne peut être appelé hors du package
 func createProvider(c *gin.Context, userDTO models.UsersDTO) {
-	user := convertUserDTOtoUser(userDTO)
+	user := convertUserDTOtoUser(userDTO, models.ProviderType)
 	provider := createProviderWithUserDTO(userDTO)
 	var err error
 

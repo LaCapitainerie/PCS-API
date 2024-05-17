@@ -28,7 +28,7 @@ func GetAllTraveler(c *gin.Context) {
 // createTraveler crée un nouveau voyageur
 // la fonction ne peut être appelé hors du package
 func createTraveler(c *gin.Context, userDTO models.UsersDTO) {
-	user := convertUserDTOtoUser(userDTO)
+	user := convertUserDTOtoUser(userDTO, models.TravelerType)
 	traveler := createTravelerWithUserDTO(userDTO)
 	var err error
 

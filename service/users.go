@@ -101,15 +101,27 @@ func LoginUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+
+	var userDTO models.UsersDTO
+	if user.Type == models.ProviderType {
+		userDTO = createUserDTOwithUserAndProvider(user, repository.ProviderGetByUserId(user.ID))
+	} else if user.Type == models.LessorType {
+		userDTO = createUserDTOwithUserAndLessor(user, repository.LessorGetByUserId(user.ID))
+	} else if user.Type == models.TravelerType {
+		userDTO = createUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
+	}
+	userDTO.Token = tokenString
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }
 
 // convertUserDTOtoUser Crée un utilisateur à partir d'un UserDTO
-func convertUserDTOtoUser(userDTO models.UsersDTO) models.Users {
+func convertUserDTOtoUser(userDTO models.UsersDTO, typeUser string) models.Users {
 	return models.Users{
 		ID:                 userDTO.ID,
 		Mail:               userDTO.Mail,
 		Password:           userDTO.Password,
+		Type:               typeUser,
 		RegisterDate:       userDTO.RegisterDate,
 		LastConnectionDate: userDTO.LastConnectionDate,
 		PhoneNumber:        userDTO.PhoneNumber,
@@ -119,7 +131,7 @@ func convertUserDTOtoUser(userDTO models.UsersDTO) models.Users {
 // createUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateur et d'un bailleur
 func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) models.UsersDTO {
 	return models.UsersDTO{
-		ID:                 lessor.ID,
+		ID:                 users.ID,
 		TypeUser:           models.LessorType,
 		Mail:               users.Mail,
 		Password:           users.Password,
@@ -134,7 +146,7 @@ func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) mo
 // createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un voyageur
 func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Traveler) models.UsersDTO {
 	return models.UsersDTO{
-		ID:                 traveler.ID,
+		ID:                 users.ID,
 		TypeUser:           models.TravelerType,
 		Mail:               users.Mail,
 		Password:           users.Password,
@@ -149,7 +161,7 @@ func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Travel
 // createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un prestataire
 func createUserDTOwithUserAndProvider(users models.Users, provider models.Provider) models.UsersDTO {
 	return models.UsersDTO{
-		ID:                 provider.ID,
+		ID:                 users.ID,
 		TypeUser:           models.ProviderType,
 		Mail:               users.Mail,
 		Password:           users.Password,
@@ -192,4 +204,28 @@ func validityPassword(password string) bool {
 func validityEmail(email string) bool {
 	regex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	return regex.MatchString(email)
+}
+
+func UserGetById(c *gin.Context) {
+	id, _ := uuid.Parse(c.Param("id"))
+	var userDTO models.UsersDTO
+	user, err := repository.UsersGetUserById(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"user": "10"})
+		return
+	}
+	switch user.Type {
+	case models.TravelerType:
+		provider := repository.ProviderGetByUserId(user.ID)
+		userDTO = createUserDTOwithUserAndProvider(user, provider)
+	case models.ProviderType:
+		traveler := repository.TravelerGetByUserId(user.ID)
+		userDTO = createUserDTOwithUserAndTraveler(user, traveler)
+	case models.LessorType:
+		lessor := repository.LessorGetByUserId(user.ID)
+		userDTO = createUserDTOwithUserAndLessor(user, lessor)
+	}
+	userDTO.Password = ""
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }

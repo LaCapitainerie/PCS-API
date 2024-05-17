@@ -35,6 +35,7 @@ CREATE TABLE users (
     password VARCHAR(64) NOT NULL,
     avatar VARCHAR(255),
     phone_number VARCHAR(15),
+    type         VARCHAR(15),
     description TEXT,
     register_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_connection_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -103,6 +104,8 @@ CREATE TABLE property (
     city VARCHAR(64) NOT NULL,
     zip_code VARCHAR(6) NOT NULL,
     country VARCHAR(64) NOT NULL,
+    lon DOUBLE PRECISION,
+    lat DOUBLE PRECISION,
     administrator_validation BOOLEAN DEFAULT FALSE,
     lessor_id  UUID NOT NULL,
     FOREIGN KEY (lessor_id) REFERENCES lessor(id)
@@ -223,7 +226,7 @@ CREATE TABLE review_traveler_to_property(
     comment TEXT,
     FOREIGN KEY (traveler_id ) REFERENCES traveler(id),
     FOREIGN KEY (property_id ) REFERENCES property(id),
-    PRIMARY KEY (traveler_id , property_id )
+    PRIMARY KEY (traveler_id, property_id)
 );
 
 CREATE TABLE review_traveler_to_service(
@@ -233,7 +236,7 @@ CREATE TABLE review_traveler_to_service(
     comment TEXT,
     FOREIGN KEY (traveler_id ) REFERENCES traveler(id),
     FOREIGN KEY (service_id ) REFERENCES service(id),
-    PRIMARY KEY (traveler_id , service_id )
+    PRIMARY KEY (traveler_id, service_id)
 );
 
 CREATE TABLE review_lessor_to_service (
@@ -266,7 +269,7 @@ CREATE TABLE ticket
     state       VARCHAR(16) NOT NULL,
     description TEXT        NOT NULL,
     chat_id   UUID        NOT NULL,
-    FOREIGN KEY (chat_id ) REFERENCES chat (id)
+    FOREIGN KEY (chat_id) REFERENCES chat (id)
 );
 
 CREATE TABLE message (
@@ -290,14 +293,14 @@ CREATE TABLE sidebar (
 
 INSERT INTO sidebar (id, permission, icon, hover, href)
 VALUES
-    (uuid_generate_v4(), 3, 'Home', 'Property', '/lessor/property'),
-    (uuid_generate_v4(), 3, 'Msg', 'Messages', '/lessor/messages'),
-    (uuid_generate_v4(), 3, 'Gauge', 'Dashboard', '/lessor/dashboard'),
-    (uuid_generate_v4(), 2, 'Home', 'Property', '/provider/property'),
-    (uuid_generate_v4(), 2, 'Msg', 'Messages', '/provider/messages'),
-    (uuid_generate_v4(), 4, 'Gauge', 'Dashboard', '/admin/dashboard'),
-    (uuid_generate_v4(), 1, 'Home', 'Property', '/traveler/property'),
-    (uuid_generate_v4(), 1, 'Msg', 'Messages', '/traveler/messages');
+    (uuid_generate_v4(), 1, 'Home', 'property', '/traveler/property'),
+    (uuid_generate_v4(), 1, 'Msg', 'messages', '/traveler/messages'),
+    (uuid_generate_v4(), 2, 'Home', 'property', '/provider/property'),
+    (uuid_generate_v4(), 2, 'Msg', 'messages', '/provider/messages'),
+    (uuid_generate_v4(), 3, 'Home', 'property', '/lessor/property'),
+    (uuid_generate_v4(), 3, 'Msg', 'messages', '/lessor/messages'),
+    (uuid_generate_v4(), 3, 'Gauge', 'dashboard', '/lessor/dashboard'),
+    (uuid_generate_v4(), 4, 'Gauge', 'dashboard', '/admin/dashboard');
 
 INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date, phone_number) VALUES
     ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'user1@example.com', 'password123', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123456789'),

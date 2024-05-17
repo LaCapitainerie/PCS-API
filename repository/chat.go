@@ -5,11 +5,11 @@ import (
 	"PCS-API/utils"
 )
 
-func VerifyExistenceChat(id []string) (string, error) {
+func VerifyExistenceChat(users []string) (string, error) {
 	var chatId string
 	subReq := utils.DB.Model(&models.ChatUser{}).
 		Select("user_id").
-		Where("user_id IN ?", id)
+		Where("user_id IN ?", users)
 
 	err := utils.DB.Model(&models.ChatUser{}).
 		Select("chat_id").

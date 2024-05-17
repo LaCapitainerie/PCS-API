@@ -19,6 +19,8 @@ type Property struct {
 	City                    string    `gorm:"type:varchar(64);notnull" json:"city"`
 	ZipCode                 string    `gorm:"type:varchar(6);notnull" json:"zipCode"`
 	Country                 string    `gorm:"type:varchar(64);notnull" json:"country"`
+	Lon                     float64   `gorm:"type:DOUBLE PRECISION" json:"lon"`
+	Lat                     float64   `gorm:"type:DOUBLE PRECISION" json:"lat"`
 	AdministratorValidation bool      `gorm:"type:boolean" json:"administrationValidation"`
 	LessorId                uuid.UUID `gorm:"type:uuid" json:"lessorId"`
 }

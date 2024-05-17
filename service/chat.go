@@ -34,10 +34,10 @@ func ChatPostMessage(c *gin.Context) {
 	}
 	message = chatDTO.Message[0]
 
-	if !utils.IsInArrayString(id, chatDTO.UserId) {
+	/*	if !utils.IsInArrayString(id, chatDTO.UserId) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "9"})
 		return
-	}
+	}*/
 
 	if (message.Type != "text" && message.Type != "image") || message.Content == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "12"})
@@ -55,7 +55,7 @@ func ChatPostMessage(c *gin.Context) {
 		chat.ID = uuid.New()
 		chatUser := make([]models.ChatUser, len(chatDTO.UserId))
 
-		for i := range chatUser {
+		for i, _ := range chatUser {
 			uuidUser, err := uuid.Parse(chatDTO.UserId[i])
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
