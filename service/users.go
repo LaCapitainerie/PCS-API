@@ -111,7 +111,7 @@ func LoginUser(c *gin.Context) {
 	} else if user.Type == models.LessorType {
 		userDTO = createUserDTOwithUserAndLessor(user, repository.LessorGetByUserId(user.ID))
 	} else if user.Type == models.TravelerType {
-		userDTO = createUserDTOwithUserAndTraveler(user, repository.TravelerGetById(user.ID))
+		userDTO = createUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
 	}
 	userDTO.Token = tokenString
 
@@ -210,5 +210,25 @@ func validityEmail(email string) bool {
 }
 
 func UserGetById(c *gin.Context) {
+	id, _ := uuid.Parse(c.Param("id"))
+	var userDTO models.UsersDTO
+	user, err := repository.UsersGetUserById(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"user": "10"})
+		return
+	}
+	switch user.Type {
+	case models.TravelerType:
+		provider := repository.ProviderGetByUserId(user.ID)
+		userDTO = createUserDTOwithUserAndProvider(user, provider)
+	case models.ProviderType:
+		traveler := repository.TravelerGetByUserId(user.ID)
+		userDTO = createUserDTOwithUserAndTraveler(user, traveler)
+	case models.LessorType:
+		lessor := repository.LessorGetByUserId(user.ID)
+		userDTO = createUserDTOwithUserAndLessor(user, lessor)
+	}
+	userDTO.Password = ""
 
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }

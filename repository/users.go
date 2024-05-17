@@ -5,6 +5,7 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+	"github.com/google/uuid"
 )
 
 // CreateUser reçoit en argument un user
@@ -36,4 +37,10 @@ func UsersLoginVerify(mail string) models.Users {
 	var user models.Users
 	utils.DB.Where("mail = ?", mail).First(&user)
 	return user
+}
+
+func UsersGetUserById(id uuid.UUID) (models.Users, error) {
+	var user models.Users
+	err := utils.DB.First(&user, id).Error
+	return user, err
 }

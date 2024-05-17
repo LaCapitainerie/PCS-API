@@ -23,7 +23,7 @@ func CreateTraveler(traveler models.Traveler) (models.Traveler, error) {
 	return traveler, err.Error
 }
 
-func TravelerGetById(id uuid.UUID) models.Traveler {
+func TravelerGetByUserId(id uuid.UUID) models.Traveler {
 	var traveler models.Traveler
 	utils.DB.Where("user_id = ?", id).Find(&traveler)
 	return traveler
