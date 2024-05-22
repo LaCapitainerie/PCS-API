@@ -9,6 +9,8 @@ import (
 	"net/http"
 )
 
+//TODO: Problème d'autorisation à gérer dans le service property
+
 // @BasePath /api/v1
 
 // GetAllProperty Récupère la liste de tous les Property
@@ -167,7 +169,84 @@ func GetPropertyById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
 }
 
-// TODO: Faire un truc de ça
+func PutPropertyById(c *gin.Context) {
+	idProperty, _ := uuid.Parse(c.Param("id"))
+	propertyOrigin, err := repository.PropertyGetById(idProperty)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+		return
+	}
+
+	var propertyDTO models.PropertyDTO
+	if err = c.BindJSON(&propertyDTO); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	idBrut, exist := c.Get("idUser")
+	if exist == false {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	idUser, _ := uuid.Parse(idBrut.(string))
+
+	if !repository.IsALessor(idUser) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "14"})
+		return
+	}
+
+	if len(propertyDTO.Name) < 1 &&
+		len(propertyDTO.Type) < 1 &&
+		propertyDTO.Price < 1 &&
+		propertyDTO.Surface < 8 &&
+		propertyDTO.Room < 1 &&
+		len(propertyDTO.ZipCode) < 5 &&
+		len(propertyDTO.Address) < 1 &&
+		len(propertyDTO.City) < 1 &&
+		len(propertyDTO.Country) < 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "15"})
+		return
+	}
+
+	var property models.Property
+	property.ID = propertyOrigin.ID
+	property.Name = propertyDTO.Name
+	property.Type = propertyDTO.Type
+	property.Price = propertyDTO.Price
+	property.Surface = propertyDTO.Surface
+	property.Room = propertyDTO.Room
+	property.Bathroom = propertyDTO.Bathroom
+	property.Garage = propertyDTO.Garage
+	property.Description = propertyDTO.Description
+	property.Address = propertyDTO.Address
+	property.City = propertyDTO.City
+	property.ZipCode = propertyDTO.ZipCode
+	property.Country = propertyDTO.Country
+	property.LessorId = repository.GetLessorIdByUserId(idUser)
+	property.Lat, property.Lon, err = utils.LocateWithAddress(
+		property.Address,
+		property.City,
+		property.ZipCode,
+		property.Country)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	property, err = repository.PropertyUpdate(property)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Property non mis à jour"})
+		return
+	}
+
+	imagesOrigin := repository.PropertyImageGetAllByIdProperty(property.ID)
+	var images []models.PropertyImage
+	for _, value := range propertyDTO.Images {
+		//if utils.VerifyIdInId(value.)
+	}
+}
+
+// TODO: Faire un truc de la gestion des fichiers
 /*
 // Fichiers
 

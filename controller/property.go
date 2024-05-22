@@ -19,5 +19,6 @@ func Property(api *gin.RouterGroup) {
 		property.POST("", service.PostAProperty)
 		property.DELETE("/:id", service.PropertyDeleteById)
 		property.GET("/:id", service.GetPropertyById)
+		property.PUT("/:id", service.PutPropertyById)
 	}
 }

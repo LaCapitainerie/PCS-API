@@ -17,8 +17,14 @@ func GetAllProperty() []models.Property {
 	return Propertys
 }
 
+// TODO: Proposer un modèle unifier entre créer et update
 func PropertyCreate(property models.Property) (models.Property, error) {
 	err := utils.DB.Create(&property)
+	return property, err.Error
+}
+
+func PropertyUpdate(property models.Property) (models.Property, error) {
+	err := utils.DB.Save(&property)
 	return property, err.Error
 }
 
