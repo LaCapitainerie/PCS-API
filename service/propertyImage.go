@@ -3,6 +3,7 @@ package service
 import (
 	"PCS-API/models"
 	"PCS-API/repository"
+	"PCS-API/utils"
 	"github.com/google/uuid"
 	"net/http"
 
@@ -33,5 +34,12 @@ func propertyImageGetArrayPathFromArray(array []models.PropertyImage) []string {
 }
 
 func propertyImageClean(propertyImage []models.PropertyImage, idProperty uuid.UUID) {
-
+	imagesOrigin := repository.PropertyImageGetAllByIdProperty(idProperty)
+	pathOrigin := propertyImageGetArrayPathFromArray(imagesOrigin)
+	pathProperty := propertyImageGetArrayPathFromArray(propertyImage)
+	for i, v := range pathOrigin {
+		if !utils.IsInArrayString(v, pathProperty) {
+			repository.PropertyImageDeleteById(imagesOrigin[i].ID)
+		}
+	}
 }

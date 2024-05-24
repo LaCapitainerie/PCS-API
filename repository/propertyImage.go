@@ -30,3 +30,7 @@ func PropertyImageGetAllByIdProperty(propertyId uuid.UUID) []models.PropertyImag
 	utils.DB.Where("property_id = ?", propertyId).Find(&images)
 	return images
 }
+
+func PropertyImageDeleteById(propertyImageId uuid.UUID) {
+	utils.DB.Delete(models.PropertyImage{}, propertyImageId)
+}

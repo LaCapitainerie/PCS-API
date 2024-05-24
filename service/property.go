@@ -257,6 +257,10 @@ func PutPropertyById(c *gin.Context) {
 		propertyImage = append(propertyImage, image)
 	}
 	propertyImageClean(propertyImage, property.ID)
+
+	// Création DTO
+	propertyDTO = createPropertyDTOwithProperty(property, propertyImage, idUser)
+	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
 }
 
 // TODO: Faire un truc de la gestion des fichiers
