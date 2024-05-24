@@ -10,6 +10,7 @@ import (
 )
 
 //TODO: Problème d'autorisation à gérer dans le service property
+//TODO: Clean le code
 
 // @BasePath /api/v1
 
@@ -239,11 +240,23 @@ func PutPropertyById(c *gin.Context) {
 		return
 	}
 
+	// Vérification ajout
 	imagesOrigin := repository.PropertyImageGetAllByIdProperty(property.ID)
-	var images []models.PropertyImage
-	for _, value := range propertyDTO.Images {
-		//if utils.VerifyIdInId(value.)
+	pathOrigin := propertyImageGetArrayPathFromArray(imagesOrigin)
+	var propertyImage []models.PropertyImage
+	for i, value := range propertyDTO.Images {
+		if utils.IsInArrayString(value, pathOrigin) {
+			propertyImage = append(propertyImage, imagesOrigin[i])
+			continue
+		}
+		var image models.PropertyImage
+		image.ID = uuid.New()
+		image.Path = value
+		image.PropertyId = property.ID
+		image = repository.PropertyImageCreate(image)
+		propertyImage = append(propertyImage, image)
 	}
+	propertyImageClean(propertyImage, property.ID)
 }
 
 // TODO: Faire un truc de la gestion des fichiers
