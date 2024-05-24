@@ -24,7 +24,16 @@ import (
 // @Router /api/Property [get]
 func GetAllProperty(c *gin.Context) {
 	Propertys := repository.GetAllProperty()
-	c.JSON(http.StatusOK, gin.H{"Property": Propertys})
+
+	var propertyDTO []models.PropertyDTO
+	for _, v := range Propertys {
+		//TODO: On peut optimiser ça
+		propertyImage := repository.PropertyImageGetAllByIdProperty(v.ID)
+		lessor := repository.LessorGetById(v.LessorId)
+		propertyDTO = append(propertyDTO, createPropertyDTOwithProperty(v, propertyImage, lessor.UserId))
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Property": propertyDTO})
 }
 
 func PostAProperty(c *gin.Context) {
