@@ -39,8 +39,13 @@ func UsersLoginVerify(mail string) models.Users {
 	return user
 }
 
-func UsersGetUserById(id uuid.UUID) (models.Users, error) {
+func UsersGetById(id uuid.UUID) (models.Users, error) {
 	var user models.Users
 	err := utils.DB.First(&user, id).Error
 	return user, err
+}
+
+func UsersDelete(user models.Users) error {
+	chatUserDeleteByIdUser(user.ID)
+	return utils.DB.Delete(models.Users{}, user.ID).Error
 }

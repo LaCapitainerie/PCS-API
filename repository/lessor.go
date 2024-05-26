@@ -36,3 +36,7 @@ func LessorGetById(id uuid.UUID) models.Lessor {
 	utils.DB.First(&lessor, id)
 	return lessor
 }
+
+func lessorDeleteByIdUser(id uuid.UUID) {
+	utils.DB.Where("user_id = ?", id).Delete(&models.Lessor{})
+}

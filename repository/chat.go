@@ -3,6 +3,7 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+	"github.com/google/uuid"
 )
 
 func VerifyExistenceChat(users []string) (string, error) {
@@ -108,4 +109,8 @@ func GetAllChatByUser(id string) []models.ChatUser {
 	var chatUsers []models.ChatUser
 	utils.DB.Where("user_id = ?", id).Find(&chatUsers)
 	return chatUsers
+}
+
+func chatUserDeleteByIdUser(idUser uuid.UUID) {
+	utils.DB.Where("id_user = ?", idUser).Delete(&models.ChatUser{})
 }

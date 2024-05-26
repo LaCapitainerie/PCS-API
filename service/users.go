@@ -209,7 +209,7 @@ func validityEmail(email string) bool {
 func UserGetById(c *gin.Context) {
 	id, _ := uuid.Parse(c.Param("id"))
 	var userDTO models.UsersDTO
-	user, err := repository.UsersGetUserById(id)
+	user, err := repository.UsersGetById(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"user": "10"})
 		return
@@ -228,4 +228,29 @@ func UserGetById(c *gin.Context) {
 	userDTO.Password = ""
 
 	c.JSON(http.StatusOK, gin.H{"user": userDTO})
+}
+
+func UserDeleteById(c *gin.Context) {
+	idUserDelete, _ := uuid.Parse(c.Param("id"))
+	user, err := repository.UsersGetById(idUserDelete)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+		return
+	}
+
+	idBrut, exist := c.Get("idUser")
+	if exist == false {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	idUser, _ := uuid.Parse(idBrut.(string))
+	if idUser != idUserDelete {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "18"})
+		return
+	}
+	err = repository.UsersDelete(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	}
+	c.JSON(http.StatusOK, gin.H{})
 }
