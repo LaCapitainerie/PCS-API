@@ -17,7 +17,7 @@ import (
 func CORS(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "UPDATE", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
