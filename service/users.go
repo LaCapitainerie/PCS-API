@@ -284,6 +284,18 @@ func UserUpdateById(c *gin.Context) {
 	}
 	userSelected, err := repository.UsersGetById(idUser)
 
+	if userDTO.Password != "" {
+		if !validityPassword(userDTO.Password) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "1"})
+			return
+		}
+		userSelected.Password, err = utils.HashPassword(userDTO.Password)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
 	//TODO: Gérer le problème de redondance
 	userDTO.ID = userSelected.ID
 	userDTO.Mail = userSelected.Mail
