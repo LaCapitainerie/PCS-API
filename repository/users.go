@@ -6,12 +6,13 @@ import (
 	"PCS-API/models"
 	"PCS-API/utils"
 	"github.com/google/uuid"
+	"time"
 )
 
 // CreateUser reçoit en argument un user
 // Crée un "users" dans la table et renvoie l'user mis à jour
 func CreateUser(users models.Users) (models.Users, error) {
-	err := utils.DB.Create(&users)
+	err := utils.DB.Save(&users)
 	return users, err.Error
 }
 
@@ -48,4 +49,8 @@ func UsersGetById(id uuid.UUID) (models.Users, error) {
 func UsersDelete(user models.Users) error {
 	chatUserDeleteByIdUser(user.ID)
 	return utils.DB.Delete(models.Users{}, user.ID).Error
+}
+
+func UsersUpdateLastConnectionDate(id uuid.UUID) {
+	utils.DB.Model(&models.Users{}).Where("id = ?", id).Update("LastConnectionDate", time.Now())
 }

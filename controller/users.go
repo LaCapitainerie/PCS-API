@@ -19,5 +19,6 @@ func Users(api *gin.RouterGroup) {
 	userManagement.Use(middleware.AuthMiddleware())
 	{
 		userManagement.DELETE("/:id", service.UserDeleteById)
+		userManagement.PUT("/:id", service.UserUpdateById)
 	}
 }

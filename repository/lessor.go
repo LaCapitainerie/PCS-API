@@ -9,7 +9,7 @@ import (
 // CreateLessor reçoit en argument un lessor
 // Crée un "lessor" dans la table et renvoie lessor mis à jour
 func CreateLessor(lessor models.Lessor) (models.Lessor, error) {
-	err := utils.DB.Create(&lessor)
+	err := utils.DB.Save(&lessor)
 	return lessor, err.Error
 }
 

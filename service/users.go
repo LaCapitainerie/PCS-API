@@ -125,6 +125,8 @@ func convertUserDTOtoUser(userDTO models.UsersDTO, typeUser string) models.Users
 		RegisterDate:       userDTO.RegisterDate,
 		LastConnectionDate: userDTO.LastConnectionDate,
 		PhoneNumber:        userDTO.PhoneNumber,
+		Avatar:             userDTO.Avatar,
+		Description:        userDTO.Description,
 	}
 }
 
@@ -140,6 +142,8 @@ func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) mo
 		FirstName:          lessor.FirstName,
 		LastName:           lessor.LastName,
 		PhoneNumber:        users.PhoneNumber,
+		Avatar:             users.Avatar,
+		Description:        users.Description,
 	}
 }
 
@@ -155,6 +159,8 @@ func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Travel
 		FirstName:          traveler.FirstName,
 		LastName:           traveler.LastName,
 		PhoneNumber:        users.PhoneNumber,
+		Avatar:             users.Avatar,
+		Description:        users.Description,
 	}
 }
 
@@ -171,6 +177,8 @@ func createUserDTOwithUserAndProvider(users models.Users, provider models.Provid
 		FirstName:          provider.FirstName,
 		LastName:           provider.LastName,
 		PhoneNumber:        users.PhoneNumber,
+		Avatar:             users.Avatar,
+		Description:        users.Description,
 	}
 }
 
@@ -253,4 +261,44 @@ func UserDeleteById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
 	c.JSON(http.StatusOK, gin.H{})
+}
+
+func UserUpdateById(c *gin.Context) {
+	idCurrentUser, _ := uuid.Parse(c.Param("id"))
+	idBrut, exist := c.Get("idUser")
+	if exist == false {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	idUser, _ := uuid.Parse(idBrut.(string))
+	if idUser != idCurrentUser {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "18"})
+		return
+	}
+
+	var userDTO models.UsersDTO
+	var err error
+	if err = c.BindJSON(&userDTO); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	userSelected, err := repository.UsersGetById(idUser)
+
+	//TODO: Gérer le problème de redondance
+	userDTO.ID = userSelected.ID
+	userDTO.Mail = userSelected.Mail
+	userDTO.Password = userSelected.Password
+	userDTO.RegisterDate = userSelected.RegisterDate
+	userDTO.LastConnectionDate = userSelected.LastConnectionDate
+	userDTO.TypeUser = userSelected.Type
+
+	if userDTO.TypeUser == models.TravelerType {
+		createTraveler(c, userDTO)
+	} else if userDTO.TypeUser == models.ProviderType {
+		createProvider(c, userDTO)
+	} else if userDTO.TypeUser == models.LessorType {
+		createLessor(c, userDTO)
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "3"})
+	}
 }
