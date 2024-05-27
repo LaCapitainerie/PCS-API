@@ -342,3 +342,7 @@ ALTER TABLE traveler ADD CONSTRAINT traveler_user_id_fkey FOREIGN KEY (user_id) 
 ALTER TABLE administrator DROP CONSTRAINT administrator_user_id_fkey;
 ALTER TABLE administrator ALTER COLUMN user_id DROP NOT NULL;
 ALTER TABLE administrator ADD CONSTRAINT administrator_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE service ADD COLUMN lat DOUBLE PRECISION;
+ALTER TABLE service ADD COLUMN lon DOUBLE PRECISION;
+ALTER TABLE service ALTER COLUMN description SET NOT NULL;

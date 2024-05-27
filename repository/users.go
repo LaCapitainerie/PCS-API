@@ -54,3 +54,9 @@ func UsersDelete(user models.Users) error {
 func UsersUpdateLastConnectionDate(id uuid.UUID) {
 	utils.DB.Model(&models.Users{}).Where("id = ?", id).Update("LastConnectionDate", time.Now())
 }
+
+func UsersGetTypeById(id uuid.UUID) string {
+	var user models.Users
+	utils.DB.First(&user, id)
+	return user.Type
+}

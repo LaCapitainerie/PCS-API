@@ -9,7 +9,7 @@ type Property struct {
 	ID                      uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
 	Name                    string    `gorm:"type:varchar(64);notnull" json:"name"`
 	Type                    string    `gorm:"type:varchar(64);notnull" json:"type"`
-	Price                   float32   `gorm:"type:numeric(10,2);notnull" json:"price"`
+	Price                   float64   `gorm:"type:numeric(10,2);notnull" json:"price"`
 	Surface                 int       `gorm:"type:integer;notnull" json:"surface"`
 	Room                    int       `gorm:"type:integer;notnull" json:"room"`
 	Bathroom                int       `gorm:"type:integer;notnull" json:"bathroom"`

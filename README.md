@@ -24,6 +24,7 @@ Here are the different error codes that the API can return
 | 16          | Invalid number of files                                                                                                                                        |
 | 17          | Property deletion not allowed                                                                                                                                  |
 | 18          | Updated an unauthorized profile because the user is not admin or is not the profile owner                                                                      |
+| 19          | Invalid service type                                                                                                                                           |
 
 
 ### Application error code

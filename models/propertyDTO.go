@@ -6,7 +6,7 @@ type PropertyDTO struct {
 	ID                      uuid.UUID `json:"id"`
 	Name                    string    `json:"name"`
 	Type                    string    `json:"type"`
-	Price                   float32   `json:"price"`
+	Price                   float64   `json:"price"`
 	Surface                 int       `json:"surface"`
 	Room                    int       `json:"room"`
 	Bathroom                int       `json:"bathroom"`

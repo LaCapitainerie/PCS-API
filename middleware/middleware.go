@@ -4,11 +4,13 @@ package middleware
 
 import (
 	"PCS-API/models"
+	"PCS-API/repository"
 	"PCS-API/utils"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 	"time"
 )
@@ -49,7 +51,31 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
+		idUser, err := uuid.Parse(claims.IdUser)
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		repository.UsersUpdateLastConnectionDate(idUser)
 		c.Set("idUser", claims.IdUser)
+		c.Next()
+	}
+}
+
+func BlockTypeMiddleware(userType string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idBrut, exist := c.Get("idUser")
+		if exist == false {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		idUser, _ := uuid.Parse(idBrut.(string))
+		typeUser := repository.UsersGetTypeById(idUser)
+		if typeUser != userType {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 		c.Next()
 	}
 }
