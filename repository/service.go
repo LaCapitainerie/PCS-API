@@ -22,3 +22,11 @@ func ServiceGetWithServiceId(id uuid.UUID) (models.Service, error) {
 	err := utils.DB.First(&service, id).Error
 	return service, err
 }
+
+func ServiceGetAll() ([]models.Service, error) {
+	var services []models.Service
+	if err := utils.DB.Find(&services).Error; err != nil {
+		return nil, err
+	}
+	return services, nil
+}

@@ -90,3 +90,12 @@ func ServiceUpdate(c *gin.Context) {
 		repository.ProviderGetUserIdWithProviderId(serviceTransfert.ProviderId))
 	c.JSON(http.StatusOK, gin.H{"service": ServiceDTO})
 }
+
+func ServiceGetAll(c *gin.Context) {
+	services, err := repository.ServiceGetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"service": services})
+}
