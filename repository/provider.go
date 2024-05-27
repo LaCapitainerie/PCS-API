@@ -19,6 +19,12 @@ func ProviderGetByUserId(id uuid.UUID) models.Provider {
 	return provider
 }
 
+func ProviderGetUserIdWithProviderId(id uuid.UUID) uuid.UUID {
+	var provider models.Provider
+	utils.DB.First(&provider, id)
+	return provider.UserId
+}
+
 func providerDeleteByUserId(id uuid.UUID) {
 	utils.DB.Where("user_id = ?", id).Delete(&models.Provider{})
 }

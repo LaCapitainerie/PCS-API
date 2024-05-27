@@ -9,6 +9,13 @@ import (
 	"net/http"
 )
 
+func serviceConvertToServiceDTO(service models.Service, userId uuid.UUID) models.ServiceDTO {
+	return models.ServiceDTO{
+		Service: service,
+		UserId:  userId,
+	}
+}
+
 func ServiceCreateNewService(c *gin.Context) {
 	var service models.Service
 	var err error
@@ -44,8 +51,42 @@ func ServiceCreateNewService(c *gin.Context) {
 	//TODO: Penser à la sécurité (imaginons que le provider n'existe plus ?
 	provider := repository.ProviderGetByUserId(idUser)
 	service.ID = uuid.New()
-	service.UserId = idUser
 	service.ProviderId = provider.ID
-	service = repository.ServiceCreateOrUpdateNewService(service)
-	c.JSON(http.StatusOK, gin.H{"service": service})
+	service, _ = repository.ServiceCreateNewService(service)
+	serviceDTO := serviceConvertToServiceDTO(service, idUser)
+	c.JSON(http.StatusOK, gin.H{"service": serviceDTO})
+}
+
+func ServiceUpdate(c *gin.Context) {
+	idService, _ := uuid.Parse(c.Param("id"))
+	service, err := repository.ServiceGetWithServiceId(idService)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+		return
+	}
+
+	var serviceTransfert models.Service
+	if err = c.BindJSON(&serviceTransfert); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if serviceTransfert.Price > 1 &&
+		(serviceTransfert.TargetCustomer != models.LessorType && serviceTransfert.TargetCustomer != models.TravelerType) &&
+		serviceTransfert.RangeAction < 0 &&
+		serviceTransfert.Description != "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "19"})
+		return
+	}
+	serviceTransfert.Lat, serviceTransfert.Lon, err = utils.LocateWithAddress(service.Address, service.City, service.ZipCode, service.Country)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	serviceTransfert.ID = service.ID
+	serviceTransfert.ProviderId = service.ProviderId
+	serviceTransfert = repository.ServiceUpdate(serviceTransfert)
+	ServiceDTO := serviceConvertToServiceDTO(serviceTransfert,
+		repository.ProviderGetUserIdWithProviderId(serviceTransfert.ProviderId))
+	c.JSON(http.StatusOK, gin.H{"service": ServiceDTO})
 }

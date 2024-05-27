@@ -13,5 +13,6 @@ func Service(api *gin.RouterGroup) {
 	serviceManagement.Use(middleware.BlockTypeMiddleware(models.ProviderType))
 	{
 		serviceManagement.POST("", service.ServiceCreateNewService)
+		serviceManagement.PUT("/:id", service.ServiceUpdate)
 	}
 }

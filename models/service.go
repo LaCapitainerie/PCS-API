@@ -18,7 +18,11 @@ type Service struct {
 	RangeAction    int       `gorm:"type:integer" json:"rangeAction"`
 	Description    string    `gorm:"type:text;notnull" json:"description"`
 	ProviderId     uuid.UUID `gorm:"type:uuid;notnull" json:"providerId"`
-	UserId         uuid.UUID `json:"userId"`
+}
+
+type ServiceDTO struct {
+	Service
+	UserId uuid.UUID `json:"userId"`
 }
 
 // TableName Service Spécifie à gorm le nom de la table
