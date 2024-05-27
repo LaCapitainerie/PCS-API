@@ -30,3 +30,8 @@ func ServiceGetAll() ([]models.Service, error) {
 	}
 	return services, nil
 }
+
+func ServiceDeleteById(id uuid.UUID) error {
+	err := utils.DB.Where("id = ?", id).Delete(&models.Service{}).Error
+	return err
+}

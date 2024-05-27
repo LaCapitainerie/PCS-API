@@ -65,6 +65,17 @@ func ServiceUpdate(c *gin.Context) {
 		return
 	}
 
+	idBrut, exist := c.Get("idUser")
+	if exist == false {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	idUser, _ := uuid.Parse(idBrut.(string))
+	if service.ProviderId != repository.ProviderGetByUserId(idUser).ID {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "20"})
+		return
+	}
+
 	var serviceTransfert models.Service
 	if err = c.BindJSON(&serviceTransfert); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -98,4 +109,31 @@ func ServiceGetAll(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"service": services})
+}
+
+// TODO: Risque de causer problème de clé étrangère lors de sa suppression
+func ServiceDelete(c *gin.Context) {
+	idService, _ := uuid.Parse(c.Param("id"))
+	service, err := repository.ServiceGetWithServiceId(idService)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+		return
+	}
+
+	idBrut, exist := c.Get("idUser")
+	if exist == false {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	idUser, _ := uuid.Parse(idBrut.(string))
+	if service.ProviderId != repository.ProviderGetByUserId(idUser).ID {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "20"})
+		return
+	}
+	err = repository.ServiceDeleteById(idService)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
 }

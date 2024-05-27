@@ -15,5 +15,6 @@ func Service(api *gin.RouterGroup) {
 	{
 		serviceManagement.POST("", service.ServiceCreateNewService)
 		serviceManagement.PUT("/:id", service.ServiceUpdate)
+		serviceManagement.DELETE("/:id", service.ServiceDelete)
 	}
 }

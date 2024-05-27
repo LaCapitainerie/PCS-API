@@ -25,6 +25,7 @@ Here are the different error codes that the API can return
 | 17          | Property deletion not allowed                                                                                                                                  |
 | 18          | Updated an unauthorized profile because the user is not admin or is not the profile owner                                                                      |
 | 19          | Invalid service type                                                                                                                                           |
+| 20          | No authorization to manipulate the service                                                                                                                     |
 
 
 ### Application error code
