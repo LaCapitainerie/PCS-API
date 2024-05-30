@@ -26,6 +26,8 @@ Here are the different error codes that the API can return
 | 18          | Updated an unauthorized profile because the user is not admin or is not the profile owner                                                                      |
 | 19          | Invalid service type                                                                                                                                           |
 | 20          | No authorization to manipulate the service                                                                                                                     |
+| 21          | Invalid property id                                                                                                                                            |
+| 22          | The reservation date is invalid                                                                                                                                |
 
 
 ### Application error code

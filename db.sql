@@ -207,7 +207,7 @@ CREATE TABLE reservation_bill(
     bill_id  UUID NOT NULL,
     FOREIGN KEY (reservation_id ) REFERENCES reservation(id),
     FOREIGN KEY (bill_id ) REFERENCES bill(id),
-    PRIMARY KEY (reservation_id , bill_id )
+    PRIMARY KEY (reservation_id, bill_id)
 );
 
 CREATE TABLE reservation_service(
@@ -216,7 +216,7 @@ CREATE TABLE reservation_service(
     date TIMESTAMP NOT NULL,
     FOREIGN KEY (reservation_id ) REFERENCES reservation(id),
     FOREIGN KEY (service_id ) REFERENCES service(id),
-    PRIMARY KEY (reservation_id , service_id )
+    PRIMARY KEY (reservation_id, service_id)
 );
 
 CREATE TABLE review_traveler_to_property(
@@ -348,3 +348,5 @@ ALTER TABLE service ADD COLUMN lon DOUBLE PRECISION;
 ALTER TABLE service ALTER COLUMN description SET NOT NULL;
 
 ALTER TABLE reservation ADD COLUMN annulation BOOLEAN DEFAULT FALSE;
+DROP TABLE property_unavailability;
+DROP TABLE service_unavailability;
