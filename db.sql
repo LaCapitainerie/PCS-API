@@ -350,3 +350,5 @@ ALTER TABLE service ALTER COLUMN description SET NOT NULL;
 ALTER TABLE reservation ADD COLUMN annulation BOOLEAN DEFAULT FALSE;
 DROP TABLE property_unavailability;
 DROP TABLE service_unavailability;
+
+ALTER TABLE bill RENAME COLUMN type TO statut;

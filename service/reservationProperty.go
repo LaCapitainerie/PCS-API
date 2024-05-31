@@ -86,5 +86,6 @@ func ReservationPropertyCreate(c *gin.Context) {
 	}
 
 	reservationDTO = reservationDTOCreate(reservation)
+	billCreate()
 	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
 }
