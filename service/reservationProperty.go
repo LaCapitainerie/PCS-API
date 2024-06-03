@@ -86,6 +86,11 @@ func ReservationPropertyCreate(c *gin.Context) {
 	}
 
 	reservationDTO = reservationDTOCreate(reservation)
-	billCreate()
+	_, err = billCreate(property, reservationDTO)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "23"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
 }

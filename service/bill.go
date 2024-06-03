@@ -2,28 +2,34 @@ package service
 
 import (
 	"PCS-API/models"
+	"PCS-API/repository"
 	"fmt"
 	"github.com/google/uuid"
 	"time"
 )
 
-func billGenerateContent(traveler models.Users, lessor models.Users, dto models.ReservationDTO) string {
-	const strLayout = "%dx - %s de %s\n"
+// TODO: Mettre un champ "name" dans property notamment pour ce cas ci-dessous
+func billGenerateContent(property models.Property, dto models.ReservationDTO) string {
+	propertyName := repository.LessorGetByUserId(property.LessorId)
 	content := fmt.Sprintf(
-		strLayout,
+		"%d x  - %s de %s %s\n",
 		int(dto.BeginDate.Sub(dto.EndDate).Hours()/24),
-	)
+		property.Address,
+		propertyName.FirstName,
+		propertyName.LastName)
 	return content
 }
 
-func billCreate(traveler models.Users, lessor models.Users, dto models.ReservationDTO) models.Bill {
+func billCreate(property models.Property, dto models.ReservationDTO) (models.Bill, error) {
 	var bill models.Bill
 	bill.ID = uuid.New()
 	bill.Date = time.Now()
 	bill.Statut = "success"
-	bill.Content = billGenerateContent(traveler, lessor, dto)
+	bill.Content = billGenerateContent(property, dto)
 
-	return bill
+	bill, err := repository.BillCreate(bill)
+
+	return bill, err
 }
 
 /*
