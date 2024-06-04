@@ -9,35 +9,34 @@ import (
 )
 
 // TODO: Mettre un champ "name" dans property notamment pour ce cas ci-dessous
-func billGenerateContent(property models.Property, dto models.ReservationDTO) string {
-	propertyName := repository.LessorGetByUserId(property.LessorId)
+func billGenerateContent(property models.Property, reservation models.Reservation) string {
+	propertyName := repository.LessorGetById(property.LessorId)
 	content := fmt.Sprintf(
-		"%d x  - %s de %s %s\n",
-		int(dto.BeginDate.Sub(dto.EndDate).Hours()/24),
+		"%dx - %s de %s %s\n",
+		int(reservation.EndDate.Sub(reservation.BeginDate).Hours()/24),
 		property.Address,
 		propertyName.FirstName,
 		propertyName.LastName)
 	return content
 }
 
-func billCreate(property models.Property, dto models.ReservationDTO) (models.Bill, error) {
+// TODO: Une bonne pratique de code serait de généraliser les pointeurs lors des appels de fonction pour éviter de faire
+// bêtement une copie
+func billGeneratePrice(property *models.Property, reservation *models.Reservation) float64 {
+	var price float64
+	price += property.Price * (reservation.EndDate.Sub(reservation.BeginDate).Hours() / 24)
+	return price
+}
+
+func billCreate(property models.Property, reservation models.Reservation) (models.Bill, error) {
 	var bill models.Bill
 	bill.ID = uuid.New()
 	bill.Date = time.Now()
 	bill.Statut = "success"
-	bill.Content = billGenerateContent(property, dto)
+	bill.Content = billGenerateContent(property, reservation)
+	bill.Price = billGeneratePrice(&property, &reservation)
 
 	bill, err := repository.BillCreate(bill)
 
 	return bill, err
 }
-
-/*
-type Bill struct {
-	ID      uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	Price   float64   `gorm:"type:numeric(10,2);notnull" json:"price"`
-	Date    time.Time `gorm:"type:timestamp;notnull" json:"date"`
-	Statut   string    `gorm:"type:varchar(64)" json:"type"`
-	Content string    `gorm:"type:text" json:"content"`
-}
-*/

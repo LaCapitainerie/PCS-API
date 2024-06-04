@@ -29,6 +29,12 @@ func TravelerGetByUserId(id uuid.UUID) models.Traveler {
 	return traveler
 }
 
+func TravelerGetIdByUserId(id uuid.UUID) uuid.UUID {
+	var traveler models.Traveler
+	utils.DB.Where("user_id = ?", id).Find(&traveler)
+	return traveler.ID
+}
+
 func travelerDeleteByUserId(id uuid.UUID) {
 	utils.DB.Where("user_id = ?", id).Delete(&models.Traveler{})
 }

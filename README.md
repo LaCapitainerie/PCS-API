@@ -29,6 +29,7 @@ Here are the different error codes that the API can return
 | 21          | Invalid property id                                                                                                                                            |
 | 22          | The reservation date is invalid                                                                                                                                |
 | 23          | Bill creation is invalid                                                                                                                                       |
+| 24          | The user is not a traveler                                                                                                                                     |
 
 
 ### Application error code

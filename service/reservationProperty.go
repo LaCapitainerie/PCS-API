@@ -9,9 +9,10 @@ import (
 	"time"
 )
 
-func reservationDTOCreate(reservation models.Reservation) models.ReservationDTO {
+func reservationDTOCreate(reservation models.Reservation, bill models.Bill) models.ReservationDTO {
 	return models.ReservationDTO{
 		Reservation: reservation,
+		Bill:        bill,
 	}
 }
 
@@ -55,6 +56,11 @@ func ReservationPropertyCreate(c *gin.Context) {
 	var reservation models.Reservation
 	reservation.BeginDate = reservationDTO.BeginDate
 	reservation.EndDate = reservationDTO.EndDate
+	reservation.TravelerId = repository.TravelerGetIdByUserId(idUser)
+	if reservation.TravelerId == uuid.Nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "24"})
+		return
+	}
 
 	if reservation.BeginDate.After(reservation.EndDate) {
 		tmp := reservation.EndDate
@@ -76,7 +82,6 @@ func ReservationPropertyCreate(c *gin.Context) {
 	}
 
 	reservation.ID = uuid.New()
-	reservation.TravelerId = idUser
 	reservation.PropertyId = property.ID
 
 	reservation, err = repository.ReservationCreate(reservation)
@@ -85,12 +90,12 @@ func ReservationPropertyCreate(c *gin.Context) {
 		return
 	}
 
-	reservationDTO = reservationDTOCreate(reservation)
-	_, err = billCreate(property, reservationDTO)
+	bill, err := billCreate(property, reservation)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "23"})
 		return
 	}
 
+	reservationDTO = reservationDTOCreate(reservation, bill)
 	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
 }
