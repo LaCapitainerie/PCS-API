@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"time"
 )
 
 // Service est la structure spécifiant les données des prestations proposé par les prestataires
@@ -23,6 +24,7 @@ type Service struct {
 type ServiceDTO struct {
 	Service
 	UserId uuid.UUID `json:"userId"`
+	Date   time.Time `json:"date"`
 }
 
 // TableName Service Spécifie à gorm le nom de la table

@@ -18,7 +18,6 @@ func ServiceUpdate(service models.Service) models.Service {
 
 func ServiceGetWithServiceId(id uuid.UUID) (models.Service, error) {
 	var service models.Service
-	utils.DB.Where("id = ?", id).First(&service)
 	err := utils.DB.First(&service, id).Error
 	return service, err
 }

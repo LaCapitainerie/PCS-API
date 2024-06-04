@@ -9,10 +9,11 @@ import (
 	"time"
 )
 
-func reservationDTOCreate(reservation models.Reservation, bill models.Bill) models.ReservationDTO {
+func reservationDTOCreate(reservation models.Reservation, bill models.Bill, service []models.ServiceDTO) models.ReservationDTO {
 	return models.ReservationDTO{
 		Reservation: reservation,
 		Bill:        bill,
+		Service:     service,
 	}
 }
 
@@ -53,6 +54,15 @@ func ReservationPropertyCreate(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "21"})
 		return
 	}
+
+	services, err := reservationGetAllService(&reservationDTO)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "25"})
+		return
+	}
+
+	//TODO: Vérifie que la propriété est dans le rayon d'actiond de tous les services
+
 	var reservation models.Reservation
 	reservation.BeginDate = reservationDTO.BeginDate
 	reservation.EndDate = reservationDTO.EndDate
@@ -90,12 +100,18 @@ func ReservationPropertyCreate(c *gin.Context) {
 		return
 	}
 
+	serviceDTO, err := reservationServiceListCreate(&reservationDTO, services, &reservation.ID)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "25"})
+		return
+	}
+
 	bill, err := billCreate(property, reservation)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "23"})
 		return
 	}
 
-	reservationDTO = reservationDTOCreate(reservation, bill)
+	reservationDTO = reservationDTOCreate(reservation, bill, serviceDTO)
 	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
 }

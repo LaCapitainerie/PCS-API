@@ -7,12 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
+	"time"
 )
 
-func serviceConvertToServiceDTO(service models.Service, userId uuid.UUID) models.ServiceDTO {
+func serviceConvertToServiceDTO(service models.Service, userId uuid.UUID, date time.Time) models.ServiceDTO {
 	return models.ServiceDTO{
 		Service: service,
 		UserId:  userId,
+		Date:    date,
 	}
 }
 
@@ -53,7 +55,7 @@ func ServiceCreateNewService(c *gin.Context) {
 	service.ID = uuid.New()
 	service.ProviderId = provider.ID
 	service, _ = repository.ServiceCreateNewService(service)
-	serviceDTO := serviceConvertToServiceDTO(service, idUser)
+	serviceDTO := serviceConvertToServiceDTO(service, idUser, time.Time{})
 	c.JSON(http.StatusOK, gin.H{"service": serviceDTO})
 }
 
@@ -98,7 +100,8 @@ func ServiceUpdate(c *gin.Context) {
 	serviceTransfert.ProviderId = service.ProviderId
 	serviceTransfert = repository.ServiceUpdate(serviceTransfert)
 	ServiceDTO := serviceConvertToServiceDTO(serviceTransfert,
-		repository.ProviderGetUserIdWithProviderId(serviceTransfert.ProviderId))
+		repository.ProviderGetUserIdWithProviderId(serviceTransfert.ProviderId),
+		time.Time{})
 	c.JSON(http.StatusOK, gin.H{"service": ServiceDTO})
 }
 

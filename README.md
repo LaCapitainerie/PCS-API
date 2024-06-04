@@ -30,6 +30,7 @@ Here are the different error codes that the API can return
 | 22          | The reservation date is invalid                                                                                                                                |
 | 23          | Bill creation is invalid                                                                                                                                       |
 | 24          | The user is not a traveler                                                                                                                                     |
+| 25          | Invalid service                                                                                                                                                |
 
 
 ### Application error code
