@@ -4,6 +4,7 @@ package utils
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"github.com/stripe/stripe-go/v78"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
@@ -39,6 +40,7 @@ func LoadConfig() {
 	}
 
 	PortApp = os.Getenv("PORT_APP")
+	stripe.Key = os.Getenv("STRIPE_KEY")
 
 	expirationTime, err := strconv.Atoi(os.Getenv("TOKEN_EXPIRATION"))
 	if err != nil {
@@ -46,9 +48,6 @@ func LoadConfig() {
 		os.Exit(3)
 	}
 	TokenExpirationTime = time.Hour * time.Duration(expirationTime)
-	test := time.Now().Add(TokenExpirationTime)
-	a := test
-	test = a
 
 	key := os.Getenv("TOKEN_KEY")
 	if key == "" {

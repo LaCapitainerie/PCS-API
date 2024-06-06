@@ -14,7 +14,7 @@ func billGenerateContent(property models.Property, reservation models.Reservatio
 	content := fmt.Sprintf(
 		"%dx - %s de %s %s\n",
 		int(reservation.EndDate.Sub(reservation.BeginDate).Hours()/24),
-		property.Address,
+		property.Name,
 		propertyName.FirstName,
 		propertyName.LastName)
 	return content

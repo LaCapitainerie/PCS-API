@@ -114,6 +114,8 @@ func PostAProperty(c *gin.Context) {
 		images = append(images, image)
 	}
 
+	// Put the price on Stripe
+
 	// DTO Création - Rendue1
 	propertyDTO = createPropertyDTOwithProperty(property, []models.PropertyImage{}, idUser)
 	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
@@ -127,6 +129,7 @@ func createPropertyDTOwithProperty(property models.Property, images []models.Pro
 
 	return models.PropertyDTO{
 		ID:                      property.ID,
+		Name:                    property.Name,
 		Type:                    property.Type,
 		Price:                   property.Price,
 		Surface:                 property.Surface,
