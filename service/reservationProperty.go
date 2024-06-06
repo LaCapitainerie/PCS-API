@@ -115,3 +115,7 @@ func ReservationPropertyCreate(c *gin.Context) {
 	reservationDTO = reservationDTOCreate(reservation, bill, serviceDTO)
 	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
 }
+
+func ReservationGetAllOfAProperty(c *gin.Context) {
+
+}

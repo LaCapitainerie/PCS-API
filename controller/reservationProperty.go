@@ -7,11 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Reservation(api *gin.RouterGroup) {
-	reservationGroup := api.Group("/reservation/property")
-	reservationGroup.Use(middleware.AuthMiddleware())
-	reservationGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
+func reservationProperty(reservation *gin.RouterGroup) {
+	reservationPropertyGroup := reservation.Group("/property")
+	reservationPropertyGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
 	{
-		reservationGroup.POST("", service.ReservationPropertyCreate)
+		reservationPropertyGroup.POST("", service.ReservationPropertyCreate)
 	}
 }
