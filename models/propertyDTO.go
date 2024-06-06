@@ -4,6 +4,7 @@ import "github.com/google/uuid"
 
 type PropertyDTO struct {
 	ID                      uuid.UUID `json:"id"`
+	IdStripe                string    `json:"idStripe"`
 	Name                    string    `json:"name"`
 	Type                    string    `json:"type"`
 	Price                   float64   `json:"price"`

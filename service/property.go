@@ -6,6 +6,9 @@ import (
 	"PCS-API/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/stripe/stripe-go/v78"
+	price2 "github.com/stripe/stripe-go/v78/price"
+	"github.com/stripe/stripe-go/v78/product"
 	"net/http"
 )
 
@@ -96,6 +99,29 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
+	// Put the price on Stripe
+
+	prodParams := &stripe.ProductParams{
+		Name: stripe.String(property.Name),
+	}
+	prod, err := product.New(prodParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"property": "26"})
+		return
+	}
+
+	priceParams := &stripe.PriceParams{
+		Product:    stripe.String(prod.ID),
+		UnitAmount: stripe.Int64(int64(property.Price * 100)),
+		Currency:   stripe.String(string(stripe.CurrencyEUR)),
+	}
+	price, err := price2.New(priceParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"property": "26"})
+		return
+	}
+	property.IdStripe = price.ID
+
 	property, err = repository.PropertyCreate(property)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Property non créer"})
@@ -114,8 +140,6 @@ func PostAProperty(c *gin.Context) {
 		images = append(images, image)
 	}
 
-	// Put the price on Stripe
-
 	// DTO Création - Rendue1
 	propertyDTO = createPropertyDTOwithProperty(property, []models.PropertyImage{}, idUser)
 	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
@@ -129,6 +153,7 @@ func createPropertyDTOwithProperty(property models.Property, images []models.Pro
 
 	return models.PropertyDTO{
 		ID:                      property.ID,
+		IdStripe:                property.IdStripe,
 		Name:                    property.Name,
 		Type:                    property.Type,
 		Price:                   property.Price,

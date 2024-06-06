@@ -352,3 +352,5 @@ DROP TABLE property_unavailability;
 DROP TABLE service_unavailability;
 
 ALTER TABLE bill RENAME COLUMN type TO statut;
+ALTER TABLE property ADD COLUMN id_stripe VARCHAR(32);
+ALTER TABLE service ADD COLUMN id_stripe VARCHAR(32);

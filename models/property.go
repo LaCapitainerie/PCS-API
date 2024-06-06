@@ -7,6 +7,7 @@ import (
 // Property est la structure spécifiant les données de la property utilisé par le front web de l'application
 type Property struct {
 	ID                      uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	IdStripe                string    `gorm:"type:varchar(32)" json:"idStripe"`
 	Name                    string    `gorm:"type:varchar(64);notnull" json:"name"`
 	Type                    string    `gorm:"type:varchar(64);notnull" json:"type"`
 	Price                   float64   `gorm:"type:numeric(10,2);notnull" json:"price"`
