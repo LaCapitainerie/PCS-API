@@ -29,10 +29,10 @@ func ServiceCreateNewService(c *gin.Context) {
 		return
 	}
 
-	if service.Price > 1 &&
-		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType) &&
-		service.RangeAction < 0 &&
-		service.Name != "" &&
+	if service.Price < 1 ||
+		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType) ||
+		service.RangeAction < 0 ||
+		service.Name != "" ||
 		service.Description != "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "19"})
 		return
@@ -114,9 +114,9 @@ func ServiceUpdate(c *gin.Context) {
 		return
 	}
 
-	if serviceTransfert.Price > 1 &&
-		(serviceTransfert.TargetCustomer != models.LessorType && serviceTransfert.TargetCustomer != models.TravelerType) &&
-		serviceTransfert.RangeAction < 0 &&
+	if serviceTransfert.Price < 1 ||
+		(serviceTransfert.TargetCustomer != models.LessorType && serviceTransfert.TargetCustomer != models.TravelerType) ||
+		serviceTransfert.RangeAction < 0 ||
 		serviceTransfert.Description != "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "19"})
 		return
@@ -128,6 +128,25 @@ func ServiceUpdate(c *gin.Context) {
 	}
 	serviceTransfert.ID = service.ID
 	serviceTransfert.ProviderId = service.ProviderId
+	serviceTransfert.IdStripe = service.IdStripe
+
+	// Modification prix service
+
+	if serviceTransfert.Price != service.Price {
+		priceParams := &stripe.PriceParams{
+			Product:    stripe.String(service.IdStripe),
+			UnitAmount: stripe.Int64(int64(service.Price * 100)),
+			Currency:   stripe.String(string(stripe.CurrencyEUR)),
+		}
+		_, err = price2.New(priceParams)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"property": "27"})
+			return
+		}
+	}
+
+	// Modification du service et renvoie à l'utilisateur
+
 	serviceTransfert = repository.ServiceUpdate(serviceTransfert)
 	ServiceDTO := serviceConvertToServiceDTO(serviceTransfert,
 		repository.ProviderGetUserIdWithProviderId(serviceTransfert.ProviderId),

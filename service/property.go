@@ -59,14 +59,14 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	if len(propertyDTO.Name) < 1 &&
-		len(propertyDTO.Type) < 1 &&
-		propertyDTO.Price < 1 &&
-		propertyDTO.Surface < 8 &&
-		propertyDTO.Room < 1 &&
-		len(propertyDTO.ZipCode) < 5 &&
-		len(propertyDTO.Address) < 1 &&
-		len(propertyDTO.City) < 1 &&
+	if len(propertyDTO.Name) < 1 ||
+		len(propertyDTO.Type) < 1 ||
+		propertyDTO.Price < 1 ||
+		propertyDTO.Surface < 8 ||
+		propertyDTO.Room < 1 ||
+		len(propertyDTO.ZipCode) < 5 ||
+		len(propertyDTO.Address) < 1 ||
+		len(propertyDTO.City) < 1 ||
 		len(propertyDTO.Country) < 1 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "15"})
 		return
@@ -233,14 +233,14 @@ func PutPropertyById(c *gin.Context) {
 		return
 	}
 
-	if len(propertyDTO.Name) < 1 &&
-		len(propertyDTO.Type) < 1 &&
-		propertyDTO.Price < 1 &&
-		propertyDTO.Surface < 8 &&
-		propertyDTO.Room < 1 &&
-		len(propertyDTO.ZipCode) < 5 &&
-		len(propertyDTO.Address) < 1 &&
-		len(propertyDTO.City) < 1 &&
+	if len(propertyDTO.Name) < 1 ||
+		len(propertyDTO.Type) < 1 ||
+		propertyDTO.Price < 1 ||
+		propertyDTO.Surface < 8 ||
+		propertyDTO.Room < 1 ||
+		len(propertyDTO.ZipCode) < 5 ||
+		len(propertyDTO.Address) < 1 ||
+		len(propertyDTO.City) < 1 ||
 		len(propertyDTO.Country) < 1 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "15"})
 		return
@@ -248,6 +248,7 @@ func PutPropertyById(c *gin.Context) {
 
 	var property models.Property
 	property.ID = propertyOrigin.ID
+	property.IdStripe = propertyOrigin.IdStripe
 	property.Name = propertyDTO.Name
 	property.Type = propertyDTO.Type
 	property.Surface = propertyDTO.Surface
