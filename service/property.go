@@ -106,7 +106,7 @@ func PostAProperty(c *gin.Context) {
 	}
 	prod, err := product.New(prodParams)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"property": "26"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "26"})
 		return
 	}
 
@@ -117,7 +117,7 @@ func PostAProperty(c *gin.Context) {
 	}
 	price, err := price2.New(priceParams)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"property": "26"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "26"})
 		return
 	}
 	property.IdStripe = price.ID

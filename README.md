@@ -32,6 +32,7 @@ Here are the different error codes that the API can return
 | 24          | The user is not a traveler                                                                                                                                     |
 | 25          | Invalid service                                                                                                                                                |
 | 26          | Property payment creation error                                                                                                                                |
+| 27          | Service payment creation error                                                                                                                                 |
 
 
 ### Application error code

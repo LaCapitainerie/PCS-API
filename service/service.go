@@ -6,6 +6,9 @@ import (
 	"PCS-API/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/stripe/stripe-go/v78"
+	price2 "github.com/stripe/stripe-go/v78/price"
+	"github.com/stripe/stripe-go/v78/product"
 	"net/http"
 	"time"
 )
@@ -29,6 +32,7 @@ func ServiceCreateNewService(c *gin.Context) {
 	if service.Price > 1 &&
 		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType) &&
 		service.RangeAction < 0 &&
+		service.Name != "" &&
 		service.Description != "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "19"})
 		return
@@ -54,6 +58,32 @@ func ServiceCreateNewService(c *gin.Context) {
 	provider := repository.ProviderGetByUserId(idUser)
 	service.ID = uuid.New()
 	service.ProviderId = provider.ID
+
+	// Put the price on Stripe
+
+	prodParams := &stripe.ProductParams{
+		Name: stripe.String(service.Name),
+	}
+	prod, err := product.New(prodParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "27"})
+		return
+	}
+
+	priceParams := &stripe.PriceParams{
+		Product:    stripe.String(prod.ID),
+		UnitAmount: stripe.Int64(int64(service.Price * 100)),
+		Currency:   stripe.String(string(stripe.CurrencyEUR)),
+	}
+	price, err := price2.New(priceParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"property": "27"})
+		return
+	}
+	service.IdStripe = price.ID
+
+	// Création de la prestation dans la base et renvoie à l'utilisateur
+
 	service, _ = repository.ServiceCreateNewService(service)
 	serviceDTO := serviceConvertToServiceDTO(service, idUser, time.Time{})
 	c.JSON(http.StatusOK, gin.H{"service": serviceDTO})
@@ -115,6 +145,7 @@ func ServiceGetAll(c *gin.Context) {
 }
 
 // TODO: Risque de causer problème de clé étrangère lors de sa suppression
+
 func ServiceDelete(c *gin.Context) {
 	idService, _ := uuid.Parse(c.Param("id"))
 	service, err := repository.ServiceGetWithServiceId(idService)
