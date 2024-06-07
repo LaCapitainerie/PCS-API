@@ -2,32 +2,48 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/stripe/stripe-go/v78"
+	"github.com/stripe/stripe-go/v78/checkout/session"
+	"net/http"
+	"strconv"
 )
 
-func createCheckoutSession(c *gin.Context) {
-	/*	domain := "http://localhost:4242"
-		params := &stripe.CheckoutSessionParams{
-			LineItems: []*stripe.CheckoutSessionLineItemParams{
-				&stripe.CheckoutSessionLineItemParams{
-					// Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-					Price:    stripe.String("{{PRICE_ID}}"),
-					Quantity: stripe.Int64(1),
-				},
-			},
-			Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
-			SuccessURL: stripe.String(domain + "?success=true"),
-			CancelURL:  stripe.String(domain + "?canceled=true"),
-			AutomaticTax: &stripe.CheckoutSessionAutomaticTaxParams{
-				Enabled: stripe.Bool(true),
-			},
-		}
+func CheckoutCreateSession(c *gin.Context) {
+	idStripe := c.Param("id")
+	quantity, err := strconv.ParseInt(c.Param("quantity"), 10, 64)
 
-		s, err := session.New(params)
-		if err != nil {
-			log.Printf("session.New: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create checkout session"})
-			return
-		}
+	if err != nil || quantity < 1 || idStripe == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "28"})
+		return
+	}
 
-		c.Redirect(http.StatusSeeOther, s.URL)*/
+	idReservation := ReservationPropertyCreate(c)
+	if idReservation == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "28"})
+		return
+	}
+
+	domain := "http://localhost:3000/stripe/test"
+	params := &stripe.CheckoutSessionParams{
+		LineItems: []*stripe.CheckoutSessionLineItemParams{
+			&stripe.CheckoutSessionLineItemParams{
+				Price:    stripe.String(idStripe),
+				Quantity: stripe.Int64(quantity),
+			},
+		},
+		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL: stripe.String(domain + "?success=true&id_reservation=" + idReservation),
+		CancelURL:  stripe.String(domain + "?canceled=true"),
+		AutomaticTax: &stripe.CheckoutSessionAutomaticTaxParams{
+			Enabled: stripe.Bool(true),
+		},
+	}
+
+	s, err := session.New(params)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "28"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"url": s.URL})
 }

@@ -32,8 +32,8 @@ func ServiceCreateNewService(c *gin.Context) {
 	if service.Price < 1 ||
 		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType) ||
 		service.RangeAction < 0 ||
-		service.Name != "" ||
-		service.Description != "" {
+		service.Name == "" ||
+		service.Description == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "19"})
 		return
 	}
@@ -117,7 +117,8 @@ func ServiceUpdate(c *gin.Context) {
 	if serviceTransfert.Price < 1 ||
 		(serviceTransfert.TargetCustomer != models.LessorType && serviceTransfert.TargetCustomer != models.TravelerType) ||
 		serviceTransfert.RangeAction < 0 ||
-		serviceTransfert.Description != "" {
+		service.Name == "" ||
+		serviceTransfert.Description == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "19"})
 		return
 	}

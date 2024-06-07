@@ -33,6 +33,8 @@ Here are the different error codes that the API can return
 | 25          | Invalid service                                                                                                                                                |
 | 26          | Property payment creation error                                                                                                                                |
 | 27          | Service payment creation error                                                                                                                                 |
+| 28          | Wrong session stripe creation parameter                                                                                                                        |
+| 29          | Invalid id                                                                                                                                                     |
 
 
 ### Application error code

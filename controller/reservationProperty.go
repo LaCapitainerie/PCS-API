@@ -11,6 +11,7 @@ func reservationProperty(reservation *gin.RouterGroup) {
 	reservationPropertyGroup := reservation.Group("/property")
 	reservationPropertyGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
 	{
-		reservationPropertyGroup.POST("", service.ReservationPropertyCreate)
+		// reservationPropertyGroup.POST("", service.ReservationPropertyCreate)
+		reservation.POST("/validation/:id", service.ReservationValidationPaiement)
 	}
 }

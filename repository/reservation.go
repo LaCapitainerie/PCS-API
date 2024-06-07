@@ -17,3 +17,23 @@ func ReservationCreate(reservation models.Reservation) (models.Reservation, erro
 	err := utils.DB.Create(&reservation).Error
 	return reservation, err
 }
+
+func ReservationValidation(id uuid.UUID) (models.Reservation, error) {
+	var reservation models.Reservation
+	result := utils.DB.Model(&models.Reservation{}).Where("id = ?", id).First(&reservation)
+
+	if result.Error != nil && reservation.ID == uuid.Nil {
+		return reservation, result.Error
+	}
+	err := utils.DB.Model(&models.Reservation{}).Where("id = ?", id).Update("Annulation", false).Error
+	if err != nil {
+		return reservation, err
+	}
+	return reservation, nil
+}
+
+func ReservationGetById(id uuid.UUID) (models.Reservation, error) {
+	var reservation models.Reservation
+	err := utils.DB.First(&reservation, id).Error
+	return reservation, err
+}

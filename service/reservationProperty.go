@@ -29,36 +29,36 @@ func reservationDateIntersect(entry models.Reservation, allEntry []models.Reserv
 	return false
 }
 
-func ReservationPropertyCreate(c *gin.Context) {
+func ReservationPropertyCreate(c *gin.Context) string {
 	str, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
-		return
+		return ""
 	}
 
 	var reservationDTO models.ReservationDTO
 	var err error
 	if err = c.BindJSON(&reservationDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		return ""
 	}
 
 	idUser, _ := uuid.Parse(str.(string))
 	if idUser != reservationDTO.TravelerId {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "18"})
-		return
+		return ""
 	}
 
 	property, err := repository.PropertyGetById(reservationDTO.PropertyId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "21"})
-		return
+		return ""
 	}
 
 	services, err := reservationGetAllService(&reservationDTO)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "25"})
-		return
+		return ""
 	}
 
 	//TODO: Vérifie que la propriété est dans le rayon d'actiond de tous les services
@@ -69,7 +69,7 @@ func ReservationPropertyCreate(c *gin.Context) {
 	reservation.TravelerId = repository.TravelerGetIdByUserId(idUser)
 	if reservation.TravelerId == uuid.Nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "24"})
-		return
+		return ""
 	}
 
 	if reservation.BeginDate.After(reservation.EndDate) {
@@ -83,37 +83,76 @@ func ReservationPropertyCreate(c *gin.Context) {
 
 	if !reservation.BeginDate.After(date) {
 		c.JSON(http.StatusConflict, gin.H{"error": "22"})
-		return
+		return ""
 	}
 
 	if reservationDateIntersect(reservation, repository.ReservationGetAllByIdPropertyWithEndDateAfterADate(property.ID, date)) {
 		c.JSON(http.StatusConflict, gin.H{"error": "22"})
-		return
+		return ""
 	}
 
 	reservation.ID = uuid.New()
 	reservation.PropertyId = property.ID
+	reservation.Annulation = true
 
 	reservation, err = repository.ReservationCreate(reservation)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
-		return
+		return ""
 	}
 
 	serviceDTO, err := reservationServiceListCreate(&reservationDTO, services, &reservation.ID)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "25"})
-		return
+		return ""
 	}
 
 	bill, err := billCreate(property, reservation)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "23"})
-		return
+		return ""
 	}
 
 	reservationDTO = reservationDTOCreate(reservation, bill, serviceDTO)
-	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
+	return reservationDTO.ID.String()
+}
+
+func ReservationValidationPaiement(c *gin.Context) {
+	str, exist := c.Get("id")
+	if exist == false {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	idReservation, err := uuid.Parse(str.(string))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	reservation, err := repository.ReservationValidation(idReservation)
+	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
+}
+
+func reservationGetById(c *gin.Context, str string) {
+	idReservation, err := uuid.Parse(str)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	reservation, err := repository.ReservationGetById(idReservation)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
+		return
+	}
+
+}
+
+func ReservationGetById(c *gin.Context) {
+	str, exist := c.Get("id")
+	if !exist {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	reservationGetById(c, str.(string))
 }
 
 func ReservationGetAllOfAProperty(c *gin.Context) {
