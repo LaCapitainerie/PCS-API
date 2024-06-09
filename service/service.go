@@ -4,9 +4,10 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 func serviceConvertToServiceDTO(service models.Service, userId uuid.UUID) models.ServiceDTO {
@@ -38,7 +39,7 @@ func ServiceCreateNewService(c *gin.Context) {
 	}
 
 	idBrut, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -66,7 +67,7 @@ func ServiceUpdate(c *gin.Context) {
 	}
 
 	idBrut, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -121,7 +122,7 @@ func ServiceDelete(c *gin.Context) {
 	}
 
 	idBrut, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}

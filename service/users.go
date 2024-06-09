@@ -248,7 +248,7 @@ func UserDeleteById(c *gin.Context) {
 	}
 
 	idBrut, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -267,7 +267,7 @@ func UserDeleteById(c *gin.Context) {
 func UserUpdateById(c *gin.Context) {
 	idCurrentUser, _ := uuid.Parse(c.Param("id"))
 	idBrut, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -283,7 +283,7 @@ func UserUpdateById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	userSelected, err := repository.UsersGetById(idUser)
+	userSelected, _ := repository.UsersGetById(idUser)
 
 	if userDTO.Password != "" {
 		if !validityPassword(userDTO.Password) {

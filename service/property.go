@@ -4,9 +4,10 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 //TODO: Problème d'autorisation à gérer dans le service property
@@ -45,7 +46,7 @@ func PostAProperty(c *gin.Context) {
 	}
 
 	idBrut, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -150,7 +151,7 @@ func PropertyDeleteById(c *gin.Context) {
 	IDUSER, exist := c.Get("idUser")
 	idUser, _ := uuid.Parse(IDUSER.(string))
 	idProperty, _ := uuid.Parse(c.Param("id"))
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
@@ -194,7 +195,7 @@ func PutPropertyById(c *gin.Context) {
 	}
 
 	idBrut, exist := c.Get("idUser")
-	if exist == false {
+	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}

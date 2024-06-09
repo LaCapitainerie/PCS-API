@@ -3,9 +3,10 @@ package service
 import (
 	"PCS-API/models"
 	"PCS-API/repository"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 func ChatPostMessage(c *gin.Context) {
@@ -53,7 +54,7 @@ func ChatPostMessage(c *gin.Context) {
 		chat.ID = uuid.New()
 		chatUser := make([]models.ChatUser, len(chatDTO.UserId))
 
-		for i, _ := range chatUser {
+		for i := range chatUser {
 			uuidUser, err := uuid.Parse(chatDTO.UserId[i])
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "10"})

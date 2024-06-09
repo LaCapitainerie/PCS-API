@@ -7,12 +7,13 @@ import (
 	"PCS-API/repository"
 	"PCS-API/utils"
 	"errors"
+	"net/http"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
-	"time"
 )
 
 // CORS édite le header HTTP pour accepter les requêtes venant d'autres serveurs/proxy source.
@@ -66,7 +67,7 @@ func AuthMiddleware() gin.HandlerFunc {
 func BlockTypeMiddleware(userType string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idBrut, exist := c.Get("idUser")
-		if exist == false {
+		if !exist {
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
