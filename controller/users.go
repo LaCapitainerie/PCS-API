@@ -5,6 +5,7 @@ package controller
 import (
 	"PCS-API/middleware"
 	"PCS-API/service"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,6 +15,7 @@ func Users(api *gin.RouterGroup) {
 	api.POST("/user/register", service.CreateUser)
 	api.POST("/user/login", service.LoginUser)
 	api.GET("/user/id/:id", service.UserGetById)
+	api.GET("/user/all", service.UserGetAll)
 
 	userManagement := api.Group("/user/management")
 	userManagement.Use(middleware.AuthMiddleware())

@@ -5,8 +5,9 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // CreateUser reçoit en argument un user
@@ -59,4 +60,10 @@ func UsersGetTypeById(id uuid.UUID) string {
 	var user models.Users
 	utils.DB.First(&user, id)
 	return user.Type
+}
+
+func UsersGetAll(limit, offset int) ([]models.Users, error) {
+	var users []models.Users
+	err := utils.DB.Limit(limit).Offset(offset).Find(&users).Error
+	return users, err
 }

@@ -7,6 +7,7 @@ import (
 	"PCS-API/utils"
 	"net/http"
 	"regexp"
+	"strconv"
 	"unicode"
 
 	"github.com/gin-gonic/gin"
@@ -313,4 +314,34 @@ func UserUpdateById(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "3"})
 	}
+}
+
+func UserGetAll(c *gin.Context) {
+
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil {
+		limit = 10 // default limit
+	}
+
+	offset, err := strconv.Atoi(c.Query("offset"))
+	if err != nil {
+		offset = 0 // default offset
+	}
+
+	users, _ := repository.UsersGetAll(limit, offset)
+	var usersDTO []models.UsersDTO
+	for _, user := range users {
+		switch user.Type {
+		case models.TravelerType:
+			traveler := repository.TravelerGetByUserId(user.ID)
+			usersDTO = append(usersDTO, createUserDTOwithUserAndTraveler(user, traveler))
+		case models.ProviderType:
+			provider := repository.ProviderGetByUserId(user.ID)
+			usersDTO = append(usersDTO, createUserDTOwithUserAndProvider(user, provider))
+		case models.LessorType:
+			lessor := repository.LessorGetByUserId(user.ID)
+			usersDTO = append(usersDTO, createUserDTOwithUserAndLessor(user, lessor))
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{"users": usersDTO})
 }
