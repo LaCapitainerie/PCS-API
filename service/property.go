@@ -5,9 +5,12 @@ import (
 	"PCS-API/repository"
 	"PCS-API/utils"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/stripe/stripe-go/v78"
+	price2 "github.com/stripe/stripe-go/v78/price"
+	"github.com/stripe/stripe-go/v78/product"
+	"net/http"
 )
 
 //TODO: Problème d'autorisation à gérer dans le service property
@@ -57,14 +60,14 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	if len(propertyDTO.Name) < 1 &&
-		len(propertyDTO.Type) < 1 &&
-		propertyDTO.Price < 1 &&
-		propertyDTO.Surface < 8 &&
-		propertyDTO.Room < 1 &&
-		len(propertyDTO.ZipCode) < 5 &&
-		len(propertyDTO.Address) < 1 &&
-		len(propertyDTO.City) < 1 &&
+	if len(propertyDTO.Name) < 1 ||
+		len(propertyDTO.Type) < 1 ||
+		propertyDTO.Price < 1 ||
+		propertyDTO.Surface < 8 ||
+		propertyDTO.Room < 1 ||
+		len(propertyDTO.ZipCode) < 5 ||
+		len(propertyDTO.Address) < 1 ||
+		len(propertyDTO.City) < 1 ||
 		len(propertyDTO.Country) < 1 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "15"})
 		return
@@ -97,6 +100,29 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
+	// Put the price on Stripe
+
+	prodParams := &stripe.ProductParams{
+		Name: stripe.String(property.Name),
+	}
+	prod, err := product.New(prodParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "26"})
+		return
+	}
+
+	priceParams := &stripe.PriceParams{
+		Product:    stripe.String(prod.ID),
+		UnitAmount: stripe.Int64(int64(property.Price * 100)),
+		Currency:   stripe.String(string(stripe.CurrencyEUR)),
+	}
+	price, err := price2.New(priceParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "26"})
+		return
+	}
+	property.IdStripe = price.ID
+
 	property, err = repository.PropertyCreate(property)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Property non créer"})
@@ -128,6 +154,8 @@ func createPropertyDTOwithProperty(property models.Property, images []models.Pro
 
 	return models.PropertyDTO{
 		ID:                      property.ID,
+		IdStripe:                property.IdStripe,
+		Name:                    property.Name,
 		Type:                    property.Type,
 		Price:                   property.Price,
 		Surface:                 property.Surface,
@@ -206,14 +234,14 @@ func PutPropertyById(c *gin.Context) {
 		return
 	}
 
-	if len(propertyDTO.Name) < 1 &&
-		len(propertyDTO.Type) < 1 &&
-		propertyDTO.Price < 1 &&
-		propertyDTO.Surface < 8 &&
-		propertyDTO.Room < 1 &&
-		len(propertyDTO.ZipCode) < 5 &&
-		len(propertyDTO.Address) < 1 &&
-		len(propertyDTO.City) < 1 &&
+	if len(propertyDTO.Name) < 1 ||
+		len(propertyDTO.Type) < 1 ||
+		propertyDTO.Price < 1 ||
+		propertyDTO.Surface < 8 ||
+		propertyDTO.Room < 1 ||
+		len(propertyDTO.ZipCode) < 5 ||
+		len(propertyDTO.Address) < 1 ||
+		len(propertyDTO.City) < 1 ||
 		len(propertyDTO.Country) < 1 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "15"})
 		return
@@ -221,9 +249,9 @@ func PutPropertyById(c *gin.Context) {
 
 	var property models.Property
 	property.ID = propertyOrigin.ID
+	property.IdStripe = propertyOrigin.IdStripe
 	property.Name = propertyDTO.Name
 	property.Type = propertyDTO.Type
-	property.Price = propertyDTO.Price
 	property.Surface = propertyDTO.Surface
 	property.Room = propertyDTO.Room
 	property.Bathroom = propertyDTO.Bathroom
@@ -242,6 +270,20 @@ func PutPropertyById(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	if property.Price != propertyDTO.Price {
+		priceParams := &stripe.PriceParams{
+			Product:    stripe.String(property.IdStripe),
+			UnitAmount: stripe.Int64(int64(propertyDTO.Price * 100)),
+			Currency:   stripe.String(string(stripe.CurrencyEUR)),
+		}
+		_, err = price2.New(priceParams)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"property": "26"})
+			return
+		}
+		property.Price = propertyDTO.Price
 	}
 
 	property, err = repository.PropertyUpdate(property)
@@ -272,51 +314,3 @@ func PutPropertyById(c *gin.Context) {
 	propertyDTO = createPropertyDTOwithProperty(property, propertyImage, idUser)
 	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
 }
-
-// TODO: Faire un truc de la gestion des fichiers
-/*
-// Fichiers
-
-	files := c.Request.MultipartForm.File["files"]
-	if len(files) == 0 || len(files) > 5 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "16"})
-		return
-	}
-
-	propertyDTO.Images = nil
-	var propertyImages []models.PropertyImage
-	for _, fileHeader := range files {
-		file, err := fileHeader.Open()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "16"})
-			return
-		}
-		defer file.Close()
-
-		extension := filepath.Ext(fileHeader.Filename)
-		if extension != ".png" &&
-			extension != ".jpg" &&
-			extension != ".jpeg" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "16"})
-			return
-		}
-
-		_, _, err = image.Decode(file)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "16"})
-			return
-		}
-
-		var propertyImage models.PropertyImage
-		propertyImage.ID = uuid.New()
-		propertyImage.PropertyId = property.ID
-		propertyImage.Path = "public/images/" + utils.GenerateUniqueFileName(fileHeader.Filename)
-		repository.PropertyImageCreate(propertyImage)
-		propertyImages = append(propertyImages, propertyImage)
-
-		if err = c.SaveUploadedFile(fileHeader, propertyImage.Path); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-	}
-*/

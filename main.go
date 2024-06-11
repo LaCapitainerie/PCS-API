@@ -26,6 +26,7 @@ func main() {
 	controller.Traveler(api)
 	controller.Property_image(api)
 	controller.Service(api)
+	controller.Reservation(api)
 
 	err := router.Run(":" + utils.PortApp)
 	if err != nil {

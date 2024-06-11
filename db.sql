@@ -186,9 +186,9 @@ CREATE TABLE property_service(
     service_id  UUID NOT NULL,
     bill_id  UUID NOT NULL,
     date TIMESTAMP NOT NULL,
-    FOREIGN KEY (bill_id ) REFERENCES bill(id),
-    FOREIGN KEY (property_id ) REFERENCES property(id),
-    FOREIGN KEY (service_id ) REFERENCES service(id),
+    FOREIGN KEY (bill_id) REFERENCES bill(id),
+    FOREIGN KEY (property_id) REFERENCES property(id),
+    FOREIGN KEY (service_id) REFERENCES service(id),
     PRIMARY KEY (property_id, service_id)
 );
 
@@ -205,9 +205,9 @@ CREATE TABLE reservation(
 CREATE TABLE reservation_bill(
     reservation_id  UUID NOT NULL,
     bill_id  UUID NOT NULL,
-    FOREIGN KEY (reservation_id ) REFERENCES reservation(id),
-    FOREIGN KEY (bill_id ) REFERENCES bill(id),
-    PRIMARY KEY (reservation_id , bill_id )
+    FOREIGN KEY (reservation_id) REFERENCES reservation(id),
+    FOREIGN KEY (bill_id) REFERENCES bill(id),
+    PRIMARY KEY (reservation_id, bill_id)
 );
 
 CREATE TABLE reservation_service(
@@ -216,7 +216,7 @@ CREATE TABLE reservation_service(
     date TIMESTAMP NOT NULL,
     FOREIGN KEY (reservation_id ) REFERENCES reservation(id),
     FOREIGN KEY (service_id ) REFERENCES service(id),
-    PRIMARY KEY (reservation_id , service_id )
+    PRIMARY KEY (reservation_id, service_id)
 );
 
 CREATE TABLE review_traveler_to_property(
@@ -346,3 +346,12 @@ ALTER TABLE administrator ADD CONSTRAINT administrator_user_id_fkey FOREIGN KEY 
 ALTER TABLE service ADD COLUMN lat DOUBLE PRECISION;
 ALTER TABLE service ADD COLUMN lon DOUBLE PRECISION;
 ALTER TABLE service ALTER COLUMN description SET NOT NULL;
+
+ALTER TABLE reservation ADD COLUMN annulation BOOLEAN DEFAULT FALSE;
+DROP TABLE property_unavailability;
+DROP TABLE service_unavailability;
+
+ALTER TABLE bill RENAME COLUMN type TO statut;
+ALTER TABLE property ADD COLUMN id_stripe VARCHAR(32);
+ALTER TABLE service ADD COLUMN id_stripe VARCHAR(32);
+ALTER TABLE service ADD COLUMN name VARCHAR(64);
