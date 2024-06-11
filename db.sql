@@ -186,9 +186,9 @@ CREATE TABLE property_service(
     service_id  UUID NOT NULL,
     bill_id  UUID NOT NULL,
     date TIMESTAMP NOT NULL,
-    FOREIGN KEY (bill_id ) REFERENCES bill(id),
-    FOREIGN KEY (property_id ) REFERENCES property(id),
-    FOREIGN KEY (service_id ) REFERENCES service(id),
+    FOREIGN KEY (bill_id) REFERENCES bill(id),
+    FOREIGN KEY (property_id) REFERENCES property(id),
+    FOREIGN KEY (service_id) REFERENCES service(id),
     PRIMARY KEY (property_id, service_id)
 );
 
@@ -205,8 +205,8 @@ CREATE TABLE reservation(
 CREATE TABLE reservation_bill(
     reservation_id  UUID NOT NULL,
     bill_id  UUID NOT NULL,
-    FOREIGN KEY (reservation_id ) REFERENCES reservation(id),
-    FOREIGN KEY (bill_id ) REFERENCES bill(id),
+    FOREIGN KEY (reservation_id) REFERENCES reservation(id),
+    FOREIGN KEY (bill_id) REFERENCES bill(id),
     PRIMARY KEY (reservation_id, bill_id)
 );
 

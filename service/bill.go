@@ -36,7 +36,7 @@ func billCreate(property models.Property, reservation models.Reservation) (model
 	bill.Content = billGenerateContent(property, reservation)
 	bill.Price = billGeneratePrice(&property, &reservation)
 
-	bill, err := repository.BillCreate(bill)
+	bill, err := repository.BillCreate(bill, reservation.ID)
 
 	return bill, err
 }

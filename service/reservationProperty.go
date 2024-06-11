@@ -143,7 +143,12 @@ func reservationGetById(c *gin.Context, str string) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
 		return
 	}
-
+	bill, err := repository.BillGetByReservationId(reservation.ID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
+		return
+	}
+	services := service.
 }
 
 func ReservationGetById(c *gin.Context) {
