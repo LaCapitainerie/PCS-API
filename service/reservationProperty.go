@@ -132,23 +132,29 @@ func ReservationValidationPaiement(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
 }
 
-func reservationGetById(c *gin.Context, str string) {
+func reservationGetById(c *gin.Context, str string) models.ReservationDTO {
 	idReservation, err := uuid.Parse(str)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
-		return
+		return models.ReservationDTO{}
 	}
-	reservation, err := repository.ReservationGetById(idReservation)
+	var reservationDTO models.ReservationDTO
+	reservationDTO.Reservation, err = repository.ReservationGetById(idReservation)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
-		return
+		return models.ReservationDTO{}
 	}
-	bill, err := repository.BillGetByReservationId(reservation.ID)
+	reservationDTO.Bill, err = repository.BillGetByReservationId(reservationDTO.ID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
-		return
+		return models.ReservationDTO{}
 	}
-	services := service.
+	reservationDTO.Service, err = repository.ReservationServiceGetAllByAReservationId(reservationDTO.ID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
+		return models.ReservationDTO{}
+	}
+	return reservationDTO
 }
 
 func ReservationGetById(c *gin.Context) {
@@ -157,7 +163,8 @@ func ReservationGetById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
-	reservationGetById(c, str.(string))
+	dto := reservationGetById(c, str.(string))
+	c.JSON(http.StatusOK, gin.H{"reservation": dto})
 }
 
 func ReservationGetAllOfAProperty(c *gin.Context) {
