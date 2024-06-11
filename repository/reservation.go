@@ -43,3 +43,7 @@ func ReservationGetAllByIdProperty(id uuid.UUID) ([]models.Reservation, error) {
 	err := utils.DB.Where("property_id = ?", id).Order("begin_date DESC").Find(&reservations).Error
 	return reservations, err
 }
+
+func ReservationSetAnnulation(id uuid.UUID) error {
+	return utils.DB.Model(&models.Reservation{}).Where("id = ?", id).Update("Annulation", true).Error
+}

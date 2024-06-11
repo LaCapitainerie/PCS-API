@@ -186,3 +186,22 @@ func ReservationGetAllOfAProperty(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"reservation": reservationsDTO})
 }
+
+func ReservationPropertyAnnulationWithAId(c *gin.Context) {
+	idReservation, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "29"})
+		return
+	}
+	err = repository.ReservationSetAnnulation(idReservation)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
+		return
+	}
+	reservation := reservationGetById(c, idReservation.String())
+	c.JSON(http.StatusOK, gin.H{"reservation": reservation})
+}
+
+func ReservationPropertyReportReservation(c *gin.Context) {
+
+}
