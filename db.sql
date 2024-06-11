@@ -291,12 +291,21 @@ CREATE TABLE sidebar (
     href VARCHAR(255)
 );
 
+CREATE TABLE log (
+    id UUID PRIMARY KEY,
+    from_user_id UUID,
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    type VARCHAR(64) NOT NULL,
+    description TEXT NOT NULL
+);
+
 INSERT INTO sidebar (id, permission, icon, hover, href)
 VALUES
     (uuid_generate_v4(), 1, 'Home', 'property', '/traveler/property'),
     (uuid_generate_v4(), 1, 'Msg', 'messages', '/traveler/messages'),
     (uuid_generate_v4(), 2, 'Home', 'property', '/provider/property'),
     (uuid_generate_v4(), 2, 'Msg', 'messages', '/provider/messages'),
+    (uuid_generate_v4(), 2, 'Gauge', 'dashboard', '/provider/dashboard'),
     (uuid_generate_v4(), 3, 'Home', 'property', '/lessor/property'),
     (uuid_generate_v4(), 3, 'Msg', 'messages', '/lessor/messages'),
     (uuid_generate_v4(), 3, 'Gauge', 'dashboard', '/lessor/dashboard'),
