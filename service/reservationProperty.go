@@ -168,5 +168,21 @@ func ReservationGetById(c *gin.Context) {
 }
 
 func ReservationGetAllOfAProperty(c *gin.Context) {
-
+	idProperty, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
+		return
+	}
+	reservations, err := repository.ReservationGetAllByIdProperty(idProperty)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "30"})
+		return
+	}
+	reservationsDTO := make([]models.ReservationDTO, len(reservations))
+	for i, reservation := range reservations {
+		reservationsDTO[i].Reservation = reservation
+		reservationsDTO[i].Bill, _ = repository.BillGetByReservationId(reservation.ID)
+		reservationsDTO[i].Service, _ = repository.ReservationServiceGetAllByAReservationId(reservation.ID)
+	}
+	c.JSON(http.StatusOK, gin.H{"reservation": reservationsDTO})
 }

@@ -37,3 +37,9 @@ func ReservationGetById(id uuid.UUID) (models.Reservation, error) {
 	err := utils.DB.First(&reservation, id).Error
 	return reservation, err
 }
+
+func ReservationGetAllByIdProperty(id uuid.UUID) ([]models.Reservation, error) {
+	var reservations []models.Reservation
+	err := utils.DB.Where("property_id = ?", id).Order("begin_date DESC").Find(&reservations).Error
+	return reservations, err
+}

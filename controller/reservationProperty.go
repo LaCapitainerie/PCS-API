@@ -8,10 +8,10 @@ import (
 )
 
 func reservationProperty(reservation *gin.RouterGroup) {
+	reservation.GET("/property/allreservation/:id", service.ReservationGetAllOfAProperty)
 	reservationPropertyGroup := reservation.Group("/property")
 	reservationPropertyGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
 	{
-		// reservationPropertyGroup.POST("", service.ReservationPropertyCreate)
 		reservationPropertyGroup.POST("/validation/:id", service.ReservationValidationPaiement)
 	}
 }
