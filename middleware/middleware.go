@@ -58,6 +58,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
+
+		logEntry := models.Log{
+			UserID:   idUser,
+			Action:   c.Request.Method,
+			Endpoint: c.Request.URL.Path,
+			Time:     time.Now(),
+		}
+		repository.CreateLogEntry(logEntry)
+
 		repository.UsersUpdateLastConnectionDate(idUser)
 		c.Set("idUser", claims.IdUser)
 		c.Next()
