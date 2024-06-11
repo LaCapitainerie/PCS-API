@@ -12,6 +12,6 @@ func reservationProperty(reservation *gin.RouterGroup) {
 	reservationPropertyGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
 	{
 		// reservationPropertyGroup.POST("", service.ReservationPropertyCreate)
-		reservation.POST("/validation/:id", service.ReservationValidationPaiement)
+		reservationPropertyGroup.POST("/validation/:id", service.ReservationValidationPaiement)
 	}
 }

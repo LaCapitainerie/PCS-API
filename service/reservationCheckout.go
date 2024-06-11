@@ -23,7 +23,7 @@ func CheckoutCreateSession(c *gin.Context) {
 		return
 	}
 
-	domain := "http://localhost:3000/stripe/test"
+	domain := "http://localhost:3000/stripe/success"
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			&stripe.CheckoutSessionLineItemParams{

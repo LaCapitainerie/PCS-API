@@ -118,18 +118,18 @@ func ReservationPropertyCreate(c *gin.Context) string {
 }
 
 func ReservationValidationPaiement(c *gin.Context) {
-	str, exist := c.Get("id")
-	if exist == false {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
-		return
-	}
-	idReservation, err := uuid.Parse(str.(string))
+	idReservation, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
-	reservation, err := repository.ReservationValidation(idReservation)
-	c.JSON(http.StatusOK, gin.H{"property": propertyDTO})
+	_, err = repository.ReservationValidation(idReservation)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "27"})
+		return
+	}
+	reservationDTO := reservationGetById(c, idReservation.String())
+	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
 }
 
 func reservationGetById(c *gin.Context, str string) models.ReservationDTO {
