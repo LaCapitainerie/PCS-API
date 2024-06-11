@@ -252,11 +252,13 @@ func UserDeleteById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
 		return
 	}
+
 	idUser, _ := uuid.Parse(idBrut.(string))
-	if idUser != idUserDelete {
+	if user.Type != models.AdminType && idUser != idUserDelete {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "18"})
 		return
 	}
+
 	err = repository.UsersDelete(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -320,7 +322,7 @@ func UserGetAll(c *gin.Context) {
 
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		limit = 10 // default limit
+		limit = 100 // default limit
 	}
 
 	offset, err := strconv.Atoi(c.Query("offset"))
