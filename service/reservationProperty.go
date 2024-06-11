@@ -3,6 +3,7 @@ package service
 import (
 	"PCS-API/models"
 	"PCS-API/repository"
+	"PCS-API/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -193,15 +194,55 @@ func ReservationPropertyAnnulationWithAId(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "29"})
 		return
 	}
+
+	reservation := reservationGetById(c, idReservation.String())
+	//TODO: Placer une sécurité ici
+
 	err = repository.ReservationSetAnnulation(idReservation)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "29"})
 		return
 	}
-	reservation := reservationGetById(c, idReservation.String())
+
+	reservation.Annulation = true
 	c.JSON(http.StatusOK, gin.H{"reservation": reservation})
 }
 
 func ReservationPropertyReportReservation(c *gin.Context) {
+	var modificationInput models.ReservationDTO
+	var err error
+	if err = c.BindJSON(&modificationInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	reservationDTO := reservationGetById(c, modificationInput.ID.String())
+	if utils.DaysBetweenDates(modificationInput.BeginDate, modificationInput.EndDate) != utils.DaysBetweenDates(reservationDTO.BeginDate, reservationDTO.EndDate) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "31"})
+		return
+	}
 
+	timeNow := time.Now()
+	date := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 0, 0, 0, 0, timeNow.Location())
+
+	if !modificationInput.BeginDate.After(date) {
+		c.JSON(http.StatusConflict, gin.H{"error": "22"})
+		return
+	}
+	reservationOg := models.Reservation{
+		BeginDate: modificationInput.BeginDate,
+		EndDate:   modificationInput.EndDate,
+	}
+	if reservationDateIntersect(reservationOg, repository.ReservationGetAllByIdPropertyWithEndDateAfterADate(reservationDTO.PropertyId, date)) {
+		c.JSON(http.StatusConflict, gin.H{"error": "22"})
+		return
+	}
+
+	reservationDTO.BeginDate = modificationInput.BeginDate
+	reservationDTO.EndDate = modificationInput.EndDate
+	err = repository.ReservationSetReport(reservationDTO.ID, reservationDTO.BeginDate, reservationDTO.EndDate)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "30"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"reservation": reservationDTO})
 }

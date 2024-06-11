@@ -93,3 +93,8 @@ func LocateWithAddress(address string, city string, zipcode string, country stri
 	}
 	return lat, lon, nil
 }
+
+func DaysBetweenDates(date1, date2 time.Time) int {
+	diff := date2.Sub(date1)
+	return int(diff.Hours() / 24)
+}

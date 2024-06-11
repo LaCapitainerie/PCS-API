@@ -36,6 +36,7 @@ Here are the different error codes that the API can return
 | 28          | Wrong session stripe creation parameter                                                                                                                        |
 | 29          | Invalid id                                                                                                                                                     |
 | 30          | Reservation not found                                                                                                                                          |
+| 31          | The durations are not the same                                                                                                                                 |
 
 
 ### Application error code
