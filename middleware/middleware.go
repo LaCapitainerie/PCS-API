@@ -35,20 +35,6 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		claims := &models.Claims{}
 
-		idUser, err := uuid.Parse(claims.IdUser)
-		if err != nil {
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
-
-		// logEntry := models.Log{
-		// 	UserID:   idUser,
-		// 	Action:   c.Request.Method,
-		// 	Endpoint: c.Request.URL.Path,
-		// 	Time:     time.Now(),
-		// }
-		// repository.CreateLogEntry(logEntry)
-
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 			return utils.TokenKey, nil
 		})
@@ -66,6 +52,20 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
+		idUser, err := uuid.Parse(claims.IdUser)
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		logEntry := models.Log{
+			UserID:   idUser,
+			Action:   c.Request.Method,
+			Endpoint: c.Request.URL.Path,
+			Time:     time.Now(),
+		}
+		repository.CreateLogEntry(logEntry)
 
 		repository.UsersUpdateLastConnectionDate(idUser)
 		c.Set("idUser", claims.IdUser)
