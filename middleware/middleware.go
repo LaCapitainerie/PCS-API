@@ -60,6 +60,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		logEntry := models.Log{
+			ID:       uuid.New(),
 			UserID:   idUser,
 			Action:   c.Request.Method,
 			Endpoint: c.Request.URL.Path,
