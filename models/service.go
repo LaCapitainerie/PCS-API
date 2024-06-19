@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // Service est la structure spécifiant les données des prestations proposé par les prestataires
@@ -21,6 +22,7 @@ type Service struct {
 	RangeAction    int       `gorm:"type:integer" json:"rangeAction"`
 	Description    string    `gorm:"type:text;notnull" json:"description"`
 	ProviderId     uuid.UUID `gorm:"type:uuid;notnull" json:"providerId"`
+	Type           string    `gorm:"type:varchar(64);notnull" json:"type"`
 }
 
 type ServiceDTO struct {
