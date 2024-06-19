@@ -4,8 +4,9 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"github.com/google/uuid"
 	"net/http"
+
+	"github.com/google/uuid"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,7 +56,7 @@ func createTraveler(c *gin.Context, userDTO models.UsersDTO) {
 		return
 	}
 
-	userDTO = createUserDTOwithUserAndTraveler(user, traveler)
+	userDTO = CreateUserDTOwithUserAndTraveler(user, traveler)
 	userDTO.Token = tokenString
 	userDTO.Password = ""
 

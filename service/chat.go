@@ -43,7 +43,12 @@ func ChatPostMessage(c *gin.Context) {
 		return
 	}
 
-	idChatStr, err := repository.VerifyExistenceChat(chatDTO.UserId)
+	UsersIds := make([]string, len(chatDTO.UserId))
+	for i, v := range chatDTO.UserId {
+		UsersIds[i] = v.ID.String()
+	}
+
+	idChatStr, err := repository.VerifyExistenceChat(UsersIds)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
 		return
@@ -55,7 +60,7 @@ func ChatPostMessage(c *gin.Context) {
 		chatUser := make([]models.ChatUser, len(chatDTO.UserId))
 
 		for i := range chatUser {
-			uuidUser, err := uuid.Parse(chatDTO.UserId[i])
+			uuidUser, err := uuid.Parse(chatDTO.UserId[i].ID.String())
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
 				return
@@ -91,9 +96,9 @@ func ChatPostMessage(c *gin.Context) {
 }
 
 func createChatDTOWithAttribut(chat models.Chat, ticket models.Ticket, chatUser []models.ChatUser, message []models.Message) models.ChatDTO {
-	chatUserStr := make([]string, len(chatUser))
+	chatUserStr := make([]models.UsersDTO, len(chatUser))
 	for i, v := range chatUser {
-		chatUserStr[i] = v.UserID.String()
+		chatUserStr[i] = v.User
 	}
 
 	return models.ChatDTO{

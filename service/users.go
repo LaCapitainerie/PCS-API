@@ -105,11 +105,11 @@ func LoginUser(c *gin.Context) {
 
 	var userDTO models.UsersDTO
 	if user.Type == models.ProviderType {
-		userDTO = createUserDTOwithUserAndProvider(user, repository.ProviderGetByUserId(user.ID))
+		userDTO = CreateUserDTOwithUserAndProvider(user, repository.ProviderGetByUserId(user.ID))
 	} else if user.Type == models.LessorType {
-		userDTO = createUserDTOwithUserAndLessor(user, repository.LessorGetByUserId(user.ID))
+		userDTO = CreateUserDTOwithUserAndLessor(user, repository.LessorGetByUserId(user.ID))
 	} else if user.Type == models.TravelerType {
-		userDTO = createUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
+		userDTO = CreateUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
 	}
 	userDTO.Token = tokenString
 
@@ -131,8 +131,8 @@ func convertUserDTOtoUser(userDTO models.UsersDTO, typeUser string) models.Users
 	}
 }
 
-// createUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateur et d'un bailleur
-func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) models.UsersDTO {
+// CreateUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateur et d'un bailleur
+func CreateUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) models.UsersDTO {
 	return models.UsersDTO{
 		ID:                 users.ID,
 		TypeUser:           models.LessorType,
@@ -148,8 +148,8 @@ func createUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) mo
 	}
 }
 
-// createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un voyageur
-func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Traveler) models.UsersDTO {
+// CreateUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un voyageur
+func CreateUserDTOwithUserAndTraveler(users models.Users, traveler models.Traveler) models.UsersDTO {
 	return models.UsersDTO{
 		ID:                 users.ID,
 		TypeUser:           models.TravelerType,
@@ -165,8 +165,8 @@ func createUserDTOwithUserAndTraveler(users models.Users, traveler models.Travel
 	}
 }
 
-// createUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un prestataire
-func createUserDTOwithUserAndProvider(users models.Users, provider models.Provider) models.UsersDTO {
+// CreateUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un prestataire
+func CreateUserDTOwithUserAndProvider(users models.Users, provider models.Provider) models.UsersDTO {
 	return models.UsersDTO{
 		ID:                 users.ID,
 		TypeUser:           models.ProviderType,
@@ -226,13 +226,13 @@ func UserGetById(c *gin.Context) {
 	switch user.Type {
 	case models.TravelerType:
 		provider := repository.ProviderGetByUserId(user.ID)
-		userDTO = createUserDTOwithUserAndProvider(user, provider)
+		userDTO = CreateUserDTOwithUserAndProvider(user, provider)
 	case models.ProviderType:
 		traveler := repository.TravelerGetByUserId(user.ID)
-		userDTO = createUserDTOwithUserAndTraveler(user, traveler)
+		userDTO = CreateUserDTOwithUserAndTraveler(user, traveler)
 	case models.LessorType:
 		lessor := repository.LessorGetByUserId(user.ID)
-		userDTO = createUserDTOwithUserAndLessor(user, lessor)
+		userDTO = CreateUserDTOwithUserAndLessor(user, lessor)
 	}
 	userDTO.Password = ""
 
@@ -336,13 +336,13 @@ func UserGetAll(c *gin.Context) {
 		switch user.Type {
 		case models.TravelerType:
 			traveler := repository.TravelerGetByUserId(user.ID)
-			usersDTO = append(usersDTO, createUserDTOwithUserAndTraveler(user, traveler))
+			usersDTO = append(usersDTO, CreateUserDTOwithUserAndTraveler(user, traveler))
 		case models.ProviderType:
 			provider := repository.ProviderGetByUserId(user.ID)
-			usersDTO = append(usersDTO, createUserDTOwithUserAndProvider(user, provider))
+			usersDTO = append(usersDTO, CreateUserDTOwithUserAndProvider(user, provider))
 		case models.LessorType:
 			lessor := repository.LessorGetByUserId(user.ID)
-			usersDTO = append(usersDTO, createUserDTOwithUserAndLessor(user, lessor))
+			usersDTO = append(usersDTO, CreateUserDTOwithUserAndLessor(user, lessor))
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{"users": usersDTO})

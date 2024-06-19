@@ -4,9 +4,10 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 // createLessor crée un nouveau bailleur
@@ -38,7 +39,7 @@ func createLessor(c *gin.Context, userDTO models.UsersDTO) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return
 	}
-	userDTO = createUserDTOwithUserAndLessor(user, lessor)
+	userDTO = CreateUserDTOwithUserAndLessor(user, lessor)
 	userDTO.Token = tokenString
 	userDTO.Password = ""
 

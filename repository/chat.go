@@ -3,6 +3,8 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -27,7 +29,7 @@ func CreateChat(chat models.Chat, users []models.ChatUser) (models.Chat, error) 
 	if result.Error != nil {
 		return chat, result.Error
 	}
-	for i, _ := range users {
+	for i := range users {
 		result = utils.DB.Create(&users[i])
 		if result.Error != nil {
 			return chat, result.Error
@@ -61,13 +63,87 @@ func GetChat(idChat string) (models.Chat, error) {
 	return chat, err
 }
 
-func GetAllChatUserOfAChat(idChat string) []string {
+// CreateUserDTOwithUserAndLessor Crée un userDTO à partir d'un utilisateur et d'un bailleur
+func CreateUserDTOwithUserAndLessor(users models.Users, lessor models.Lessor) models.UsersDTO {
+	return models.UsersDTO{
+		ID:                 users.ID,
+		TypeUser:           models.LessorType,
+		Mail:               users.Mail,
+		Password:           users.Password,
+		RegisterDate:       users.RegisterDate,
+		LastConnectionDate: users.LastConnectionDate,
+		FirstName:          lessor.FirstName,
+		LastName:           lessor.LastName,
+		PhoneNumber:        users.PhoneNumber,
+		Avatar:             users.Avatar,
+		Description:        users.Description,
+	}
+}
+
+// CreateUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un voyageur
+func CreateUserDTOwithUserAndTraveler(users models.Users, traveler models.Traveler) models.UsersDTO {
+	return models.UsersDTO{
+		ID:                 users.ID,
+		TypeUser:           models.TravelerType,
+		Mail:               users.Mail,
+		Password:           users.Password,
+		RegisterDate:       users.RegisterDate,
+		LastConnectionDate: users.LastConnectionDate,
+		FirstName:          traveler.FirstName,
+		LastName:           traveler.LastName,
+		PhoneNumber:        users.PhoneNumber,
+		Avatar:             users.Avatar,
+		Description:        users.Description,
+	}
+}
+
+// CreateUserDTOwithUserAndTraveler Crée un userDTO à partir d'un utilisateur et d'un prestataire
+func CreateUserDTOwithUserAndProvider(users models.Users, provider models.Provider) models.UsersDTO {
+	return models.UsersDTO{
+		ID:                 users.ID,
+		TypeUser:           models.ProviderType,
+		Mail:               users.Mail,
+		Password:           users.Password,
+		RegisterDate:       users.RegisterDate,
+		LastConnectionDate: users.LastConnectionDate,
+		Nickname:           provider.Nickname,
+		FirstName:          provider.FirstName,
+		LastName:           provider.LastName,
+		PhoneNumber:        users.PhoneNumber,
+		Avatar:             users.Avatar,
+		Description:        users.Description,
+	}
+}
+
+func UserGetByIdComplet(userid uuid.UUID) models.UsersDTO {
+
+	var userDTO models.UsersDTO
+	user, _ := UsersGetById(userid)
+
+	switch user.Type {
+	case models.TravelerType:
+		provider := ProviderGetByUserId(user.ID)
+		userDTO = CreateUserDTOwithUserAndProvider(user, provider)
+	case models.ProviderType:
+		traveler := TravelerGetByUserId(user.ID)
+		userDTO = CreateUserDTOwithUserAndTraveler(user, traveler)
+	case models.LessorType:
+		lessor := LessorGetByUserId(user.ID)
+		userDTO = CreateUserDTOwithUserAndLessor(user, lessor)
+	}
+	userDTO.Password = ""
+
+	return userDTO
+}
+
+func GetAllChatUserOfAChat[R []models.UsersDTO](idChat string) R {
 	var chatUsers []models.ChatUser
 
 	utils.DB.Where("chat_id = ?", idChat).Find(&chatUsers)
-	userId := make([]string, len(chatUsers))
-	for i, _ := range chatUsers {
-		userId[i] = chatUsers[i].UserID.String()
+	fmt.Printf("chatUsers: %v\n", chatUsers)
+	userId := make(R, len(chatUsers))
+	for i := range chatUsers {
+		userId[i] = UserGetByIdComplet(chatUsers[i].UserID)
 	}
 	return userId
 }
@@ -99,7 +175,7 @@ func GetEverythingAboutAChat(idChat string) struct {
 
 	utils.DB.Where("id = ?", idChat).First(&result.Chat)
 	utils.DB.Where("chat_id = ?", idChat).Find(&result.ChatUsers)
-	utils.DB.Where("chat_id = ?", idChat).Find(&result.Messages)
+	utils.DB.Where("chat_id = ?", idChat).Find(&result.Messages).Joins("JOIN user ON message.user_id = user.id as user")
 	utils.DB.Where("chat_id = ?", idChat).Find(&result.Tickets)
 
 	return result

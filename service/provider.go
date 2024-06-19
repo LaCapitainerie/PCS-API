@@ -4,9 +4,10 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 // createProvider crée un nouveau prestataire
@@ -39,7 +40,7 @@ func createProvider(c *gin.Context, userDTO models.UsersDTO) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
 		return
 	}
-	userDTO = createUserDTOwithUserAndProvider(user, provider)
+	userDTO = CreateUserDTOwithUserAndProvider(user, provider)
 	userDTO.Token = tokenString
 	userDTO.Password = ""
 
