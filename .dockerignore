@@ -4,3 +4,4 @@ config.env
 ./db.sql
 ./README.md
 ./spec-api.yaml
+./insomnia-api.json

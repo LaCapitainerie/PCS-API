@@ -103,13 +103,16 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
+	user.Password = ""
 	var userDTO models.UsersDTO
 	if user.Type == models.ProviderType {
 		userDTO = CreateUserDTOwithUserAndProvider(user, repository.ProviderGetByUserId(user.ID))
 	} else if user.Type == models.LessorType {
 		userDTO = CreateUserDTOwithUserAndLessor(user, repository.LessorGetByUserId(user.ID))
 	} else if user.Type == models.TravelerType {
-		userDTO = CreateUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
+		userDTO = createUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
+	} else if user.Type == models.AdminType {
+		userDTO = createUserDTOwithUserAndAdmin(user, repository.AdminGetByUserId(user.ID))
 	}
 	userDTO.Token = tokenString
 
@@ -177,6 +180,22 @@ func CreateUserDTOwithUserAndProvider(users models.Users, provider models.Provid
 		Nickname:           provider.Nickname,
 		FirstName:          provider.FirstName,
 		LastName:           provider.LastName,
+		PhoneNumber:        users.PhoneNumber,
+		Avatar:             users.Avatar,
+		Description:        users.Description,
+	}
+}
+
+func createUserDTOwithUserAndAdmin(users models.Users, admin models.Admin) models.UsersDTO {
+	return models.UsersDTO{
+		ID:                 users.ID,
+		TypeUser:           models.AdminType,
+		Mail:               users.Mail,
+		Password:           users.Password,
+		RegisterDate:       users.RegisterDate,
+		LastConnectionDate: users.LastConnectionDate,
+		Nickname:           admin.Nickname,
+		Site:               admin.Site,
 		PhoneNumber:        users.PhoneNumber,
 		Avatar:             users.Avatar,
 		Description:        users.Description,

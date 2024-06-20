@@ -3,6 +3,7 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+	"github.com/google/uuid"
 )
 
 // GetAllAdmin
@@ -13,4 +14,10 @@ func GetAllAdmin() []models.Admin {
 		panic("Unable to get Admins " + err.Error.Error())
 	}
 	return Admins
+}
+
+func AdminGetByUserId(id uuid.UUID) models.Admin {
+	var admin models.Admin
+	utils.DB.Where("user_id = ?", id).Find(&admin)
+	return admin
 }
