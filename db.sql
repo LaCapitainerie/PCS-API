@@ -385,3 +385,14 @@ VALUES (
            'administrateur',
            '123e4567-e89b-12d3-a456-426214174000'
 );
+
+INSERT INTO chat (id, view) VALUES ('e02934d9-cb1b-475f-9972-90816d402518', FALSE);
+INSERT INTO chat_user (user_id, chat_id) VALUES ('123e4567-e89b-12d3-a456-426214174000', 'e02934d9-cb1b-475f-9972-90816d402518');
+INSERT INTO chat_user (user_id, chat_id) VALUES ('5fb3b5ce-84e1-43f0-890f-3632dbb2d741', 'e02934d9-cb1b-475f-9972-90816d402518');
+INSERT INTO ticket (id, type, state, description, chat_id)
+VALUES
+    ('123e4567-e89b-12d3-a486-426614174001', 'paiement', 'progress', 'Problème avec le serveur', 'e02934d9-cb1b-475f-9972-90816d402518');
+
+INSERT INTO message (id, content, date, type, user_id, chat_id)
+VALUES
+    ('123e4567-e89b-98d3-a456-426614174002', 'Bonjour, je voulais savoir si vous acceptez paypal ?', CURRENT_TIMESTAMP, 'text', '5fb3b5ce-84e1-43f0-890f-3632dbb2d741', 'e02934d9-cb1b-475f-9972-90816d402518');
