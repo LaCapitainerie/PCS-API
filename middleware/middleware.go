@@ -59,14 +59,14 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		logEntry := models.Log{
-			ID:       uuid.New(),
-			UserID:   idUser,
-			Action:   c.Request.Method,
-			Endpoint: c.Request.URL.Path,
-			Time:     time.Now(),
-		}
-		repository.CreateLogEntry(logEntry)
+		/*		logEntry := models.Log{
+					ID:       uuid.New(),
+					UserID:   idUser,
+					Action:   c.Request.Method,
+					Endpoint: c.Request.URL.Path,
+					Time:     time.Now(),
+				}
+				repository.CreateLogEntry(logEntry)*/
 
 		repository.UsersUpdateLastConnectionDate(idUser)
 		c.Set("idUser", claims.IdUser)

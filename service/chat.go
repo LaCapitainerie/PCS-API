@@ -95,17 +95,31 @@ func ChatPostMessage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": message})
 }
 
-func createChatDTOWithAttribut(chat models.Chat, ticket models.Ticket, chatUser []models.ChatUser, message []models.Message) models.ChatDTO {
-	chatUserStr := make([]models.UsersDTO, len(chatUser))
-	for i, v := range chatUser {
-		chatUserStr[i] = v.User
+func createChatDTOWithAttribut(chat models.Chat, ticket models.Ticket, user []models.Users, message []models.Message) models.ChatDTO {
+	userDTO := make([]models.UsersDTO, len(user))
+	for i, v := range user {
+		switch v.Type {
+		case models.TravelerType:
+			provider := repository.ProviderGetByUserId(v.ID)
+			userDTO[i] = CreateUserDTOwithUserAndProvider(v, provider)
+		case models.ProviderType:
+			traveler := repository.TravelerGetByUserId(v.ID)
+			userDTO[i] = CreateUserDTOwithUserAndTraveler(v, traveler)
+		case models.LessorType:
+			lessor := repository.LessorGetByUserId(v.ID)
+			userDTO[i] = CreateUserDTOwithUserAndLessor(v, lessor)
+		case models.AdminType:
+			admin := repository.AdminGetByUserId(v.ID)
+			userDTO[i] = createUserDTOwithUserAndAdmin(v, admin)
+		}
+		userDTO[i].Password = ""
 	}
 
 	return models.ChatDTO{
 		ID:      chat.ID,
 		View:    chat.View,
 		Ticket:  ticket,
-		UserId:  chatUserStr,
+		UserId:  userDTO,
 		Message: message,
 	}
 }
@@ -132,7 +146,7 @@ func ChatGetAllMessages(c *gin.Context) {
 	chatDTO := createChatDTOWithAttribut(
 		chatFetch.Chat,
 		chatFetch.Tickets,
-		chatFetch.ChatUsers,
+		chatFetch.Users,
 		chatFetch.Messages)
 
 	c.JSON(http.StatusOK, gin.H{"chat": chatDTO})

@@ -161,20 +161,26 @@ func GetTicketOfAChat(idChat string) (models.Ticket, error) {
 }
 
 func GetEverythingAboutAChat(idChat string) struct {
-	Chat      models.Chat
-	ChatUsers []models.ChatUser
-	Messages  []models.Message
-	Tickets   models.Ticket
+	Chat     models.Chat
+	Users    []models.Users
+	Messages []models.Message
+	Tickets  models.Ticket
 } {
 	var result struct {
-		Chat      models.Chat
-		ChatUsers []models.ChatUser
-		Messages  []models.Message
-		Tickets   models.Ticket
+		Chat     models.Chat
+		Users    []models.Users
+		Messages []models.Message
+		Tickets  models.Ticket
 	}
+	var chatUsers []models.ChatUser
 
 	utils.DB.Where("id = ?", idChat).First(&result.Chat)
-	utils.DB.Where("chat_id = ?", idChat).Find(&result.ChatUsers)
+	utils.DB.Where("chat_id = ?", idChat).Find(&chatUsers)
+
+	result.Users = make([]models.Users, len(chatUsers))
+	for i, value := range chatUsers {
+		result.Users[i], _ = UsersGetById(value.UserID)
+	}
 	utils.DB.Where("chat_id = ?", idChat).Find(&result.Messages).Joins("JOIN user ON message.user_id = user.id as user")
 	utils.DB.Where("chat_id = ?", idChat).Find(&result.Tickets)
 

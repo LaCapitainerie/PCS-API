@@ -15,7 +15,7 @@ func TicketGetAll(c *gin.Context) {
 	chatDTO := make([]models.ChatDTO, len(tickets))
 	for i, ticket := range tickets {
 		result := repository.GetEverythingAboutAChat(ticket.ChatId.String())
-		chatDTO[i] = createChatDTOWithAttribut(result.Chat, result.Tickets, result.ChatUsers, result.Messages)
+		chatDTO[i] = createChatDTOWithAttribut(result.Chat, result.Tickets, result.Users, result.Messages)
 	}
 	c.JSON(http.StatusOK, gin.H{"chat": chatDTO})
 }
