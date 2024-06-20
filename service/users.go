@@ -110,7 +110,7 @@ func LoginUser(c *gin.Context) {
 	} else if user.Type == models.LessorType {
 		userDTO = CreateUserDTOwithUserAndLessor(user, repository.LessorGetByUserId(user.ID))
 	} else if user.Type == models.TravelerType {
-		userDTO = createUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
+		userDTO = CreateUserDTOwithUserAndTraveler(user, repository.TravelerGetByUserId(user.ID))
 	} else if user.Type == models.AdminType {
 		userDTO = createUserDTOwithUserAndAdmin(user, repository.AdminGetByUserId(user.ID))
 	}
