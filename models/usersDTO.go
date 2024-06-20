@@ -23,6 +23,7 @@ type UsersDTO struct {
 	RegisterDate       time.Time `json:"registerDate"`
 	LastConnectionDate time.Time `json:"lastConnectionDate"`
 	Avatar             string    `json:"avatar"`
+	Site               string    `json:"site"`
 	Description        string    `json:"description"`
 	FirstName          string    `json:"firstName"`
 	LastName           string    `json:"lastName"`

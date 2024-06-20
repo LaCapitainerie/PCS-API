@@ -364,3 +364,24 @@ ALTER TABLE bill RENAME COLUMN type TO statut;
 ALTER TABLE property ADD COLUMN id_stripe VARCHAR(32);
 ALTER TABLE service ADD COLUMN id_stripe VARCHAR(32);
 ALTER TABLE service ADD COLUMN name VARCHAR(64);
+
+INSERT INTO Users (id, mail, password, avatar, type, description, phone_number, register_date, last_connection_date)
+VALUES (
+           '123e4567-e89b-12d3-a456-426214174000',
+           'kylian.lefevre@gmail.com',
+           '$2y$10$.EBggyfrLgciFt9/bGYtXe6bUOxM5fQ6KAygAnweaL8fHAcsWTJEy',
+           'oui.png',
+           'admin',
+           'Premier administrateur !',
+           '0669902851',
+           CURRENT_TIMESTAMP,
+           CURRENT_TIMESTAMP
+);
+
+INSERT INTO administrator (id, site, nickname, user_id)
+VALUES (
+           '123e4567-e89b-15d3-a456-426614174000',
+           'Paris',
+           'administrateur',
+           '123e4567-e89b-12d3-a456-426214174000'
+);
