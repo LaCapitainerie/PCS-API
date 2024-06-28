@@ -5,6 +5,7 @@ import (
 	"PCS-API/controller"
 	"PCS-API/middleware"
 	"PCS-API/utils"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,6 +30,10 @@ func main() {
 	controller.Reservation(api)
 
 	err := router.Run(":" + utils.PortApp)
+	if err != nil {
+		return
+	}
+	err = http.ListenAndServeTLS(":8443", "cert.pem", "key.pem", router)
 	if err != nil {
 		return
 	}
