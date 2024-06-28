@@ -26,7 +26,7 @@ func CheckoutCreateSession(c *gin.Context) {
 	domain := "http://localhost:3000/stripe/success"
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
-			&stripe.CheckoutSessionLineItemParams{
+			{
 				Price:    stripe.String(idStripe),
 				Quantity: stripe.Int64(quantity),
 			},
