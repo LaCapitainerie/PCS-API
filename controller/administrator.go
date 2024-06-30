@@ -19,6 +19,6 @@ func Admin(api *gin.RouterGroup) {
 	administrationGroup.Use(middleware.BlockTypeMiddleware(models.AdminType))
 	{
 		administrationGroup.GET("/ticket", service.TicketGetAll)
-		administrationGroup.POST("/login", service.LoginUser)
+		administrationGroup.POST("/login", service.LoginAdmin)
 	}
 }

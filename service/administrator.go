@@ -1,7 +1,9 @@
 package service
 
 import (
+	"PCS-API/models"
 	"PCS-API/repository"
+	"PCS-API/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,4 +22,37 @@ import (
 func GetAllAdmin(c *gin.Context) {
 	Admins := repository.GetAllAdmin()
 	c.JSON(http.StatusOK, gin.H{"Admin": Admins})
+}
+
+func LoginAdmin(c *gin.Context) {
+	var userJson models.UsersDTO
+	var err error
+	if err = c.BindJSON(&userJson); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := repository.UsersLoginVerify(userJson.Mail)
+	if user.Mail == "" || !utils.CheckPassword(user.Password, userJson.Password) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "7"})
+		return
+	}
+
+	tokenString, err := utils.CreateToken(user.ID.String())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not create token"})
+		return
+	}
+
+	user.Password = ""
+	var userDTO models.UsersDTO
+	if user.Type == models.AdminType {
+		userDTO = createUserDTOwithUserAndAdmin(user, repository.AdminGetByUserId(user.ID))
+	} else {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "7"})
+		return
+	}
+	userDTO.Token = tokenString
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }
