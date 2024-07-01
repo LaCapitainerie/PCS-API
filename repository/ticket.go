@@ -10,3 +10,8 @@ func TicketGetAll() ([]models.Ticket, error) {
 	err := utils.DB.Find(&tickets).Error
 	return tickets, err
 }
+
+func TicketUpdateById(ticket models.Ticket) (models.Ticket, error) {
+	err := utils.DB.Save(&ticket).Error
+	return ticket, err
+}

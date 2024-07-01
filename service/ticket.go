@@ -3,8 +3,9 @@ package service
 import (
 	"PCS-API/models"
 	"PCS-API/repository"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TicketGetAll(c *gin.Context) {
@@ -18,6 +19,27 @@ func TicketGetAll(c *gin.Context) {
 		chatDTO[i] = createChatDTOWithAttribut(result.Chat, result.Tickets, result.Users, result.Messages)
 	}
 	c.JSON(http.StatusOK, gin.H{"chat": chatDTO})
+}
+
+func TicketUpdateById(c *gin.Context) {
+	var err error
+
+	// Parse json from the body to a ticket struct
+	var ticket models.Ticket
+	if err = c.BindJSON(&ticket); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update the ticket in the database
+	ticket, err = repository.TicketUpdateById(ticket)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	// Return the updated ticket
+	c.JSON(http.StatusOK, gin.H{"ticket": ticket})
 }
 
 /*
