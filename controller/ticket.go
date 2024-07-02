@@ -18,5 +18,6 @@ func Ticket(api *gin.RouterGroup) {
 	{
 		ticketGroup.PUT("/:id", service.TicketUpdateById)
 		ticketGroup.GET("/", service.TicketGetAll)
+		ticketGroup.POST("/", service.TicketCreate)
 	}
 }

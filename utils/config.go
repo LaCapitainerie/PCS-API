@@ -3,14 +3,15 @@ package utils
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/stripe/stripe-go/v78"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
+	"github.com/stripe/stripe-go/v78"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB                       // Contient toutes les données pour l'interaction avec la base de données

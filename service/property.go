@@ -4,12 +4,14 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v78"
 	price2 "github.com/stripe/stripe-go/v78/price"
 	"github.com/stripe/stripe-go/v78/product"
-	"net/http"
 )
 
 //TODO: Problème d'autorisation à gérer dans le service property
@@ -99,13 +101,15 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	// Put the price on Stripe
+	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
 
+	// Put the price on Stripe
 	prodParams := &stripe.ProductParams{
 		Name: stripe.String(property.Name),
 	}
 	prod, err := product.New(prodParams)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "26"})
 		return
 	}
