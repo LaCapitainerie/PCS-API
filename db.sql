@@ -396,3 +396,19 @@ VALUES
 INSERT INTO message (id, content, date, type, user_id, chat_id)
 VALUES
     ('123e4567-e89b-98d3-a456-426614174002', 'Bonjour, je voulais savoir si vous acceptez paypal ?', CURRENT_TIMESTAMP, 'text', '5fb3b5ce-84e1-43f0-890f-3632dbb2d741', 'e02934d9-cb1b-475f-9972-90816d402518');
+
+INSERT INTO subscribe (id, type, price)
+VALUES
+    ('135e4567-e89b-12d3-a486-426614174001', 'bagpack', 9.90),
+    ('13541567-d89b-12d3-a486-426614174891', 'explorator', 19.00);
+
+ALTER TABLE subscribe_traveler ADD COLUMN validation BOOLEAN DEFAULT FALSE;
+ALTER TABLE subscribe ADD COLUMN annuel BOOLEAN NOT NULL;
+ALTER TABLE subscribe ADD COLUMN idStripe VARCHAR(32) NOT NULL;
+
+INSERT INTO subscribe (id, type, annuel, price, idStripe)
+VALUES
+    ('135e4567-e89b-12d3-a486-436614174001', 'bagpacker', false, 9.90, 'prod_QOkUlDU6nJkKHh'),
+    ('13541567-d89b-12d3-a486-424614174891', 'explorator', false , 19.00, 'prod_QOkWpJEOz60pEe'),
+    ('13541567-d89b-12d3-a486-426614177891', 'bagpacker', true , 113.00, 'prod_QOkVs55vqClTNv'),
+    ('13541567-d89b-12d3-a486-426614179891', 'explorator', true , 220.00, 'prod_QOkXLxNRWkW6Xc');

@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func CheckoutCreateSession(c *gin.Context) {
+func ReservationCheckoutCreateSession(c *gin.Context) {
 	idStripe := c.Param("id")
 	quantity, err := strconv.ParseInt(c.Param("quantity"), 10, 64)
 

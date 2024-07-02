@@ -11,6 +11,6 @@ func reservationCheckout(reservation *gin.RouterGroup) {
 	reservationCheckoutGroup := reservation.Group("/checkout")
 	reservationCheckoutGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
 	{
-		reservationCheckoutGroup.POST("/session/:id/:quantity", service.CheckoutCreateSession)
+		reservationCheckoutGroup.POST("/session/:id/:quantity", service.ReservationCheckoutCreateSession)
 	}
 }
