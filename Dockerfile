@@ -10,7 +10,6 @@ FROM alpine:latest
 
 WORKDIR /app
 COPY --from=build /app/pcs-api .
-COPY --from=build /app/config-dev.env .
-RUN mv ./config-dev.env ./config.env
+COPY --from=build /app/config-prod.env ./config.env
 
 CMD ["./pcs-api"]
