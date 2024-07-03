@@ -72,3 +72,12 @@ func createTravelerWithUserDTO(dto models.UsersDTO) models.Traveler {
 		UserId:    dto.ID,
 	}
 }
+
+func createAdminWithUserDTO(dto models.UsersDTO) models.Admin {
+	return models.Admin{
+		ID:       uuid.New(),
+		Site:     dto.Site,
+		Nickname: dto.Nickname,
+		UserId:   dto.ID,
+	}
+}

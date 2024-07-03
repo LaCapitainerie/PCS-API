@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS reservation_service;
 DROP TABLE IF EXISTS reservation_bill;
 DROP TABLE IF EXISTS reservation;
 DROP TABLE IF EXISTS property_service;
+DROP TABLE IF EXISTS log;
 DROP TABLE IF EXISTS bill;
 DROP TABLE IF EXISTS provider_licence;
 DROP TABLE IF EXISTS service_type;
@@ -312,15 +313,22 @@ VALUES
     (uuid_generate_v4(), 4, 'Gauge', 'dashboard', '/admin/dashboard');
 
 INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date, phone_number) VALUES
-    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'user1@example.com', 'password123', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123456789'),
-    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'user2@example.com', 'password123', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '9876543210'),
-    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'user3@example.com', 'password123', 'https://example.com/avatar3.jpg', 'Description de user3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1234567890');
+    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'lessor1@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123456789'),
+    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'lessor2@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '9876543210'),
+    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'lessor3@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar3.jpg', 'Description de user3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1234567890'),
+    ('a0e12f8a-4776-4ed3-91d5-673cef79c3ec', 'provider@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123696789'),
+    ('b2a88bbb-3822-4d56-8b36-7c9a4489b7ea', 'traveler@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '9821543210');
 
 INSERT INTO lessor (id, first_name, last_name, user_id) VALUES
     ('98765432-12d3-e456-b426-426614174000', 'John', 'Doe', 'a0e12f8a-4776-4ed3-91d5-673fcef79d5c'),
     ('123e4567-e89b-12d3-a456-426614174000', 'Jane', 'Smith', 'b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e'),
     ('647d216d-d534-4c7e-b1f1-0c2d815bd3f4', 'Emily', 'Brown', 'c3c99ccc-4844-4f78-9b27-8daabbc7f8f8');
 
+INSERT INTO provider (id, first_name, last_name, nickname, user_id) VALUES
+    ('123e4567-e89b-13f3-a456-426618174000', 'Jerry', 'Escobar', 'Escopuelo', 'a0e12f8a-4776-4ed3-91d5-673cef79c3ec');
+
+INSERT INTO traveler (id, first_name, last_name, user_id) VALUES
+    ('123e4567-e89b-13f3-a456-426618174901', 'Noah', 'Picard', 'b2a88bbb-3822-4d56-8b36-7c9a4489b7ea');
 
 INSERT INTO property (id, name, type, price, surface, room, bathroom, garage, description, address, city, zip_code, country, administrator_validation, lessor_id)
 VALUES
@@ -367,32 +375,27 @@ ALTER TABLE service ADD COLUMN name VARCHAR(64);
 
 INSERT INTO Users (id, mail, password, avatar, type, description, phone_number, register_date, last_connection_date)
 VALUES (
-           '123e4567-e89b-12d3-a456-426214174000',
-           'kylian.lefevre@gmail.com',
-           '$2y$10$.EBggyfrLgciFt9/bGYtXe6bUOxM5fQ6KAygAnweaL8fHAcsWTJEy',
+           '123e9567-e89b-12d3-a456-426214174000',
+           'admin@gmail.com',
+           '$2a$12$iNWU.QqnpEgZ5uUTIdqkO.Z8guqrGRHb5Nv4hD3c.Dp2XGgrESiue',
            'oui.png',
            'admin',
            'Premier administrateur !',
-           '0669902851',
+           '0669662851',
            CURRENT_TIMESTAMP,
            CURRENT_TIMESTAMP
 );
 
 INSERT INTO administrator (id, site, nickname, user_id)
 VALUES (
-           '123e4567-e89b-15d3-a456-426614174000',
+           '123e4567-e89c-15d3-a456-420814174000',
            'Paris',
            'administrateur',
-           '123e4567-e89b-12d3-a456-426214174000'
+           '123e9567-e89b-12d3-a456-426214174000'
 );
 
 INSERT INTO chat (id, view) VALUES ('e02934d9-cb1b-475f-9972-90816d402518', FALSE);
 INSERT INTO chat_user (user_id, chat_id) VALUES ('123e4567-e89b-12d3-a456-426214174000', 'e02934d9-cb1b-475f-9972-90816d402518');
-INSERT INTO chat_user (user_id, chat_id) VALUES ('5fb3b5ce-84e1-43f0-890f-3632dbb2d741', 'e02934d9-cb1b-475f-9972-90816d402518');
 INSERT INTO ticket (id, type, state, description, chat_id)
 VALUES
     ('123e4567-e89b-12d3-a486-426614174001', 'paiement', 'progress', 'Problème avec le serveur', 'e02934d9-cb1b-475f-9972-90816d402518');
-
-INSERT INTO message (id, content, date, type, user_id, chat_id)
-VALUES
-    ('123e4567-e89b-98d3-a456-426614174002', 'Bonjour, je voulais savoir si vous acceptez paypal ?', CURRENT_TIMESTAMP, 'text', '5fb3b5ce-84e1-43f0-890f-3632dbb2d741', 'e02934d9-cb1b-475f-9972-90816d402518');

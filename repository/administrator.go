@@ -21,3 +21,8 @@ func AdminGetByUserId(id uuid.UUID) models.Admin {
 	utils.DB.Where("user_id = ?", id).Find(&admin)
 	return admin
 }
+
+func AdminCreate(admin models.Admin) (models.Admin, error) {
+	err := utils.DB.Save(&admin).Error
+	return admin, err
+}
