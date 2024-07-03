@@ -273,7 +273,14 @@ func UserDeleteById(c *gin.Context) {
 	}
 
 	idUser, _ := uuid.Parse(idBrut.(string))
-	if user.Type != models.AdminType && idUser != idUserDelete {
+
+	userAuthor, error := repository.UsersGetById(idUser)
+	if error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": error.Error()})
+		return
+	}
+
+	if userAuthor.Type != models.AdminType && idUser != idUserDelete {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "18"})
 		return
 	}
