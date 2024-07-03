@@ -90,7 +90,11 @@ func ServiceCreateNewService(c *gin.Context) {
 
 	// Création de la prestation dans la base et renvoie à l'utilisateur
 
-	service, _ = repository.ServiceCreateNewService(service)
+	service, err = repository.ServiceCreateNewService(service)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	serviceDTO := serviceConvertToServiceDTO(service, idUser, time.Time{})
 	c.JSON(http.StatusOK, gin.H{"service": serviceDTO})
 }
