@@ -72,3 +72,18 @@ func createTravelerWithUserDTO(dto models.UsersDTO) models.Traveler {
 		UserId:    dto.ID,
 	}
 }
+
+// Update Traveler
+// @Summary Traveler
+// @Schemes
+// @Description Met à jour un Traveler
+// @Tags administration
+// @Accept json
+// @Produce json
+// @Param id path string true "ID du Traveler"
+// @Param Traveler body models.Traveler true "Traveler"
+// @Success 200 {string} string
+// @Router /api/Traveler/{id} [put]
+func UpdateTraveler(t models.Traveler, id uuid.UUID) {
+	utils.DB.Find(&models.Traveler{}, "user_id = ?", id).Update("Traveler", t)
+}

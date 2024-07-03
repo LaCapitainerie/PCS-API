@@ -4,13 +4,15 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v78"
 	price2 "github.com/stripe/stripe-go/v78/price"
 	"github.com/stripe/stripe-go/v78/product"
-	"net/http"
-	"time"
 )
 
 func serviceConvertToServiceDTO(service models.Service, userId uuid.UUID, date time.Time) models.ServiceDTO {
@@ -28,6 +30,8 @@ func ServiceCreateNewService(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	fmt.Println(service, service.Price < 1, service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType, service.RangeAction < 0, service.Name == "", service.Description == "")
 
 	if service.Price < 1 ||
 		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType) ||
@@ -60,6 +64,8 @@ func ServiceCreateNewService(c *gin.Context) {
 	service.ProviderId = provider.ID
 
 	// Put the price on Stripe
+
+	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
 
 	prodParams := &stripe.ProductParams{
 		Name: stripe.String(service.Name),

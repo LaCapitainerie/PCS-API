@@ -327,7 +327,12 @@ func UserUpdateById(c *gin.Context) {
 	userDTO.TypeUser = userSelected.Type
 
 	if userDTO.TypeUser == models.TravelerType {
-		createTraveler(c, userDTO)
+
+		traveler := repository.TravelerGetByUserId(userSelected.ID)
+		traveler.FirstName = userDTO.FirstName
+		traveler.LastName = userDTO.LastName
+
+		UpdateTraveler(traveler, userDTO.ID)
 	} else if userDTO.TypeUser == models.ProviderType {
 		createProvider(c, userDTO)
 	} else if userDTO.TypeUser == models.LessorType {
