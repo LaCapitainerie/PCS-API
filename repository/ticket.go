@@ -15,3 +15,8 @@ func TicketUpdateById(ticket models.Ticket) (models.Ticket, error) {
 	err := utils.DB.Save(&ticket).Error
 	return ticket, err
 }
+
+func TicketCreate(ticket models.Ticket) (models.Ticket, error) {
+	err := utils.DB.Create(&ticket).Error
+	return ticket, err
+}

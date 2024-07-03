@@ -4,12 +4,14 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v78"
 	price2 "github.com/stripe/stripe-go/v78/price"
 	"github.com/stripe/stripe-go/v78/product"
-	"net/http"
 )
 
 //TODO: Problème d'autorisation à gérer dans le service property
@@ -99,13 +101,15 @@ func PostAProperty(c *gin.Context) {
 		return
 	}
 
-	// Put the price on Stripe
+	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
 
+	// Put the price on Stripe
 	prodParams := &stripe.ProductParams{
 		Name: stripe.String(property.Name),
 	}
 	prod, err := product.New(prodParams)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "26"})
 		return
 	}
@@ -124,7 +128,7 @@ func PostAProperty(c *gin.Context) {
 
 	property, err = repository.PropertyCreate(property)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Property non créer"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Property non créée"})
 		return
 	}
 
@@ -171,6 +175,7 @@ func createPropertyDTOwithProperty(property models.Property, images []models.Pro
 		Country:                 property.Country,
 		AdministratorValidation: property.AdministratorValidation,
 		UserId:                  idUser,
+		LessorId:                property.LessorId,
 	}
 }
 
@@ -254,6 +259,9 @@ func PutPropertyById(c *gin.Context) {
 	property.Surface = propertyDTO.Surface
 	property.Room = propertyDTO.Room
 	property.Bathroom = propertyDTO.Bathroom
+
+	property.Price = propertyDTO.Price
+
 	property.Garage = propertyDTO.Garage
 	property.Description = propertyDTO.Description
 	property.Address = propertyDTO.Address
@@ -271,7 +279,10 @@ func PutPropertyById(c *gin.Context) {
 		return
 	}
 
-	if property.Price != propertyDTO.Price {
+	if propertyOrigin.Price != propertyDTO.Price {
+
+		stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
+
 		priceParams := &stripe.PriceParams{
 			Product:    stripe.String(property.IdStripe),
 			UnitAmount: stripe.Int64(int64(propertyDTO.Price * 100)),
@@ -282,7 +293,6 @@ func PutPropertyById(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"property": "26"})
 			return
 		}
-		property.Price = propertyDTO.Price
 	}
 
 	property, err = repository.PropertyUpdate(property)

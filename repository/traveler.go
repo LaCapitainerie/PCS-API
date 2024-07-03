@@ -3,6 +3,7 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+
 	"github.com/google/uuid"
 )
 
@@ -37,4 +38,9 @@ func TravelerGetIdByUserId(id uuid.UUID) uuid.UUID {
 
 func travelerDeleteByUserId(id uuid.UUID) {
 	utils.DB.Where("user_id = ?", id).Delete(&models.Traveler{})
+}
+
+func UpdateTraveler(traveler models.Traveler) (models.Traveler, error) {
+	err := utils.DB.Save(&traveler)
+	return traveler, err.Error
 }

@@ -22,4 +22,5 @@ type PropertyDTO struct {
 	Country                 string    `json:"country"`
 	AdministratorValidation bool      `json:"administrationValidation"`
 	UserId                  uuid.UUID `json:"userId"`
+	LessorId                uuid.UUID `json:"lessorId"`
 }
