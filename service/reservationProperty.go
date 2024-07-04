@@ -4,10 +4,12 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func reservationDTOCreate(reservation models.Reservation, bill models.Bill, service []models.ServiceDTO) models.ReservationDTO {
@@ -31,6 +33,7 @@ func reservationDateIntersect(entry models.Reservation, allEntry []models.Reserv
 }
 
 func ReservationPropertyCreate(c *gin.Context) string {
+
 	str, exist := c.Get("idUser")
 	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
@@ -68,6 +71,8 @@ func ReservationPropertyCreate(c *gin.Context) string {
 	reservation.BeginDate = reservationDTO.BeginDate
 	reservation.EndDate = reservationDTO.EndDate
 	reservation.TravelerId = repository.TravelerGetIdByUserId(idUser)
+
+	fmt.Println(reservation.TravelerId, uuid.Nil)
 	if reservation.TravelerId == uuid.Nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "24"})
 		return ""
@@ -82,6 +87,7 @@ func ReservationPropertyCreate(c *gin.Context) string {
 	timeNow := time.Now()
 	date := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 0, 0, 0, 0, timeNow.Location())
 
+	fmt.Println(reservation.BeginDate, date)
 	if !reservation.BeginDate.After(date) {
 		c.JSON(http.StatusConflict, gin.H{"error": "22"})
 		return ""

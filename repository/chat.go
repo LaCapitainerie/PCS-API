@@ -3,7 +3,6 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
-	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -140,7 +139,6 @@ func GetAllChatUserOfAChat[R []models.UsersDTO](idChat string) R {
 	var chatUsers []models.ChatUser
 
 	utils.DB.Where("chat_id = ?", idChat).Find(&chatUsers)
-	fmt.Printf("chatUsers: %v\n", chatUsers)
 	userId := make(R, len(chatUsers))
 	for i := range chatUsers {
 		userId[i] = UserGetByIdComplet(chatUsers[i].UserID)

@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"PCS-API/middleware"
-	"PCS-API/models"
 	"PCS-API/service"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +18,6 @@ import (
 // @Router /api/reservation/checkout/session/{id}/{quantity} [post]
 func reservationCheckout(reservation *gin.RouterGroup) {
 	reservationCheckoutGroup := reservation.Group("/checkout")
-	reservationCheckoutGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
 	{
 		// :id is the stripe price id
 		// :quantity is the quantity of the product

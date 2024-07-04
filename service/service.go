@@ -4,7 +4,6 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -30,8 +29,6 @@ func ServiceCreateNewService(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(service, service.Price < 1, service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType, service.RangeAction < 0, service.Name == "", service.Description == "")
 
 	if service.Price < 1 ||
 		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType) ||
@@ -75,6 +72,8 @@ func ServiceCreateNewService(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "27"})
 		return
 	}
+
+	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
 
 	priceParams := &stripe.PriceParams{
 		Product:    stripe.String(prod.ID),
@@ -144,6 +143,9 @@ func ServiceUpdate(c *gin.Context) {
 	// Modification prix service
 
 	if serviceTransfert.Price != service.Price {
+
+		stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
+
 		priceParams := &stripe.PriceParams{
 			Product:    stripe.String(service.IdStripe),
 			UnitAmount: stripe.Int64(int64(service.Price * 100)),
