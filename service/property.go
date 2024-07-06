@@ -4,7 +4,6 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -109,10 +108,11 @@ func PostAProperty(c *gin.Context) {
 	}
 	prod, err := product.New(prodParams)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "26"})
 		return
 	}
+
+	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
 
 	priceParams := &stripe.PriceParams{
 		Product:    stripe.String(prod.ID),
