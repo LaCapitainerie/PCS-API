@@ -9,6 +9,78 @@ import (
 	"github.com/google/uuid"
 )
 
+func ChatCreate(c *gin.Context) {
+	var chatDTO models.ChatDTO
+	var err error
+	var chat models.Chat
+
+	if err = c.BindJSON(&chatDTO); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	UsersIds := make([]string, len(chatDTO.UserId))
+	for i, v := range chatDTO.UserId {
+		UsersIds[i] = v.ID.String()
+	}
+
+	idChatStr, err := repository.VerifyExistenceChat(UsersIds)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
+		return
+	}
+
+	idChat, err := uuid.Parse(idChatStr)
+	if err != nil {
+		chat.ID = uuid.New()
+		chatUser := make([]models.ChatUser, 2)
+
+		// User 1 Any
+
+		uuidUser, err := uuid.Parse(chatDTO.UserId[0].ID.String())
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
+			return
+		}
+
+		chatUser[0] = models.ChatUser{
+			ChatID: chat.ID,
+			UserID: uuidUser,
+		}
+
+		// User 2 Lessor
+
+		uuidUser, err = uuid.Parse(chatDTO.UserId[1].ID.String())
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
+			return
+		}
+		// Get UserId from LessorId
+
+		UserID := repository.GetUserByLessorId(uuidUser)
+		uuidUser, err = uuid.Parse(UserID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
+			return
+		}
+
+		chatUser[1] = models.ChatUser{
+			ChatID: chat.ID,
+			UserID: uuidUser,
+		}
+
+		chat, err = repository.CreateChat(chat, chatUser)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "11"})
+			return
+		}
+	} else {
+		chat.ID = idChat
+	}
+
+	c.JSON(http.StatusOK, gin.H{"chat": chat})
+}
+
 func ChatPostMessage(c *gin.Context) {
 	var chatDTO models.ChatDTO
 	var err error

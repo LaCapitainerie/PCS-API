@@ -16,6 +16,7 @@ func Chat(api *gin.RouterGroup) {
 	chat.Use(middleware.AuthMiddleware())
 	{
 		chat.POST("", service.ChatPostMessage)
+		chat.POST("/create", service.ChatCreate)
 		chat.GET("/:id", service.ChatGetAllMessages)
 		chat.GET("/allchatbyuser", service.GetAllChatByUser)
 		/*		chat.GET("/connect", service.GetChatConnect)*/

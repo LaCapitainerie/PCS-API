@@ -312,12 +312,18 @@ VALUES
     (uuid_generate_v4(), 3, 'Gauge', 'dashboard', '/lessor/dashboard'),
     (uuid_generate_v4(), 4, 'Gauge', 'dashboard', '/admin/dashboard');
 
+
+
 INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date, phone_number) VALUES
-    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'lessor1@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123456789'),
-    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'lessor2@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '9876543210'),
-    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'lessor3@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar3.jpg', 'Description de user3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1234567890'),
-    ('a0e12f8a-4776-4ed3-91d5-673cef79c3ec', 'provider@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar1.jpg', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0123696789'),
-    ('b2a88bbb-3822-4d56-8b36-7c9a4489b7ea', 'traveler@example.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://example.com/avatar2.jpg', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '9821543210');
+    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'traveler@gmail.com', '$2a$10$07qrkk/uZXKX47WWwO.OVO2Ims8sJz2V8pUKleziMhcWW49xXvoYy', 'https://th.bing.com/th/id/OIP.dgvjD6cbVLRhGCowKwsLdQAAAA?rs=1&pid=ImgDetMain', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 23 00 01 47'),
+    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'provider@gmail.com', '$2a$10$16FESXE6QgyRPTOif2Mwfu/5ocarRihkfk3vuL0YfgffTmtiqSbFu', 'https://c8.alamy.com/comp/2G36K7J/service-provider-icon-simple-creative-element-filled-monochrome-service-provider-icon-for-templates-infographics-and-banners-2G36K7J.jpg', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 21 29 77 06'),
+    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'lessor@gmail.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', '	https://th.bing.com/th/id/OIP.uEi-BYi_M-Rnv9abB82xqwHaHa?rs=1&pid=ImgDetMain', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 29 24 07 06'),
+    ('a0e12f8a-4776-4ed3-91d5-673cef79c3ec', 'admin@gmail.com', '$2a$10$39lQGnhapB17TmtXQduhhuHOqYrr2yJ1FlE.SOCW4nvI4qutiOvnS', '', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 21 69 77 06'),
+
+
+
+
+
 
 INSERT INTO lessor (id, first_name, last_name, user_id) VALUES
     ('98765432-12d3-e456-b426-426614174000', 'John', 'Doe', 'a0e12f8a-4776-4ed3-91d5-673fcef79d5c'),
@@ -343,7 +349,6 @@ VALUES
     ('d43e501e-77c3-42c4-a9a2-42f013e1a5b1', 'Villa Moderne avec Piscine et Spa', 'Villa', 680000.00, 320, 8, 5, 1, 'Villa moderne équipée d une piscine, d un spa et d un grand jardin.', '18 Boulevard des Palmiers', 'Nice', '06000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
     ('7fc56270-a7a7-4ec5-9ec1-57c5860b0026', 'Maison de Ville avec Cour Intérieure', 'Maison', 195000.00, 120, 4, 2, 1, 'Maison de ville avec une charmante cour intérieure, proche des commodités.', '3 Rue des Moulins', 'Lille', '59000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000');
 
--- M. Delon me tuerait mais pas grave je lui ferai un pot de vin à coup de pizza à 2€ de Lidl
 ALTER TABLE message DROP CONSTRAINT message_user_id_fkey;
 ALTER TABLE message ALTER COLUMN user_id DROP NOT NULL;
 ALTER TABLE message ADD CONSTRAINT message_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

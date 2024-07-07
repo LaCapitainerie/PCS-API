@@ -3,6 +3,7 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
+
 	"github.com/google/uuid"
 )
 
@@ -29,6 +30,12 @@ func LessorGetByUserId(id uuid.UUID) models.Lessor {
 	var lessor models.Lessor
 	utils.DB.Where("user_id = ?", id).Find(&lessor)
 	return lessor
+}
+
+func GetUserByLessorId(id uuid.UUID) string {
+	var user string
+	utils.DB.Model(&models.Lessor{}).Select("user_id").Where("id = ?", id).Scan(&user)
+	return user
 }
 
 func LessorGetById(id uuid.UUID) models.Lessor {

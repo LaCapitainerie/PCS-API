@@ -29,7 +29,7 @@ func CreateChat(chat models.Chat, users []models.ChatUser) (models.Chat, error) 
 		return chat, result.Error
 	}
 	for i := range users {
-		result = utils.DB.Create(&users[i])
+		result := utils.DB.Create(&users[i])
 		if result.Error != nil {
 			return chat, result.Error
 		}
