@@ -30,55 +30,43 @@ func ChatCreate(c *gin.Context) {
 		return
 	}
 
-	idChat, err := uuid.Parse(idChatStr)
-	if err != nil {
-		chat.ID = uuid.New()
-		chatUser := make([]models.ChatUser, 2)
-
-		// User 1 Any
-
-		uuidUser, err := uuid.Parse(chatDTO.UserId[0].ID.String())
+	if idChatStr != "" {
+		idChat, err := uuid.Parse(idChatStr)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
 			return
 		}
-
-		chatUser[0] = models.ChatUser{
-			ChatID: chat.ID,
-			UserID: uuidUser,
-		}
-
-		// User 2 Lessor
-
-		uuidUser, err = uuid.Parse(chatDTO.UserId[1].ID.String())
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
-			return
-		}
-		// Get UserId from LessorId
-
-		UserID := repository.GetUserByLessorId(uuidUser)
-		uuidUser, err = uuid.Parse(UserID)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
-			return
-		}
-
-		chatUser[1] = models.ChatUser{
-			ChatID: chat.ID,
-			UserID: uuidUser,
-		}
-
-		chat, err = repository.CreateChat(chat, chatUser)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "11"})
-			return
-		}
-	} else {
 		chat.ID = idChat
+		c.JSON(http.StatusOK, gin.H{"chat": chat})
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"chat": chat})
+	UserID := repository.GetUserByLessorId(chatDTO.UserId[1].ID)
+	uuidUser, err := uuid.Parse(UserID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "10"})
+		return
+	}
+
+	chat.ID = uuid.New()
+
+	Rchat, err := repository.CreateChat(chat, []models.ChatUser{
+		{
+			ChatID: chat.ID,
+			UserID: chatDTO.UserId[0].ID,
+		},
+		{
+			ChatID: chat.ID,
+			UserID: uuidUser,
+		},
+	})
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "11"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"chat": Rchat})
 }
 
 func ChatPostMessage(c *gin.Context) {

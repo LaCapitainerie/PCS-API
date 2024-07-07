@@ -4,6 +4,7 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -45,6 +46,8 @@ func ReservationPropertyCreate(c *gin.Context) string {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return ""
 	}
+
+	fmt.Println(reservationDTO)
 
 	idUser, _ := uuid.Parse(str.(string))
 	if idUser != reservationDTO.TravelerId {
