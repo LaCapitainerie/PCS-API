@@ -4,8 +4,9 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"github.com/google/uuid"
 	"net/http"
+
+	"github.com/google/uuid"
 
 	"github.com/gin-gonic/gin"
 )
@@ -82,7 +83,7 @@ func AdminRegister(c *gin.Context) {
 	}
 
 	userDTO.ID = uuid.New()
-	userDTO.Password, err = utils.HashPassword(userDTO.Password)
+	userDTO.Password, _ = utils.HashPassword(userDTO.Password)
 
 	user := convertUserDTOtoUser(userDTO, models.AdminType)
 	admin := createAdminWithUserDTO(userDTO)

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func TicketGetAll(c *gin.Context) {
@@ -46,10 +47,41 @@ func TicketCreate(c *gin.Context) {
 	var err error
 
 	// Parse json from the body to a ticket struct
-	var ticket models.Ticket
-	if err = c.BindJSON(&ticket); err != nil {
+	var ticketDTO models.IssueMakerDTO
+	if err = c.BindJSON(&ticketDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	// Create a chat between the user and the admin
+
+	var chat models.Chat
+	chat.ID = uuid.New()
+
+	adminUuid, err := uuid.Parse("efc6adf0-dbc2-46b2-b56b-78a76ccb08b7")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	repository.CreateChat(chat, []models.ChatUser{
+		{
+			ChatID: chat.ID,
+			UserID: adminUuid,
+		},
+		{
+			ChatID: chat.ID,
+			UserID: ticketDTO.UserID,
+		},
+	})
+
+	// Create a ticket
+	ticket := models.Ticket{
+		ID:          uuid.New(),
+		Type:        ticketDTO.Type,
+		State:       models.TICKET_STATE_OPEN,
+		Description: ticketDTO.Description,
+		ChatId:      chat.ID,
 	}
 
 	// Create the ticket in the database

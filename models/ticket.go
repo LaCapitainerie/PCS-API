@@ -24,6 +24,12 @@ type Ticket struct {
 	ChatId      uuid.UUID `gorm:"type:uuid" json:"chatId"`
 }
 
+type IssueMakerDTO struct {
+	UserID      uuid.UUID `json:"user_id"`
+	Type        string    `json:"type"`
+	Description string    `json:"description"`
+}
+
 // TableName Ticket Spécifie à gorm le nom de la table
 func (Ticket) TableName() string {
 	return "ticket"
