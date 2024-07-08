@@ -4,16 +4,12 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v78"
 	"github.com/stripe/stripe-go/v78/price"
 	"net/http"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func reservationDTOCreate(reservation models.Reservation, bill models.Bill, service []models.ServiceDTO) models.ReservationDTO {

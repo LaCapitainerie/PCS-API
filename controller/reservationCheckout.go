@@ -21,6 +21,6 @@ func reservationCheckout(reservation *gin.RouterGroup) {
 	{
 		// :id is the stripe price id
 		// :quantity is the quantity of the product
-		reservationCheckoutGroup.POST("/session/:id/:quantity", service.CheckoutCreateSession)
+		reservationCheckoutGroup.POST("/session/:id/:quantity", service.ReservationCheckoutCreateSession)
 	}
 }
