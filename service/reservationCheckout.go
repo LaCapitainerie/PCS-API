@@ -17,7 +17,7 @@ func ReservationCheckoutCreateSession(c *gin.Context) {
 		return
 	}
 
-	idReservation := ReservationPropertyCreate(c)
+	lineItems, idReservation := ReservationPropertyCreate(c)
 	if idReservation == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "28"})
 		return
@@ -25,12 +25,7 @@ func ReservationCheckoutCreateSession(c *gin.Context) {
 
 	domain := "http://localhost:3000/stripe/success"
 	params := &stripe.CheckoutSessionParams{
-		LineItems: []*stripe.CheckoutSessionLineItemParams{
-			{
-				Price:    stripe.String(idStripe),
-				Quantity: stripe.Int64(quantity),
-			},
-		},
+		LineItems:  lineItems,
 		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
 		SuccessURL: stripe.String(domain + "?success=true&id_reservation=" + idReservation),
 		CancelURL:  stripe.String(domain + "?canceled=true"),
