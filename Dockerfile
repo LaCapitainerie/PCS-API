@@ -8,8 +8,9 @@ RUN go build -o /app/pcs-api
 
 FROM alpine:latest
 
+
 WORKDIR /app
+COPY --from=build ./app/config.env .
 COPY --from=build /app/pcs-api .
-COPY --from=build /app/config-prod.env ./config.env
 
 CMD ["./pcs-api"]

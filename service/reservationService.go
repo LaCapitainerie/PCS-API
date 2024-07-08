@@ -32,6 +32,7 @@ func reservationServiceListCreate(dto *models.ReservationDTO, services []models.
 		reservationService.ReservationId = *idReservation
 		reservationService.ServiceId = service.ID
 		reservationService.Date = service.Date
+
 		reservationService, err = repository.ReservationServiceListCreate(reservationService)
 		if err != nil {
 			return serviceDTO, err

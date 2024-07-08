@@ -18,6 +18,7 @@ var DB *gorm.DB                       // Contient toutes les données pour l'int
 var PortApp string                    // Contient le port utilisé par l'API
 var TokenExpirationTime time.Duration // Temps d'expiration d'un token généré en heure
 var TokenKey []byte
+var CouponSubscribeId string
 
 // LoadConfig
 // Charge toutes les données nécessaire à l'API
@@ -55,5 +56,12 @@ func LoadConfig() {
 		log.Fatal("token key error, please recheck the information in the config.env")
 		os.Exit(4)
 	}
+
+	CouponSubscribeId = os.Getenv("COUPON_SUBSCRIBE_ID")
+	if CouponSubscribeId == "" {
+		log.Fatal("id coupon réduction invalide")
+		os.Exit(1)
+	}
+
 	TokenKey = []byte(key)
 }

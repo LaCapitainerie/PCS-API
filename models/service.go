@@ -27,8 +27,9 @@ type Service struct {
 
 type ServiceDTO struct {
 	Service
-	UserId uuid.UUID `json:"userId"`
-	Date   time.Time `json:"date"`
+	UserId  uuid.UUID `json:"userId"`
+	Date    time.Time `json:"date"`
+	FreeSub bool      `json:"freeSub"` // Variable pour les utilisateurs ayant un abonnement vérifiant s'ils veulent utiliser leur prestation gratuite
 }
 
 // TableName Service Spécifie à gorm le nom de la table

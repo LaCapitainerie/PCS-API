@@ -404,3 +404,25 @@ INSERT INTO chat_user (user_id, chat_id) VALUES ('123e4567-e89b-12d3-a456-426214
 INSERT INTO ticket (id, type, state, description, chat_id)
 VALUES
     ('123e4567-e89b-12d3-a486-426614174001', 'paiement', 'progress', 'Problème avec le serveur', 'e02934d9-cb1b-475f-9972-90816d402518');
+
+INSERT INTO message (id, content, date, type, user_id, chat_id)
+VALUES
+    ('123e4567-e89b-98d3-a456-426614174002', 'Bonjour, je voulais savoir si vous acceptez paypal ?', CURRENT_TIMESTAMP, 'text', '5fb3b5ce-84e1-43f0-890f-3632dbb2d741', 'e02934d9-cb1b-475f-9972-90816d402518');
+
+INSERT INTO subscribe (id, type, price)
+VALUES
+    ('135e4567-e89b-12d3-a486-426614174001', 'bagpack', 9.90),
+    ('13541567-d89b-12d3-a486-426614174891', 'explorator', 19.00);
+
+ALTER TABLE subscribe_traveler ADD COLUMN validation BOOLEAN DEFAULT FALSE;
+ALTER TABLE subscribe ADD COLUMN annuel BOOLEAN NOT NULL;
+ALTER TABLE subscribe ADD COLUMN idStripe VARCHAR(32) NOT NULL;
+
+INSERT INTO subscribe (id, type, annuel, price, idStripe)
+VALUES
+    ('135e4567-e89b-12d3-a486-436614174001', 'bagpacker', false, 9.90, 'price_1PXwzqRrur5y60cs98ZJtoXJ'),
+    ('13541567-d89b-12d3-a486-424614174891', 'explorator', false , 19.00, 'price_1PXx1VRrur5y60cs0QlGQGX1'),
+    ('13541567-d89b-12d3-a486-426614177891', 'bagpacker', true , 113.00, 'price_1PXx0rRrur5y60csLFzuyWLk'),
+    ('13541567-d89b-12d3-a486-426614179891', 'explorator', true , 220.00, 'price_1PXx2kRrur5y60cs6fFb5mbb');
+
+ALTER TABLE subscribe RENAME COLUMN idStripe TO id_stripe;
