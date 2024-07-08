@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v78"
+	"github.com/stripe/stripe-go/v78/price"
 	"net/http"
 	"time"
 )
@@ -31,9 +32,12 @@ func reservationDateIntersect(entry models.Reservation, allEntry []models.Reserv
 	return false
 }
 
-func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) []*stripe.CheckoutSessionLineItemParams {
+// établis les paramètres à mettre dans la session stripe pour le paiement
+func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) ([]*stripe.CheckoutSessionLineItemParams, int64) {
 	var lineItems []*stripe.CheckoutSessionLineItemParams
+	var priceServicesAll int64
 
+	// property getById
 	property, _ := repository.PropertyGetById(dto.PropertyId)
 	quantity := int64(utils.DaysBetweenDates(dto.BeginDate, dto.EndDate))
 	lineItemProperty := &stripe.CheckoutSessionLineItemParams{
@@ -42,6 +46,7 @@ func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) []*strip
 	}
 	lineItems = append(lineItems, lineItemProperty)
 
+	// établis les paramètres relatif au service
 	for _, value := range dto.Service {
 		service, _ := repository.ServiceGetWithServiceId(value.ID)
 		lineItem := &stripe.CheckoutSessionLineItemParams{
@@ -49,41 +54,37 @@ func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) []*strip
 			Quantity: stripe.Int64(1),
 		}
 		lineItems = append(lineItems, lineItem)
-	}
 
-	return lineItems
+		// Calcul des prix
+		priceService, _ := price.Get(service.IdStripe, nil)
+		priceServicesAll += priceService.UnitAmount
+	}
+	return lineItems, priceServicesAll
 }
 
-func ReservationPropertyCreate(c *gin.Context) ([]*stripe.CheckoutSessionLineItemParams, string) {
-	str, exist := c.Get("idUser")
-	if !exist {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "8"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
-	}
-
+func ReservationPropertyCreate(c *gin.Context, idUser uuid.UUID) ([]*stripe.CheckoutSessionLineItemParams, int64, string) {
 	var reservationDTO models.ReservationDTO
 	var err error
 	if err = c.BindJSON(&reservationDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
-	idUser, _ := uuid.Parse(str.(string))
 	if idUser != reservationDTO.TravelerId {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "18"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	property, err := repository.PropertyGetById(reservationDTO.PropertyId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "21"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	services, err := reservationGetAllService(&reservationDTO)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "25"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	//TODO: Vérifie que la propriété est dans le rayon d'actiond de tous les services
@@ -94,7 +95,7 @@ func ReservationPropertyCreate(c *gin.Context) ([]*stripe.CheckoutSessionLineIte
 	reservation.TravelerId = repository.TravelerGetIdByUserId(idUser)
 	if reservation.TravelerId == uuid.Nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "24"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	if reservation.BeginDate.After(reservation.EndDate) {
@@ -108,12 +109,12 @@ func ReservationPropertyCreate(c *gin.Context) ([]*stripe.CheckoutSessionLineIte
 
 	if !reservation.BeginDate.After(date) {
 		c.JSON(http.StatusConflict, gin.H{"error": "22"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	if reservationDateIntersect(reservation, repository.ReservationGetAllByIdPropertyWithEndDateAfterADate(property.ID, date)) {
 		c.JSON(http.StatusConflict, gin.H{"error": "22"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	reservation.ID = uuid.New()
@@ -123,23 +124,24 @@ func ReservationPropertyCreate(c *gin.Context) ([]*stripe.CheckoutSessionLineIte
 	reservation, err = repository.ReservationCreate(reservation)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	serviceDTO, err := reservationServiceListCreate(&reservationDTO, services, &reservation.ID)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "25"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	bill, err := billCreate(property, reservation)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "23"})
-		return []*stripe.CheckoutSessionLineItemParams{}, ""
+		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
 	reservationDTO = reservationDTOCreate(reservation, bill, serviceDTO)
-	return reservationCheckoutLineItemParamsCreate(reservationDTO), reservationDTO.ID.String()
+	params, priceServicesAll := reservationCheckoutLineItemParamsCreate(reservationDTO)
+	return params, priceServicesAll, reservationDTO.ID.String()
 }
 
 func ReservationValidationPaiement(c *gin.Context) {
