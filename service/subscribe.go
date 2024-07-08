@@ -8,34 +8,50 @@ import (
 	"github.com/stripe/stripe-go/v78"
 	"github.com/stripe/stripe-go/v78/checkout/session"
 	"net/http"
+	"time"
 )
 
-func subscribeCreate(c *gin.Context) string {
+func subscribeCreate(c *gin.Context) (string, map[string]string) {
 	var subscribeDTO models.SubscribeDTO
 	var err error
+	metadata := make(map[string]string)
+
+	IdUser, exist := c.Get("idUser")
+	if !exist {
+		return "", metadata
+	}
 
 	if err = c.BindJSON(&subscribeDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return ""
+		return "", metadata
 	}
 
-	abonnement := repository.SubscribeGetByTypeAndAnnuel(subscribeDTO.Type, subscribeDTO.Annuel)
-	if abonnement.ID == uuid.Nil {
+	subscribe := repository.SubscribeTypeGetByTypeAndAnnuel(subscribeDTO.Type, subscribeDTO.Annuel)
+	if subscribe.ID == uuid.Nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Abonnement invalide"})
-		return ""
+		return "", metadata
 	}
 
-	return abonnement.IdStripe
+	metadata["id_user"] = IdUser.(string)
+	metadata["type_subscribe"] = subscribe.Type
+
+	if subscribe.Annuel {
+		metadata["annuel"] = "true"
+	} else {
+		metadata["annuel"] = "false"
+	}
+
+	return subscribe.IdStripe, metadata
 }
 
 func SubscribeCreateSession(c *gin.Context) {
-	idStripe := subscribeCreate(c)
-	if idStripe != "" {
+	idStripe, metadata := subscribeCreate(c)
+	if idStripe == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Resultat invalide"})
 		return
 	}
 
-	domain := "http://localhost:3000/subscribe/success"
+	domain := "http://localhost:3000/subscribe"
 	params := &stripe.CheckoutSessionParams{
 		Mode: stripe.String(string(stripe.CheckoutSessionModeSubscription)),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
@@ -44,8 +60,13 @@ func SubscribeCreateSession(c *gin.Context) {
 				Quantity: stripe.Int64(1),
 			},
 		},
+
 		SuccessURL: stripe.String(domain + "?success=true&session_id={CHECKOUT_SESSION_ID}"),
 		CancelURL:  stripe.String(domain + "?canceled=true"),
+		AutomaticTax: &stripe.CheckoutSessionAutomaticTaxParams{
+			Enabled: stripe.Bool(true),
+		},
+		Metadata: metadata,
 	}
 
 	s, err := session.New(params)
@@ -55,4 +76,60 @@ func SubscribeCreateSession(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"url": s.URL})
+}
+
+func SubscribeSessionCheck(c *gin.Context) {
+	sessionID := c.Query("session_id")
+	if sessionID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "session_id manquant"})
+		return
+	}
+	s, err := session.Get(sessionID, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	annuel := s.Metadata["annuel"] == "true"
+	idUser, _ := uuid.Parse(s.Metadata["id_user"])
+	c.JSON(http.StatusOK, gin.H{"subscribe": createSubscribe(idUser, s.Metadata["type_subscribe"], annuel)})
+}
+
+func createSubscribe(idUser uuid.UUID, typeSubscribe string, annuel bool) models.SubscribeDTO {
+	var subscribe models.SubscribeTraveler
+	subscribe.ID = uuid.New()
+
+	travelerId := repository.TravelerGetIdByUserId(idUser)
+	subscribeTraveler := repository.SubscribeGetByUserId(travelerId)
+	timeNow := time.Now()
+
+	if subscribeTraveler.ID != uuid.Nil && !subscribeTraveler.EndDate.After(timeNow) {
+		subscribeLastType := repository.SubscribeTypeById(subscribeTraveler.SubscribeId)
+		if subscribeLastType.Type == typeSubscribe {
+			subscribe.BeginDate = subscribeTraveler.EndDate
+		}
+		repository.SubscribeDeleteDateNow(travelerId)
+	}
+	subscribe.BeginDate = timeNow
+
+	if annuel {
+		subscribe.EndDate = subscribe.BeginDate.AddDate(1, 0, 0)
+	} else {
+		subscribe.EndDate = subscribe.BeginDate.AddDate(0, 1, 0)
+	}
+	subscribe.TravelerId = travelerId
+	subscribe.SubscribeId = repository.SubscribeTypeGetByTypeAndAnnuel(typeSubscribe, annuel).ID
+	repository.SubscribeCreateNewTraveler(subscribe)
+	return subscribeDTOCreateWithSubscribe(subscribe, idUser, typeSubscribe, annuel)
+}
+
+func subscribeDTOCreateWithSubscribe(subscribe models.SubscribeTraveler, userId uuid.UUID, typeSub string, annuel bool) models.SubscribeDTO {
+	return models.SubscribeDTO{
+		ID:        subscribe.ID,
+		BeginDate: subscribe.BeginDate.String(),
+		EndDate:   subscribe.EndDate.String(),
+		UserId:    userId,
+		Type:      typeSub,
+		Annuel:    annuel,
+	}
 }

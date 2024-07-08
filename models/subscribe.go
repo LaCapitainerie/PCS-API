@@ -10,7 +10,7 @@ type Subscribe struct {
 	IdStripe string    `gorm:"type:varchar(32);notnull" json:"idStripe"`
 }
 
-// TableName Abonnement Spécifie à gorm le nom de la table
+// TableName Subscribe Spécifie à gorm le nom de la table
 func (Subscribe) TableName() string {
 	return "subscribe"
 }

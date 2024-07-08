@@ -13,5 +13,6 @@ func Subscribe(api *gin.RouterGroup) {
 	subscribeGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))
 	{
 		subscribeGroup.POST("", service.SubscribeCreateSession)
+		subscribeGroup.GET("/check", service.SubscribeSessionCheck)
 	}
 }
