@@ -13,7 +13,7 @@ func SubscribeTypeGetByTypeAndAnnuel(typeSubscribe string, annuel bool) models.S
 	return result
 }
 
-func SubscribeGetByUserId(travelerId uuid.UUID) models.SubscribeTraveler {
+func SubscribeGetByTravelerId(travelerId uuid.UUID) models.SubscribeTraveler {
 	var subscribe models.SubscribeTraveler
 	utils.DB.Where("traveler_id = ?", travelerId).Order("end_date DESC").First(&subscribe)
 	return subscribe
