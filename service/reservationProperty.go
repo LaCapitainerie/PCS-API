@@ -32,6 +32,19 @@ func reservationDateIntersect(entry models.Reservation, allEntry []models.Reserv
 	return false
 }
 
+// validityFreeService Vérifie si l'utilisateur peut avoir son service gratuit
+func validityFreeService(traveler *models.Traveler, subscribe models.Subscribe, serviceID uuid.UUID) bool {
+	timeNow := time.Now()
+	service, _ := repository.ServiceGetWithServiceId(serviceID)
+	if (subscribe.Type == "explorator" && traveler.LastFreeService.Before(timeNow.AddDate(0, -3, 0))) ||
+		(subscribe.Type == "bagpacker" && service.Price < 80.0 && traveler.LastFreeService.Year() < timeNow.Year()) {
+		traveler.LastFreeService = timeNow
+		*traveler, _ = repository.UpdateTraveler(*traveler)
+		return true
+	}
+	return false
+}
+
 // établis les paramètres à mettre dans la session stripe pour le paiement
 func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) ([]*stripe.CheckoutSessionLineItemParams, int64) {
 	var lineItems []*stripe.CheckoutSessionLineItemParams
@@ -44,10 +57,22 @@ func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) ([]*stri
 		Price:    stripe.String(property.IdStripe),
 		Quantity: stripe.Int64(quantity),
 	}
+
 	lineItems = append(lineItems, lineItemProperty)
+
+	traveler := repository.TravelerGetById(dto.TravelerId)
+	subscribeTraveler := repository.SubscribeGetByTravelerId(traveler.ID)
+	subscribe := repository.SubscribeTypeById(subscribeTraveler.SubscribeId)
+	freeService := subscribe.Type == "explorator" || subscribe.Type == "bagpacker"
 
 	// établis les paramètres relatif au service
 	for _, value := range dto.Service {
+		// Prestation gratuite
+		if value.FreeSub && freeService && validityFreeService(&traveler, subscribe, value.ID) {
+			freeService = false
+			continue
+		}
+
 		service, _ := repository.ServiceGetWithServiceId(value.ID)
 		lineItem := &stripe.CheckoutSessionLineItemParams{
 			Price:    stripe.String(service.IdStripe),

@@ -45,8 +45,6 @@ func ReservationCheckoutCreateSession(c *gin.Context) {
 		return
 	}
 
-	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
-
 	domain := "http://localhost:3000/stripe/success"
 	params := &stripe.CheckoutSessionParams{
 		LineItems:  lineItems,
@@ -70,6 +68,7 @@ func ReservationCheckoutCreateSession(c *gin.Context) {
 		}
 	}
 
+	// Crée la session stripe
 	s, err := session.New(params)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "28"})

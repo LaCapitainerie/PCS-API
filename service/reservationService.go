@@ -10,10 +10,16 @@ import (
 
 func reservationGetAllService(dto *models.ReservationDTO) ([]models.Service, error) {
 	services := make([]models.Service, len(dto.Service))
-	for _, service := range dto.Service {
+	var err error
+	for i, service := range dto.Service {
+		services[i], err = repository.ServiceGetWithServiceId(service.ID)
 		if !((service.Date.Equal(dto.BeginDate) || service.Date.After(dto.BeginDate)) &&
 			(service.Date.Equal(dto.EndDate) || service.Date.Before(dto.EndDate))) {
 			return services, fmt.Errorf("1")
+		}
+
+		if err != nil {
+			return services, err
 		}
 	}
 	return services, nil
