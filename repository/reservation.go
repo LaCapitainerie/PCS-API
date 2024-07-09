@@ -3,9 +3,34 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
+
+func ReservationGetAll(id uuid.UUID) ([]models.Reservation, error) {
+	var reservations []models.Reservation
+	var properties []models.Property
+
+	lessor_id := GetLessorIdByUserId(id)
+
+	// Get all properties for the lessor
+	err := utils.DB.Where("lessor_id = ?", lessor_id).Find(&properties).Error
+	if err != nil {
+		return reservations, err
+	}
+
+	// Get all reservations for each property
+	for _, property := range properties {
+		propertyReservations, err := ReservationGetAllByIdProperty(property.ID)
+		if err != nil {
+			return reservations, err
+		}
+		reservations = append(reservations, propertyReservations...)
+	}
+
+	return reservations, nil
+}
 
 func ReservationGetAllByIdPropertyWithEndDateAfterADate(idProperty uuid.UUID, date time.Time) []models.Reservation {
 	var reservations []models.Reservation

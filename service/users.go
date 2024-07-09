@@ -347,6 +347,8 @@ func UserUpdateById(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "3"})
 	}
+
+	c.JSON(http.StatusOK, gin.H{"user": userDTO})
 }
 
 func UserGetAll(c *gin.Context) {

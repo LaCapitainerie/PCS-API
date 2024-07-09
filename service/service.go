@@ -4,6 +4,7 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"log"
 	"net/http"
 	"time"
 
@@ -29,6 +30,14 @@ func ServiceCreateNewService(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	log.Println(
+		service.Price < 1,
+		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType),
+		service.RangeAction < 0,
+		service.Name == "",
+		service.Description == "",
+	)
 
 	if service.Price < 1 ||
 		(service.TargetCustomer != models.LessorType && service.TargetCustomer != models.TravelerType) ||

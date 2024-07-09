@@ -300,6 +300,13 @@ CREATE TABLE log (
     description TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS remarks (
+    idReservation UUID,
+    remark VARCHAR(255),
+    status BOOLEAN,
+    final BOOLEAN
+)
+
 INSERT INTO sidebar (id, permission, icon, hover, href)
 VALUES
     (uuid_generate_v4(), 1, 'Home', 'property', '/traveler/property'),
