@@ -5,7 +5,6 @@ package repository
 import (
 	"PCS-API/models"
 	"PCS-API/utils"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -53,7 +52,7 @@ func UsersDelete(user models.Users) error {
 }
 
 func UsersUpdateLastConnectionDate(id uuid.UUID) {
-	utils.DB.Model(&models.Users{}).Where("id = ?", id).Update("LastConnectionDate", time.Now())
+	// utils.DB.Model(&models.Users{}).Where("id = ?", id).Update("LastConnectionDate", time.Now())
 }
 
 func UsersGetTypeById(id uuid.UUID) string {

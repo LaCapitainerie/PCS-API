@@ -23,7 +23,9 @@ func reservationServiceListCreate(dto *models.ReservationDTO, services []models.
 	var reservationService models.ReservationService
 	var err error
 	serviceDTO := make([]models.ServiceDTO, len(dto.Service))
+
 	for i, service := range dto.Service {
+
 		serviceDTO[i] = serviceConvertToServiceDTO(
 			services[i],
 			repository.ProviderGetUserIdWithProviderId(services[i].ProviderId),

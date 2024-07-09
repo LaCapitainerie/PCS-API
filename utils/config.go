@@ -57,11 +57,11 @@ func LoadConfig() {
 		os.Exit(4)
 	}
 
-	CouponSubscribeId = os.Getenv("COUPON_SUBSCRIBE_ID")
-	if CouponSubscribeId == "" {
-		log.Fatal("id coupon réduction invalide")
-		os.Exit(1)
-	}
+	// CouponSubscribeId = os.Getenv("COUPON_SUBSCRIBE_ID")
+	// if CouponSubscribeId == "" {
+	// 	log.Fatal("id coupon réduction invalide")
+	// 	os.Exit(1)
+	// }
 
 	TokenKey = []byte(key)
 }

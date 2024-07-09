@@ -4,12 +4,13 @@ import (
 	"PCS-API/models"
 	"PCS-API/repository"
 	"PCS-API/utils"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v78"
 	"github.com/stripe/stripe-go/v78/price"
-	"net/http"
-	"time"
 )
 
 func reservationDTOCreate(reservation models.Reservation, bill models.Bill, service []models.ServiceDTO) models.ReservationDTO {
@@ -40,6 +41,9 @@ func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) ([]*stri
 	// property getById
 	property, _ := repository.PropertyGetById(dto.PropertyId)
 	quantity := int64(utils.DaysBetweenDates(dto.BeginDate, dto.EndDate))
+
+	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
+
 	lineItemProperty := &stripe.CheckoutSessionLineItemParams{
 		Price:    stripe.String(property.IdStripe),
 		Quantity: stripe.Int64(quantity),
@@ -81,14 +85,6 @@ func ReservationPropertyCreate(c *gin.Context, idUser uuid.UUID) ([]*stripe.Chec
 		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
-	services, err := reservationGetAllService(&reservationDTO)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "25"})
-		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
-	}
-
-	//TODO: Vérifie que la propriété est dans le rayon d'actiond de tous les services
-
 	var reservation models.Reservation
 	reservation.BeginDate = reservationDTO.BeginDate
 	reservation.EndDate = reservationDTO.EndDate
@@ -126,6 +122,27 @@ func ReservationPropertyCreate(c *gin.Context, idUser uuid.UUID) ([]*stripe.Chec
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
+	}
+
+	services := make([]models.Service, len(reservationDTO.Service))
+	for i, service := range reservationDTO.Service {
+		services[i] = models.Service{
+			ID:             service.ID,
+			IdStripe:       service.IdStripe,
+			Name:           service.Name,
+			Price:          service.Price,
+			TargetCustomer: service.TargetCustomer,
+			Address:        service.Address,
+			City:           service.City,
+			ZipCode:        service.ZipCode,
+			Country:        service.Country,
+			Lat:            service.Lat,
+			Lon:            service.Lon,
+			RangeAction:    service.RangeAction,
+			Description:    service.Description,
+			ProviderId:     service.ProviderId,
+			Type:           service.Type,
+		}
 	}
 
 	serviceDTO, err := reservationServiceListCreate(&reservationDTO, services, &reservation.ID)
