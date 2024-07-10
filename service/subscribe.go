@@ -70,7 +70,7 @@ func SubscribeCreateSession(c *gin.Context) {
 	}
 
 	// Paramètre abonnement
-	domain := "http://77.237.246.8:3000/subscribe"
+	domain := "https://paris-caretaker-services.xyz/subscribe"
 
 	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
 
