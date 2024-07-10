@@ -30,6 +30,7 @@ func main() {
 	controller.Ticket(api)
 	controller.Subscribe(api)
 	controller.Edl(api)
+	controller.Review(api)
 
 	err := router.Run(":" + utils.PortApp)
 	if err != nil {
