@@ -69,11 +69,6 @@ func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) ([]*stri
 
 	lineItems = append(lineItems, lineItemProperty)
 
-	traveler := repository.TravelerGetById(dto.TravelerId)
-	subscribeTraveler := repository.SubscribeGetByTravelerId(traveler.ID)
-	subscribe := repository.SubscribeTypeById(subscribeTraveler.SubscribeId)
-	freeService := subscribe.Type == "explorator" || subscribe.Type == "bagpacker"
-
 	// établis les paramètres relatif au service
 	for _, value := range dto.Service {
 		// Prestation gratuite
