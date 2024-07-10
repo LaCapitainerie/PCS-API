@@ -8,6 +8,7 @@ import (
 )
 
 func Subscribe(api *gin.RouterGroup) {
+	api.GET("subscribe/all", service.SubscribeGetAll)
 	subscribeGroup := api.Group("/subscribe")
 	subscribeGroup.Use(middleware.AuthMiddleware())
 	subscribeGroup.Use(middleware.BlockTypeMiddleware(models.TravelerType))

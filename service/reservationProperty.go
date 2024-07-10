@@ -57,6 +57,11 @@ func reservationCheckoutLineItemParamsCreate(dto models.ReservationDTO) ([]*stri
 
 	stripe.Key = "sk_test_51PNwOpRrur5y60cs5Yv2aKu9v6SrJHigo2cLgmxevvozEfzSDWFnaQhMwVH02RLc8R2xHdjkJ6QagZ7KDyYTVxZt00gadizteA"
 
+	traveler := repository.TravelerGetById(dto.TravelerId)
+	subscribeTraveler := repository.SubscribeGetByTravelerId(traveler.ID)
+	subscribe := repository.SubscribeTypeById(subscribeTraveler.SubscribeId)
+	freeService := subscribe.Type == "explorator" || subscribe.Type == "bagpacker"
+
 	lineItemProperty := &stripe.CheckoutSessionLineItemParams{
 		Price:    stripe.String(property.IdStripe),
 		Quantity: stripe.Int64(quantity),
@@ -149,6 +154,7 @@ func ReservationPropertyCreate(c *gin.Context, idUser uuid.UUID) ([]*stripe.Chec
 		return []*stripe.CheckoutSessionLineItemParams{}, 0, ""
 	}
 
+	// Création
 	services := make([]models.Service, len(reservationDTO.Service))
 	for i, service := range reservationDTO.Service {
 		services[i] = models.Service{

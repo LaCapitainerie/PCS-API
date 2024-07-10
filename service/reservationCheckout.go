@@ -63,7 +63,7 @@ func ReservationCheckoutCreateSession(c *gin.Context) {
 	travelerId := repository.TravelerGetIdByUserId(idUser)
 	subscribeTraveler := repository.SubscribeGetByTravelerId(travelerId)
 	subscribe := repository.SubscribeTypeById(subscribeTraveler.SubscribeId)
-	if subscribe.Type == "explorator" && subscribe.Annuel {
+	if subscribe.Type == "explorator" && subscribe.Annuel && priceServicesAll > 0 {
 		couponId := reservationServiceExploratorCoupon(priceServicesAll)
 		params.Discounts = []*stripe.CheckoutSessionDiscountParams{
 			{
