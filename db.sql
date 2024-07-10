@@ -435,3 +435,12 @@ VALUES
 ALTER TABLE subscribe RENAME COLUMN idStripe TO id_stripe;
 
 ALTER TABLE traveler ADD COLUMN last_free_service TIMESTAMP;
+
+CREATE TABLE review(
+    id      UUID PRIMARY KEY,
+    mark    NUMERIC(10,1) NOT NULL,
+    comment TEXT,
+    id_target UUID NOT NULL
+);
+
+ALTER TABLE review ADD COLUMN id_user UUID NOT NULL;

@@ -28,6 +28,7 @@ func main() {
 	controller.Reservation(api)
 	controller.Ticket(api)
 	controller.Subscribe(api)
+	controller.Review(api)
 
 	err := router.Run(":" + utils.PortApp)
 	if err != nil {
