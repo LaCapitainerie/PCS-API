@@ -48,8 +48,7 @@ func ReservationCheckoutCreateSession(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "28"})
 		return
 	}
-
-	domain := "http://77.237.246.8:3000/stripe/success"
+	domain := "https://paris-caretaker-services.xyz/stripe/success"
 	params := &stripe.CheckoutSessionParams{
 		LineItems:  lineItems,
 		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
