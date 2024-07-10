@@ -49,7 +49,7 @@ func ReservationCheckoutCreateSession(c *gin.Context) {
 		return
 	}
 
-	domain := "http://localhost:3000/stripe/success"
+	domain := "http://77.237.246.8:3000/stripe/success"
 	params := &stripe.CheckoutSessionParams{
 		LineItems:  lineItems,
 		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
