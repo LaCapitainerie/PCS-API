@@ -5,6 +5,7 @@ import (
 	"PCS-API/controller"
 	"PCS-API/middleware"
 	"PCS-API/utils"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,6 +29,7 @@ func main() {
 	controller.Reservation(api)
 	controller.Ticket(api)
 	controller.Subscribe(api)
+	controller.Edl(api)
 	controller.Review(api)
 
 	err := router.Run(":" + utils.PortApp)
