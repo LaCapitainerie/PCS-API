@@ -29,7 +29,8 @@ func reservationServiceListCreate(dto *models.ReservationDTO, services []models.
 		serviceDTO[i] = serviceConvertToServiceDTO(
 			services[i],
 			repository.ProviderGetUserIdWithProviderId(services[i].ProviderId),
-			service.Date)
+			service.Date,
+			service.FreeSub)
 
 		reservationService.ReservationId = *idReservation
 		reservationService.ServiceId = service.ID
