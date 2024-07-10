@@ -433,3 +433,5 @@ VALUES
     ('13541567-d89b-12d3-a486-426614179891', 'explorator', true , 220.00, 'price_1PXx2kRrur5y60cs6fFb5mbb');
 
 ALTER TABLE subscribe RENAME COLUMN idStripe TO id_stripe;
+
+ALTER TABLE traveler ADD COLUMN last_free_service TIMESTAMP;

@@ -74,6 +74,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
+// BlockTypeMiddleware Bloque la route à un type précis
 func BlockTypeMiddleware(userType string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idBrut, exist := c.Get("idUser")

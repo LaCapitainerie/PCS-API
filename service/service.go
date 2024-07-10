@@ -15,11 +15,12 @@ import (
 	"github.com/stripe/stripe-go/v78/product"
 )
 
-func serviceConvertToServiceDTO(service models.Service, userId uuid.UUID, date time.Time) models.ServiceDTO {
+func serviceConvertToServiceDTO(service models.Service, userId uuid.UUID, date time.Time, freeSub bool) models.ServiceDTO {
 	return models.ServiceDTO{
 		Service: service,
 		UserId:  userId,
 		Date:    date,
+		FreeSub: freeSub,
 	}
 }
 
@@ -103,7 +104,7 @@ func ServiceCreateNewService(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	serviceDTO := serviceConvertToServiceDTO(service, idUser, time.Time{})
+	serviceDTO := serviceConvertToServiceDTO(service, idUser, time.Time{}, false)
 	c.JSON(http.StatusOK, gin.H{"service": serviceDTO})
 }
 
@@ -172,7 +173,8 @@ func ServiceUpdate(c *gin.Context) {
 	serviceTransfert = repository.ServiceUpdate(serviceTransfert)
 	ServiceDTO := serviceConvertToServiceDTO(serviceTransfert,
 		repository.ProviderGetUserIdWithProviderId(serviceTransfert.ProviderId),
-		time.Time{})
+		time.Time{},
+		false)
 	c.JSON(http.StatusOK, gin.H{"service": ServiceDTO})
 }
 
