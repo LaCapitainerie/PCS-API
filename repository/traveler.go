@@ -26,7 +26,13 @@ func CreateTraveler(traveler models.Traveler) (models.Traveler, error) {
 
 func TravelerGetByUserId(id uuid.UUID) models.Traveler {
 	var traveler models.Traveler
-	utils.DB.Where("user_id = ?", id).Find(&traveler)
+	utils.DB.Where("user_id = ?", id).First(&traveler)
+	return traveler
+}
+
+func TravelerGetById(id uuid.UUID) models.Traveler {
+	var traveler models.Traveler
+	utils.DB.Where("id = ?", id).First(&traveler)
 	return traveler
 }
 
