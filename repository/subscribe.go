@@ -33,3 +33,10 @@ func SubscribeCreateNewTraveler(subscribe models.SubscribeTraveler) models.Subsc
 func SubscribeDeleteDateNow(travelerId uuid.UUID) {
 	utils.DB.Where("traveler_id = ? AND ? BETWEEN begin_date AND end_date", travelerId, time.Now()).Delete(models.SubscribeTraveler{})
 }
+
+// SubscribeGetAll Récupère dans la bdd tous les types d'abonnement
+func SubscribeGetAll() []models.Subscribe {
+	var subscribe []models.Subscribe
+	utils.DB.Find(&subscribe)
+	return subscribe
+}

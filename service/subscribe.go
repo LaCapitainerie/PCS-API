@@ -21,6 +21,11 @@ func subscribeReductionVerify(idUser uuid.UUID) bool {
 	return subscribeType.Annuel && subscribeType.Type == "explorator"
 }
 
+// SubscribeGetAll Renvoie tous les types d'abonnements
+func SubscribeGetAll(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"subscribe": repository.SubscribeGetAll()})
+}
+
 // Vérifie et complète toutes les informations nécessaires pour créer la commande (type d'abonnement, annuel ou non...)
 func subscribeVerify(c *gin.Context) (string, map[string]string) {
 	var subscribeDTO models.SubscribeDTO
