@@ -138,7 +138,9 @@ CREATE TABLE service(
     range_action INTEGER, -- null = infinie
     description TEXT,
     provider_id  UUID NOT NULL,
+    type VARCHAR(64) NOT NULL,
     FOREIGN KEY (provider_id) REFERENCES provider(id)
+    id_stripe UUID,
 );
 
 CREATE TABLE service_unavailability(
@@ -301,7 +303,7 @@ CREATE TABLE log (
 );
 
 CREATE TABLE IF NOT EXISTS remarks (
-    idReservation UUID,
+    id_reservation UUID,
     remark VARCHAR(255),
     status BOOLEAN,
     final BOOLEAN
@@ -322,10 +324,15 @@ VALUES
 
 
 INSERT INTO users (id, mail, password, avatar, description, register_date, last_connection_date, phone_number) VALUES
-        ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'traveler@gmail.com', '$2a$10$07qrkk/uZXKX47WWwO.OVO2Ims8sJz2V8pUKleziMhcWW49xXvoYy', 'https://th.bing.com/th/id/OIP.dgvjD6cbVLRhGCowKwsLdQAAAA?rs=1&pid=ImgDetMain', 'Description de user1', NOW(), NOW(), '06 23 00 01 47'),
-        ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'provider@gmail.com', '$2a$10$16FESXE6QgyRPTOif2Mwfu/5ocarRihkfk3vuL0YfgffTmtiqSbFu', 'https://c8.alamy.com/comp/2G36K7J/service-provider-icon-simple-creative-element-filled-monochrome-service-provider-icon-for-templates-infographics-and-banners-2G36K7J.jpg', 'Description de provider', NOW(), NOW(), '06 21 29 77 06'),
-        ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'lessor@gmail.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', 'https://th.bing.com/th/id/OIP.uEi-BYi_M-Rnv9abB82xqwHaHa?rs=1&pid=ImgDetMain', 'Description de lessor', NOW(), NOW(), '06 29 24 07 06'),
-        ('a0e12f8a-4776-4ed3-91d5-673cef79c3ec', 'admin@gmail.com', '$2a$10$39lQGnhapB17TmtXQduhhuHOqYrr2yJ1FlE.SOCW4nvI4qutiOvnS', '', 'Description de admin', NOW(), NOW(), '06 21 69 77 06');
+    ('a0e12f8a-4776-4ed3-91d5-673fcef79d5c', 'traveler@gmail.com', '$2a$10$07qrkk/uZXKX47WWwO.OVO2Ims8sJz2V8pUKleziMhcWW49xXvoYy', 'https://th.bing.com/th/id/OIP.dgvjD6cbVLRhGCowKwsLdQAAAA?rs=1&pid=ImgDetMain', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 23 00 01 47'),
+    ('c3c99ccc-4844-4f78-9b27-8daabbc7f8f8', 'provider@gmail.com', '$2a$10$16FESXE6QgyRPTOif2Mwfu/5ocarRihkfk3vuL0YfgffTmtiqSbFu', 'https://c8.alamy.com/comp/2G36K7J/service-provider-icon-simple-creative-element-filled-monochrome-service-provider-icon-for-templates-infographics-and-banners-2G36K7J.jpg', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 21 29 77 06'),
+    ('b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e', 'lessor@gmail.com', '$2y$10$7nrgYo5DHC6Pr1eeLWX5GuFQKn082oAETDRxIc1PRtBD/o1UMT10e', '	https://th.bing.com/th/id/OIP.uEi-BYi_M-Rnv9abB82xqwHaHa?rs=1&pid=ImgDetMain', 'Description de user2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 29 24 07 06'),
+    ('a0e12f8a-4776-4ed3-91d5-673cef79c3ec', 'admin@gmail.com', '$2a$10$39lQGnhapB17TmtXQduhhuHOqYrr2yJ1FlE.SOCW4nvI4qutiOvnS', '', 'Description de user1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '06 21 69 77 06'),
+
+
+
+
+
 
 INSERT INTO lessor (id, first_name, last_name, user_id) VALUES
     ('98765432-12d3-e456-b426-426614174000', 'John', 'Doe', 'a0e12f8a-4776-4ed3-91d5-673fcef79d5c'),
@@ -336,7 +343,7 @@ INSERT INTO provider (id, first_name, last_name, nickname, user_id) VALUES
     ('123e4567-e89b-13f3-a456-426618174000', 'Jerry', 'Escobar', 'Escopuelo', 'a0e12f8a-4776-4ed3-91d5-673cef79c3ec');
 
 INSERT INTO traveler (id, first_name, last_name, user_id) VALUES
-    ('123e4567-e89b-13f3-a456-426618174901', 'Noah', 'Picard', 'b2a88bbb-3822-4d56-8b36-7c9a44dc6a7e');
+    ('123e4567-e89b-13f3-a456-426618174901', 'Noah', 'Picard', 'b2a88bbb-3822-4d56-8b36-7c9a4489b7ea');
 
 INSERT INTO property (id, name, type, price, surface, room, bathroom, garage, description, address, city, zip_code, country, administrator_validation, lessor_id)
 VALUES
@@ -350,6 +357,28 @@ VALUES
     ('c18dfc9f-4d96-4d14-af5a-2e0332876e5d', 'Appartement Lumineux avec Balcon', 'Appartement', 95000.00, 60, 2, 1, 0, 'Appartement lumineux avec un balcon offrant une vue dégagée.', '15 Avenue du Soleil', 'Marseille', '13000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000'),
     ('d43e501e-77c3-42c4-a9a2-42f013e1a5b1', 'Villa Moderne avec Piscine et Spa', 'Villa', 680000.00, 320, 8, 5, 1, 'Villa moderne équipée d une piscine, d un spa et d un grand jardin.', '18 Boulevard des Palmiers', 'Nice', '06000', 'France', FALSE, '123e4567-e89b-12d3-a456-426614174000'),
     ('7fc56270-a7a7-4ec5-9ec1-57c5860b0026', 'Maison de Ville avec Cour Intérieure', 'Maison', 195000.00, 120, 4, 2, 1, 'Maison de ville avec une charmante cour intérieure, proche des commodités.', '3 Rue des Moulins', 'Lille', '59000', 'France', TRUE, '98765432-12d3-e456-b426-426614174000');
+
+INSERT INTO property_image (id, path, property_id)
+VALUES 
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_01-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_02-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_03-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_04-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_05-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_06-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_07-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/2022/04/3090EL_maison_contemporaine_moderne_jardin_spa_08-1680x1120.jpg', 'f47ac10b-58cc-4372-a567-0e02b2c3d479');
+
+INSERT INTO property_image (id, path, property_id)
+VALUES 
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/151467/5674/151467-5674-56026804a.jpg', 'ab9d50e8-3b15-4a43-95aa-41745c87ff5e'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/151467/5674/151467-5674-56026804b.jpg', 'ab9d50e8-3b15-4a43-95aa-41745c87ff5e'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/151467/5674/151467-5674-56026804c.jpg', 'ab9d50e8-3b15-4a43-95aa-41745c87ff5e'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/151467/5674/151467-5674-56026804d.jpg', 'ab9d50e8-3b15-4a43-95aa-41745c87ff5e'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/151467/5674/151467-5674-56026804e.jpg', 'ab9d50e8-3b15-4a43-95aa-41745c87ff5e'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/151467/5674/151467-5674-56026804f.jpg', 'ab9d50e8-3b15-4a43-95aa-41745c87ff5e'),
+    (uuid_generate_v4(), 'https://www.espaces-atypiques.com/wp-content/uploads/151467/5674/151467-5674-56026804g.jpg', 'ab9d50e8-3b15-4a43-95aa-41745c87ff5e');
+
 
 ALTER TABLE message DROP CONSTRAINT message_user_id_fkey;
 ALTER TABLE message ALTER COLUMN user_id DROP NOT NULL;
@@ -401,7 +430,20 @@ VALUES (
            '123e9567-e89b-12d3-a456-426214174000'
 );
 
-INSERT INTO chat (id, view) VALUES ('e02934d9-cb1b-475f-9972-90816d402518', FALSE)    ('13541567-d89b-12d3-a486-426614174891', 'explorator', 19.00);
+INSERT INTO chat (id, view) VALUES ('e02934d9-cb1b-475f-9972-90816d402518', FALSE);
+INSERT INTO chat_user (user_id, chat_id) VALUES ('123e4567-e89b-12d3-a456-426214174000', 'e02934d9-cb1b-475f-9972-90816d402518');
+INSERT INTO ticket (id, type, state, description, chat_id)
+VALUES
+    ('123e4567-e89b-12d3-a486-426614174001', 'paiement', 'progress', 'Problème avec le serveur', 'e02934d9-cb1b-475f-9972-90816d402518');
+
+INSERT INTO message (id, content, date, type, user_id, chat_id)
+VALUES
+    ('123e4567-e89b-98d3-a456-426614174002', 'Bonjour, je voulais savoir si vous acceptez paypal ?', CURRENT_TIMESTAMP, 'text', '5fb3b5ce-84e1-43f0-890f-3632dbb2d741', 'e02934d9-cb1b-475f-9972-90816d402518');
+
+INSERT INTO subscribe (id, type, price)
+VALUES
+    ('135e4567-e89b-12d3-a486-426614174001', 'bagpack', 9.90),
+    ('13541567-d89b-12d3-a486-426614174891', 'explorator', 19.00);
 
 ALTER TABLE subscribe_traveler ADD COLUMN validation BOOLEAN DEFAULT FALSE;
 ALTER TABLE subscribe ADD COLUMN annuel BOOLEAN NOT NULL;
