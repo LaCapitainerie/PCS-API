@@ -319,6 +319,7 @@ VALUES
     (uuid_generate_v4(), 3, 'Home', 'Propriétés', '/lessor/property'),
     (uuid_generate_v4(), 3, 'Msg', 'Messages', '/lessor/messages'),
     (uuid_generate_v4(), 3, 'Gauge', 'Tableau de bord', '/lessor/dashboard'),
+    (uuid_generate_v4(), 3, 'Gauge', 'Etat des lieux', '/lessor/edl'),
     (uuid_generate_v4(), 4, 'Gauge', 'Tableau de bord', '/admin/dashboard');
 
 

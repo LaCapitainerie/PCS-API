@@ -58,7 +58,7 @@ func TicketCreate(c *gin.Context) {
 	var chat models.Chat
 	chat.ID = uuid.New()
 
-	adminUuid, err := uuid.Parse("efc6adf0-dbc2-46b2-b56b-78a76ccb08b7")
+	adminUuid, err := uuid.Parse("a0e12f8a-4776-4ed3-91d5-673cef79c3ec")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
